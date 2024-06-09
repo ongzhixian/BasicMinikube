@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  creationTimestamp: "2024-06-07T14:49:48Z"
+  generation: 1
+  name: example-ingress
+  namespace: default
+  resourceVersion: "3741"
+  uid: 1d8dbdeb-791e-47e8-8cbc-aa940b28f757
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hello-world.info
+    http:
+      paths:
+      - backend:
+          service:
+            name: web
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+status:
+  loadBalancer: {}

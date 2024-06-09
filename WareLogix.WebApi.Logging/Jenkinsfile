@@ -1,0 +1,205 @@
+////////////////////////////////////////
+// PRIVATE
+
+def target_computer_name = 'ZBK15SP'
+def target_computer_path = "C:/src/github.com/ongzhixian/BasicMinikube"
+def target_configuration = 'Release'
+def nupkg_output_directory = 'nupkgs'
+def version
+
+////////////////////////////////////////
+// PIPELINE
+
+pipeline {
+    agent any
+
+    stages {
+        stage('WareLogix.WebApi.Logging') {
+            parallel {
+
+                ////////////////////////////////////////
+                // LOCAL BUILDS
+
+                stage('LOCAL') {
+                    when {
+                        environment name: 'COMPUTERNAME', value: target_computer_name
+                        environment name: 'OS', value: 'Windows_NT'
+                        triggeredBy 'UserIdCause'
+                    }
+
+                    stages {
+                        
+                        stage('NEW VERSION NUMBER') {
+                            steps {
+                                dir(target_computer_path) {
+                                    script {
+                                        version = powershell(returnStdout: true, script: '''
+                                            $curVer=[System.Version]::Parse((Get-Content ./WareLogix.WebApi.Logging/version)) `
+                                            ;$newVer=[System.Version]::new($curVer.Major, $curVer.Minor, $curVer.Build, $curVer.Revision+1) `
+                                            ;$newVer.ToString()
+                                        ''')
+                                        // currentBuild.displayName = "${version}"
+                                        // currentBuild.description = "Build version ${version}"
+                                    }
+                                    // echo "New version is ${version}"
+                                    
+                                }
+                            }
+                        }
+
+                        stage('RESOLVE DEPENDENCIES') {
+                            steps {
+                                dir(target_computer_path) {
+                                    dotnetRestore(
+                                        project: 'WareLogix.WebApi.Logging')
+                                }
+                            }
+                        }
+
+                        stage('BUILD') {
+                            steps {
+                                // dotnet build   .\WareLogix.WebApi.Logging\ --configuration Release --nologo --no-restore -p:Version=1.0.8
+                                dir(target_computer_path) {
+                                    dotnetBuild(
+                                        project: 'WareLogix.WebApi.Logging'
+                                        , configuration: target_configuration
+                                        , noRestore: true
+                                        , nologo: true
+                                        , options: ["-p:Version=${version}"])
+                                }
+                            }
+                        }
+
+                        stage('TEST') {
+                            when {
+                                expression { false }
+                            }
+                            steps {
+                                echo 'SKIP; No test yet'
+                            }
+                        }
+
+                        stage('PUBLISH') {
+                            steps {
+                                dir(target_computer_path) {
+                                    dotnetBuild(
+                                        project: 'WareLogix.WebApi.Logging'
+                                        , configuration: target_configuration
+                                        , noRestore: true
+                                        , nologo: true)
+                                }
+                            }
+                        }
+
+                        stage('MAKE NUGET PACKAGE') {
+                            steps {
+                                dir(target_computer_path) {
+                                    dotnetPack(
+                                        project: 'WareLogix.WebApi.Logging'
+                                        , configuration: target_configuration
+                                        , noRestore: true
+                                        , nologo: true
+                                        , outputDirectory: nupkg_output_directory
+                                        , options: ["-p:Version=${version}"])
+                                }
+                            }
+                        }
+
+                        stage('PUSH NUGET PACKAGE') {
+                            steps {
+                                dir(target_computer_path) {
+                                    withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
+                                        echo "key is ${nuget_api_key}"
+                                    }
+                                    
+                                    // dotnetNuGetPush(
+                                    //     project: 'WareLogix.WebApi.Logging'
+                                    //     , configuration: target_configuration
+                                    //     , noRestore: true
+                                    //     , nologo: true
+                                    //     , outputDirectory: nupkg_output_directory
+                                    //     , options: ["-p:Version=${version}"])
+                                }
+                            }
+                        }
+
+                        stage('SAVE VERSION NUMBER') {
+                            steps {
+                                dir(target_computer_path) {
+                                    echo "Version is ${version}"
+                                    script {
+
+                                        powershell(script: """
+                                            "${version}" | Out-File ./WareLogix.WebApi.Logging/version
+                                        """)
+                                        currentBuild.displayName = "${version}"
+                                        currentBuild.description = "Build version ${version}"
+                                    }
+                                    // echo "New version is ${version}"
+                                    
+                                }
+                            }
+                        }
+
+                        // stage('PUSH NUGET PACKAGE') {
+                        //     steps {
+                        //         dir(target_computer_path) {
+                        //             withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
+                        //                 echo "key is ${nuget_api_key}"
+                        //             }
+                                    
+                        //             // dotnetNuGetPush(
+                        //             //     project: 'WareLogix.WebApi.Logging'
+                        //             //     , configuration: target_configuration
+                        //             //     , noRestore: true
+                        //             //     , nologo: true
+                        //             //     , outputDirectory: nupkg_output_directory
+                        //             //     , options: ["-p:Version=${version}"])
+                        //         }
+                        //     }
+                        // }
+
+                    }
+                }
+
+                // stage('DUMMY STAGE') {
+                //     when {
+                //         not {
+                //             triggeredBy 'UserIdCause'
+                //         }
+                //     }
+                //     stages {
+                //         stage('DUMMY STAGE 1') {
+                //             steps {
+                //                 echo 'DUMMY STAGE 1 ACTION 1'
+                //             }
+                //         }
+                //         stage('DUMMY STAGE 2') {
+                //             steps {
+                //                 echo 'DUMMY STAGE 2 ACTION 1 ${env.JOB_NAME}'
+                //                 echo "DUMMY STAGE 2 ACTION 1 ${env.JOB_NAME}"
+                //             }
+                //         }
+                //     }
+                // }
+
+                ////////////////////////////////////////
+                // SCM BUILDS
+
+                stage('SCM') {
+                    when {
+                        triggeredBy 'UserIdCause'
+                        not {
+                            environment name: 'COMPUTERNAME', value: target_computer_name
+                        }
+                    }
+                    steps {
+                        echo 'DO SCM-based build WHEN NOT LOCAL ${target_computer_name}'
+                        echo target_computer_name
+                    }
+                }
+
+            } // END-parallel 
+        } // END-parallel stage 
+    } // end-of-stages
+} // end-of-pipeline
