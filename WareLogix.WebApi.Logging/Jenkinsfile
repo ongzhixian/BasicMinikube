@@ -38,10 +38,11 @@ pipeline {
                                             ;$newVer=[System.Version]::new($curVer.Major, $curVer.Minor, $curVer.Build, $curVer.Revision+1) `
                                             ;$newVer.ToString()
                                         ''')
+                                        version = version.trim()
                                         // currentBuild.displayName = "${version}"
                                         // currentBuild.description = "Build version ${version}"
                                     }
-                                    // echo "New version is ${version}"
+                                    echo "New version is |${version}|"
                                     
                                 }
                             }
@@ -105,23 +106,25 @@ pipeline {
                             }
                         }
 
-                        stage('PUSH NUGET PACKAGE') {
-                            steps {
-                                dir(target_computer_path) {
-                                    withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
-                                        echo "key is ${nuget_api_key}"
-                                    }
-                                    
-                                    // dotnetNuGetPush(
-                                    //     project: 'WareLogix.WebApi.Logging'
-                                    //     , configuration: target_configuration
-                                    //     , noRestore: true
-                                    //     , nologo: true
-                                    //     , outputDirectory: nupkg_output_directory
-                                    //     , options: ["-p:Version=${version}"])
-                                }
-                            }
-                        }
+                        // stage('PUSH NUGET PACKAGE') {
+                        //     environment {
+                        //         EXAMPLE_KEY = credentials('WareLogix_Nuget_API_Key') // Secret value is 'sec%ret'
+                        //     }
+                        //     steps {
+                        //         dir(target_computer_path) {
+                        //             // withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
+                        //             //     // dotnetNuGetPush(
+                        //             //     //     root: "nupkg_output_directory/WareLogix.WebApi.Logging.${version}.nupkg"
+                        //             //     //     , skipDuplicate: true
+                        //             //     //     , source: 'https://api.nuget.org/v3/index.json'
+                        //             //     //     , apiKeyId: nuget_api_key)
+                        //             //     powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key ${nuget_api_key} --source https://api.nuget.org/v3/index.json --skip-duplicate")
+                        //             // }
+
+                        //             powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key $env:EXAMPLE_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate")
+                        //         }
+                        //     }
+                        // }
 
                         stage('SAVE VERSION NUMBER') {
                             steps {
@@ -141,23 +144,7 @@ pipeline {
                             }
                         }
 
-                        // stage('PUSH NUGET PACKAGE') {
-                        //     steps {
-                        //         dir(target_computer_path) {
-                        //             withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
-                        //                 echo "key is ${nuget_api_key}"
-                        //             }
-                                    
-                        //             // dotnetNuGetPush(
-                        //             //     project: 'WareLogix.WebApi.Logging'
-                        //             //     , configuration: target_configuration
-                        //             //     , noRestore: true
-                        //             //     , nologo: true
-                        //             //     , outputDirectory: nupkg_output_directory
-                        //             //     , options: ["-p:Version=${version}"])
-                        //         }
-                        //     }
-                        // }
+
 
                     }
                 }
