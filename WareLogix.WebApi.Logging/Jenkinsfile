@@ -106,25 +106,36 @@ pipeline {
                             }
                         }
 
-                        // stage('PUSH NUGET PACKAGE') {
-                        //     environment {
-                        //         EXAMPLE_KEY = credentials('WareLogix_Nuget_API_Key') // Secret value is 'sec%ret'
-                        //     }
-                        //     steps {
-                        //         dir(target_computer_path) {
-                        //             // withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
-                        //             //     // dotnetNuGetPush(
-                        //             //     //     root: "nupkg_output_directory/WareLogix.WebApi.Logging.${version}.nupkg"
-                        //             //     //     , skipDuplicate: true
-                        //             //     //     , source: 'https://api.nuget.org/v3/index.json'
-                        //             //     //     , apiKeyId: nuget_api_key)
-                        //             //     powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key ${nuget_api_key} --source https://api.nuget.org/v3/index.json --skip-duplicate")
-                        //             // }
+                        stage('PUSH NUGET PACKAGE') {
+                            steps {
+                                dir(target_computer_path) {
+                                        dotnetNuGetPush(
+                                            root: "${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg"
+                                            , skipDuplicate: true
+                                            , source: 'https://api.nuget.org/v3/index.json'
+                                            , apiKeyId: 'WareLogix_Nuget_API_Key')
 
-                        //             powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key $env:EXAMPLE_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate")
-                        //         }
-                        //     }
-                        // }
+                                    // withCredentials([string(credentialsId: 'WareLogix_Nuget_API_Key', variable: 'nuget_api_key')]) {
+
+                                    //     // script {
+                                    //     //     def nugetPushCmd = "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg -k ${nuget_api_key} -s https://api.nuget.org/v3/index.json"
+                                    //     //     pwsh nugetPushCmd
+                                    //     //     //bat nugetPushCmd
+                                    //     // }
+
+                                    //     dotnetNuGetPush(
+                                    //         root: "${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg"
+                                    //         , skipDuplicate: true
+                                    //         , source: 'https://api.nuget.org/v3/index.json'
+                                    //         , apiKeyId: 'WareLogix_Nuget_API_Key')
+
+                                    //     // powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key ${nuget_api_key} --source https://api.nuget.org/v3/index.json --skip-duplicate")
+                                    // }
+
+                                    // powershell(script: "dotnet nuget push ${nupkg_output_directory}/WareLogix.WebApi.Logging.${version}.nupkg --api-key $env:EXAMPLE_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate")
+                                }
+                            }
+                        }
 
                         stage('SAVE VERSION NUMBER') {
                             steps {
