@@ -27,8 +27,7 @@ public class WeatherForecastController : ControllerBase
     {
 
         logger.LogInformation("Weather forecast requested");
-
-        requestMetric.Increment();
+        NewMethod();
 
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
@@ -37,5 +36,10 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
+
+        void NewMethod()
+        {
+            requestMetric.Increment();
+        }
     }
 }

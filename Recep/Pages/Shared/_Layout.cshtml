@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WareLogix.RazorLib.Models
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -11,7 +12,15 @@
 </head>
 
 <body>
-    <partial name="_HeaderPartial">
+    @await Html.PartialAsync("_HeaderPartial", new HeaderData
+{
+    BrandLink = new("/", "Reception"),
+    NavbarLinks = new List<NavbarLink>
+    {
+    new("/1", "Weather Forecast")
+    , new ("/2", "Port Map")
+    }
+})
     @RenderBody()
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" type="text/javascript"></script>
@@ -21,7 +30,7 @@
 </html>
 
 
-@* 
+@*
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +65,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            
+
         </main>
     </div>
 

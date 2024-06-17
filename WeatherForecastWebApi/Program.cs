@@ -1,10 +1,11 @@
+using System.IO;
+using System;
+
 using Serilog;
 using Serilog.Events;
 
 using WareLogix.WebApi.Extensions;
 using WareLogix.WebApi.Metrics;
-
-using static System.Net.WebRequestMethods;
 
 //Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg));
 //Serilog.Debugging.SelfLog.Enable(Console.Error);
@@ -19,6 +20,43 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    
+
+    if (bool.TryParse(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), out bool parsedDotnetRunningInContainer) && parsedDotnetRunningInContainer)
+    {
+        Log.Information("USING SECRETS FILE");
+
+        // The 'AddJsonFile' does not throw an error; it just fails silently :-(
+        // As a result the dotfile (.appsettings.secrets.json in this case) is not read/loaded
+        // I suspect this is because dotfiles are readonly under Linux filesystems
+        // builder.Configuration.AddJsonFile("./.appsettings.secrets.json", true, true);
+
+        // We need to specify FileAccess.Read, otherwise we get the following exception:
+        // System.IO.IOException: Read-only file system : '/opt/app/.appsettings.secrets.json'
+        // at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirectory, Func`2 errorRewriter)
+
+        using FileStream fs = new("./.appsettings.secrets.json", FileMode.Open, FileAccess.Read);
+        builder.Configuration.AddJsonStream(fs);
+
+
+        //var secrets = sr.ReadToEnd();
+        //Log.Information(".appsettings.secrets.json contains {Secrets}", secrets);
+
+        //builder.Configuration.AddJsonFile("./.appsettings.secrets.json", true, true);
+
+    }
+    Log.Information("parsedDotnetRunningInContainer is {ParsedDotnetRunningInContainer}", parsedDotnetRunningInContainer);
+
+    Log.Information(builder.Configuration.GetDebugView());
+
+    //var syn1 = System.IO.File.Exists("./.appsettings.secrets.json"); // T
+    //var syn2 = System.IO.File.Exists("/.appsettings.secrets.json");  // F
+    //var syn3 = System.IO.File.Exists(".appsettings.secrets.json");   // T
+
+    //Log.Information("Syn1 {Syn1} ; Syn2 {Syn2} ; Syn3 {Syn3}", syn1, syn2, syn3);
+
+    
 
     builder.WebHost.UseKestrel(option => option.AddServerHeader = false);
 
