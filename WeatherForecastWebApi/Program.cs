@@ -60,10 +60,21 @@ try
 
     builder.WebHost.UseKestrel(option => option.AddServerHeader = false);
 
+
     builder.Host.UseSerilog((context, serviceProvider) => serviceProvider
         .ReadFrom.Configuration(context.Configuration)
         //.ReadFrom.Configuration(context.Configuration, new ConfigurationReaderOptions { SectionName = "SerilogTraceLog" }), preserveStaticLogger: IsRunningInTestHostProcess()
         );
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAnyCorsPolicy", builder =>
+        {
+            builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+    });
 
     // Add services to the container.
 
@@ -94,6 +105,8 @@ try
     //app.UseHttpsRedirection();
 
     app.UseCorrelationIdMiddleware();
+
+    app.UseCors("AllowAnyCorsPolicy");
 
     app.UseAuthorization();
 

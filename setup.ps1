@@ -199,9 +199,12 @@ function Install-WeatherForecastWebApi {
     minikube image build . -t dev.local/weather-forecast-webapi:v1 -f ./Dockerfile
     Pop-Location
 
+    # kn service update weather-forecast-webapi --port 80
+
     kubectl apply -f .\k8s\weather-forecast-webapi.configmap.yaml
     kubectl apply -f .\k8s\weather-forecast-webapi.secret.yaml
     kubectl apply -f .\k8s\weather-forecast-webapi.storage.yaml
+    
     
     
     

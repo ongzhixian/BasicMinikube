@@ -17,11 +17,15 @@
     BrandLink = new("/", "Reception"),
     NavbarLinks = new List<NavbarLink>
     {
-    new("/1", "Weather Forecast")
-    , new ("/2", "Port Map")
+    new("/weather-forecast", "Weather Forecast")
+    , new ("/launch", "Launch")
+    , new ("/manage-assets", "Manage Assets")
+    , new ("/edu-admin", "Edu-Admin")
+    , new ("/knative-test", "Knative-Test")
     }
 })
     @RenderBody()
+    @await Html.PartialAsync("_FooterPartial")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" type="text/javascript"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
