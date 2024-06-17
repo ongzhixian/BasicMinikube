@@ -30,3 +30,4 @@ kubectl attach bb -it -c bb
 
 
 kubectl exec bb -c bb -i -t
+

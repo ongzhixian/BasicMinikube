@@ -7,7 +7,8 @@ To run minikube without administrative privileges, open a PowerShell session in 
 Then run the following command:
 
 ```
-Add-LocalGroupMember -Group "Hyper-V Administrators" -Member [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+Add-LocalGroupMember -Group "Hyper-V Administrators" -Member ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
+
 ```
 
 ## Create a minikube cluster
@@ -22,6 +23,8 @@ minikube addons enable dashboard
 minikube addons enable ingress
 minikube addons enable ingress-dns
 
+
+Add-DnsClientNrptRule -Namespace ".localhost" -NameServers "$(minikube ip)"
 
 ## Access registry
 
