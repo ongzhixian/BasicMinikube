@@ -1,0 +1,48 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: 'weather-forecast-webapi-pv'
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/basic-minikube
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: weather-forecast-webapi-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: weather-forecast-webapp-pvc
+# spec:
+#   storageClassName: standard
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: weather-forecast-websvc-pvc
+# spec:
+#   storageClassName: standard
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi

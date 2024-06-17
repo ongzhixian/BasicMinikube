@@ -1,0 +1,57 @@
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  annotations:
+    eventing.knative.dev/broker.class: MTChannelBasedBroker
+    eventing.knative.dev/creator: minikube-user
+    eventing.knative.dev/lastModifier: minikube-user
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"eventing.knative.dev/v1","kind":"broker","metadata":{"annotations":{},"name":"example-broker","namespace":"default"}}
+  creationTimestamp: "2024-06-15T23:57:18Z"
+  generation: 1
+  name: example-broker
+  namespace: default
+  resourceVersion: "1758"
+  uid: 2cd1a262-770f-40a0-9543-f01d9cf6da54
+spec:
+  config:
+    apiVersion: v1
+    kind: ConfigMap
+    name: config-br-default-channel
+    namespace: knative-eventing
+  delivery:
+    backoffDelay: PT0.2S
+    backoffPolicy: exponential
+    retry: 10
+status:
+  address:
+    name: http
+    url: http://broker-ingress.knative-eventing.svc.cluster.local/default/example-broker
+  annotations:
+    knative.dev/channelAPIVersion: messaging.knative.dev/v1
+    knative.dev/channelAddress: http://example-broker-kne-trigger-kn-channel.default.svc.cluster.local
+    knative.dev/channelKind: InMemoryChannel
+    knative.dev/channelName: example-broker-kne-trigger
+  conditions:
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    status: "True"
+    type: Addressable
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    message: No dead letter sink is configured.
+    reason: DeadLetterSinkNotConfigured
+    severity: Info
+    status: "True"
+    type: DeadLetterSinkResolved
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    status: "True"
+    type: FilterReady
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    status: "True"
+    type: IngressReady
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    status: "True"
+    type: Ready
+  - lastTransitionTime: "2024-06-15T23:57:18Z"
+    status: "True"
+    type: TriggerChannelReady
+  observedGeneration: 1
