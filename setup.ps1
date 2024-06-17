@@ -125,6 +125,9 @@ function Install-KnativeServing {
     kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.14.1/serving-hpa.yaml
 
     Wait-ForPods knative-serving
+
+    # Custom config to enable pvc; See configmap for more details
+    kubectl apply -f .\k8s\knative\serving\knative-serving-config-features.configmap.yaml
 }
 
 function Install-KnativeEventing {
@@ -196,8 +199,15 @@ function Install-WeatherForecastWebApi {
     minikube image build . -t dev.local/weather-forecast-webapi:v1 -f ./Dockerfile
     Pop-Location
 
+    kubectl apply -f .\k8s\weather-forecast-webapi.configmap.yaml
+    kubectl apply -f .\k8s\weather-forecast-webapi.secret.yaml
+    kubectl apply -f .\k8s\weather-forecast-webapi.storage.yaml
+    
+    
+    
     #kn service create hello --image ghcr.io/knative/helloworld-go:latest --port 8080 --env TARGET=World
-    kn service create weather-forecast-webapi --image dev.local/weather-forecast-webapi:v1 --port=80
+    #kn service create weather-forecast-webapi --image dev.local/weather-forecast-webapi:v1 --port=80
+    kubectl apply -f .\k8s\weather-forecast-webapi.serving.yaml
 }
 
 function Install-Applications {

@@ -1,0 +1,66 @@
+apiVersion: serving.knative.dev/v1
+kind: ServiceList
+items:
+- apiVersion: serving.knative.dev/v1
+  kind: Service
+  metadata:
+    annotations:
+      serving.knative.dev/creator: minikube-user
+      serving.knative.dev/lastModifier: minikube-user
+    creationTimestamp: "2024-06-17T11:02:55Z"
+    generation: 1
+    name: weather-forecast-webapi
+    namespace: default
+    resourceVersion: "28569"
+    uid: b3f4a2e6-131d-42dd-bdeb-b62f3485a9c9
+  spec:
+    template:
+      metadata:
+        annotations:
+          client.knative.dev/updateTimestamp: "2024-06-17T11:02:54Z"
+          client.knative.dev/user-image: dev.local/weather-forecast-webapi:v1
+        creationTimestamp: null
+      spec:
+        containerConcurrency: 0
+        volumes:
+          - name: config-volume
+            configMap:
+              name: weather-forecast-webapi-config
+          - name: secret-volume
+            secret:
+              secretName: weather-forecast-webapi-secret
+          - name: weather-forecast-webapi-volume
+            persistentVolumeClaim:
+              claimName: weather-forecast-webapi-pvc
+        containers:
+        - image: dev.local/weather-forecast-webapi:v1
+          name: user-container
+          volumeMounts:
+          - name: config-volume
+            mountPath: /opt/app/etc
+          - name: config-volume
+            mountPath: /opt/app/appsettings.json
+            subPath: appsettings.json
+          - name: secret-volume
+            mountPath: /opt/app/sec
+          - name: secret-volume
+            mountPath: /opt/app/sec2/.secret-file
+            subPath: .secret-file
+          - name: secret-volume
+            mountPath: /opt/app/.appsettings.secrets.json
+            subPath: .appsettings.secrets.json
+          - mountPath: /opt/app/data
+            name: weather-forecast-webapi-volume
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            successThreshold: 1
+            tcpSocket:
+              port: 0
+          resources: {}
+        enableServiceLinks: false
+        timeoutSeconds: 300
+    traffic:
+    - latestRevision: true
+      percent: 100
