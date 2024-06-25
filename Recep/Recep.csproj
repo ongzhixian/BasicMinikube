@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WareLogix.RazorLib\WareLogix.RazorLib.csproj" />
+    <ProjectReference Include="..\WareLogix.WebApp\WareLogix.WebApp.csproj" />
   </ItemGroup>
 
 </Project>

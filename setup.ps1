@@ -205,9 +205,6 @@ function Install-WeatherForecastWebApi {
     kubectl apply -f .\k8s\weather-forecast-webapi.secret.yaml
     kubectl apply -f .\k8s\weather-forecast-webapi.storage.yaml
     
-    
-    
-    
     #kn service create hello --image ghcr.io/knative/helloworld-go:latest --port 8080 --env TARGET=World
     #kn service create weather-forecast-webapi --image dev.local/weather-forecast-webapi:v1 --port=80
     kubectl apply -f .\k8s\weather-forecast-webapi.serving.yaml
@@ -215,6 +212,9 @@ function Install-WeatherForecastWebApi {
 
 function Install-Applications {
     Write-Host "TODO: Install applications"
+
+    # Redis / Or Garnet (https://github.com/microsoft/garnet)
+    # Kafka
 }
 
 function Test-AdminPrivileges {

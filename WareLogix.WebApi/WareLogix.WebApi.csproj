@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <ProjectReference Include="..\WareLogix.Caching\WareLogix.Caching.csproj" />
         <ProjectReference Include="..\WareLogix.WebApi.Logging\WareLogix.WebApi.Logging.csproj" />
         <ProjectReference Include="..\WareLogix.WebApi.Metrics\WareLogix.WebApi.Metrics.csproj" />
     </ItemGroup>
