@@ -40,6 +40,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedisConsoleApp", "RedisCon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WareLogix.Caching", "WareLogix.Caching\WareLogix.Caching.csproj", "{CC00906F-6A41-49F9-8667-0058804B2575}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KafkaProducerConsoleApp", "KafkaProducerConsoleApp\KafkaProducerConsoleApp.csproj", "{BC723627-88F7-458D-A475-3A8141A0F15C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KafkaConsumerConsoleApp", "KafkaConsumerConsoleApp\KafkaConsumerConsoleApp.csproj", "{1A7BB0A8-6143-4722-975E-BF2E5827570E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +94,14 @@ Global
 		{CC00906F-6A41-49F9-8667-0058804B2575}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC00906F-6A41-49F9-8667-0058804B2575}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC00906F-6A41-49F9-8667-0058804B2575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC723627-88F7-458D-A475-3A8141A0F15C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC723627-88F7-458D-A475-3A8141A0F15C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC723627-88F7-458D-A475-3A8141A0F15C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC723627-88F7-458D-A475-3A8141A0F15C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7BB0A8-6143-4722-975E-BF2E5827570E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7BB0A8-6143-4722-975E-BF2E5827570E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7BB0A8-6143-4722-975E-BF2E5827570E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7BB0A8-6143-4722-975E-BF2E5827570E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +118,8 @@ Global
 		{7B8475E4-905D-4C33-974B-8C09D2E3B7D9} = {D746E12B-2F20-40C2-89B4-C082F5E84AB7}
 		{8524CE19-1E06-44E4-84F6-67789F44DD0E} = {D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}
 		{CC00906F-6A41-49F9-8667-0058804B2575} = {D746E12B-2F20-40C2-89B4-C082F5E84AB7}
+		{BC723627-88F7-458D-A475-3A8141A0F15C} = {D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}
+		{1A7BB0A8-6143-4722-975E-BF2E5827570E} = {D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E251F12-3C35-492D-A972-6BE83D0D955B}
