@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy
+data:
+  nginx.conf: |
+    events { }
+    http {
+      server {
+        listen 8080;
+
+        location /app1 {
+            proxy_pass http://sample-flask-app1:5050/;
+        }
+
+        location /app2 {
+            proxy_pass http://sample-flask-app2:5052/;
+        }
+
+        location /app3 {
+            proxy_pass http://sample-flask-app2:5052/;
+        }
+
+        location / {
+          proxy_pass http://web:8080/;
+        }
+
+      }
+    }
