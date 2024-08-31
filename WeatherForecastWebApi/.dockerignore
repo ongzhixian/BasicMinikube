@@ -1,0 +1,8 @@
+# .dockerignore
+
+bin/
+obj/
+
+*.user
+*.http
+*.secrets.json
