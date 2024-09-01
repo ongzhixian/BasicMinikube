@@ -1,0 +1,1 @@
+minikube image build . -t simple-webapi:1 -f .\Dockerfile
