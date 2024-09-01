@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: featured-console-app
+  name: featured-console-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: featured-console-app
+  template:
+    metadata:
+      labels:
+        app: featured-console-app
+    spec:
+      volumes:
+      - name: sample-secret-volume
+        secret:
+          secretName: sample-secret
+      - name: scoped-secret-volume
+        secret:
+          secretName: sample-secret
+          items:
+            - key: username
+              path: xxxusername
+      - name: scoped-file-secret-volume
+        secret:
+          secretName: sample-secret
+          items:
+            - key: .secret-file
+              path: .test-secret
+      - name: sample-configmap-volume
+        configMap:
+          name: sample-configmap
+      containers:
+      - image: featured-console-app:8
+        name: featured-console-app
+        env:
+          - name: SECRET_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: sample-secret
+                key: username
+        volumeMounts:
+        - name: sample-secret-volume
+          readOnly: true
+          mountPath: "/opt/secret"
+        - name: scoped-secret-volume
+          readOnly: true
+          mountPath: "/opt/scoped-secret"
+        - name: scoped-file-secret-volume
+          readOnly: true
+          mountPath: "/opt/file-secret"
+        - name: sample-configmap-volume
+          readOnly: true
+          mountPath: "/opt/configmap"
+        resources: {}
+status: {}
