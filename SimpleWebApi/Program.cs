@@ -1,15 +1,58 @@
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+
+    //options.AddPolicy("mypolicy", builder => builder
+    //    .WithOrigins("http://localhost:4200/")
+    //    .SetIsOriginAllowed((host) => true)
+    //    .AllowAnyMethod()
+    //    .AllowAnyHeader());
+
+    //app.UseCors(x => x
+    //    .AllowAnyMethod()
+    //    .AllowAnyHeader()
+    //    .SetIsOriginAllowed(origin => true) // allow any origin
+    //    .AllowCredentials()); // allow credentials
+
+    //options.AddPolicy("CorsPolicy",
+    //        builder => builder.AllowAnyOrigin()
+    //        .AllowAnyMethod()
+    //        .AllowAnyHeader()
+    //        .AllowCredentials());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //app.UseSwagger(c =>
+    //{
+    //    c.PreSerializeFilters.Add((swagger, httpReq) =>
+    //    {
+    //        swagger.Servers = new List<OpenApiServer> { 
+    //            new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" },
+    //            new OpenApiServer { Url = $"https://localhost:5207" },
+    //        };
+    //    });
+    //});
     app.UseSwagger();
     app.UseSwaggerUI();
+    
 }
 
 app.UseHttpsRedirection();
