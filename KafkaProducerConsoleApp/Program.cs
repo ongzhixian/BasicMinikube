@@ -11,20 +11,27 @@ var topic = "test-topic";
 
 using var producer = new ProducerBuilder<Null, string>(config).Build();
 
-for (int i = 0; i < args.Length; i++)
+//for (int i = 0; i < args.Length; i++)
+for (int i = 0; i < 999; i++)
 {
     var message = new Message<Null, string>
     {
-        Value = args[i]
+        //Value = args[i]
+        Value = $"Test message {i} sent at {DateTime.Now:O}"
     };
 
     producer.Produce(
         topic
         , message
         , deliveryReport => {
-            Console.WriteLine(deliveryReport.Message.Value);
+            
+            Console.WriteLine($"{deliveryReport.Error} -- {deliveryReport.Message.Value}");
         });
 
     producer.Flush();
+
+    Console.WriteLine($"Message {i} sent");
+
+    Thread.Sleep(5000);
 }
 
