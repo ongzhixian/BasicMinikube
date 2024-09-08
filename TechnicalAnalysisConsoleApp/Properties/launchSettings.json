@@ -1,0 +1,10 @@
+{
+    "profiles": {
+        "TechnicalAnalysisConsoleApp": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "DOTNET_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
