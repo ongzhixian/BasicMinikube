@@ -1,14 +1,34 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Text;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+
 
 using Polly;
 using Polly.Retry;
 using Polly.Timeout;
 
+using RabbitMQ.Client;
+
+//using OpenTelemetry.Logs;
+//using OpenTelemetry.Metrics;
+//using OpenTelemetry.Resources;
+//using OpenTelemetry.Trace;
+
 using Serilog;
 
+using TradingConsoleApp.Models.OandaApi;
 using TradingConsoleApp.Services;
+using System.Diagnostics;
+using OpenTelemetry.Resources;
+using WareLogix.Telemetry;
+using OpenTelemetry.Exporter;
+using WareLogix.Messaging;
+using WareLogix.Messaging.RabbitMq;
+
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Warning()
@@ -30,7 +50,6 @@ try
     Log.Debug($"Oanda:RestApiUrl        {builder.Configuration["Oanda:RestApiUrl"]}");
     Log.Debug($"Oanda:StreamingApiUrl   {builder.Configuration["Oanda:StreamingApiUrl"]}");
 
-
     ConfigureLogging(builder);
 
     //builder.Services.AddOptions<MyOptions>().BindConfiguration("MyConfig");
@@ -40,6 +59,18 @@ try
     //builder.Services.AddSingleton<OandaService>();
 
     AddHttpServices(builder);
+
+    builder.Services.AddSingleton<IMessageQueuePublisher, RabbitMqPublisher>(sp =>
+    {
+        return new RabbitMqPublisher(builder.Configuration);
+    });
+    //builder.Services.AddHostedService<JaegerDemoService>();
+    //builder.Services.AddHostedService<SimpleApiDemoService>();
+    builder.Services.AddHostedService<CloudAmqpDemoService>();
+
+    var serviceName = "TradingConsoleApp";
+    
+    SetupOpenTelemetry(builder, serviceName);
 
     //builder.Services.AddHostedService<Worker>();
 
@@ -52,12 +83,50 @@ try
 
             //await oandaService.GetAccountsAsync();
             //await oandaService.GetAccountSummaryAsync(tradingAccountId);
-
             //await oandaService.GetAccountTradableInstrumentsAsync(tradingAccountId);
 
-            await oandaService.GetInstrumentCandlesAsync("USD_CNH");
+            //await oandaService.GetInstrumentCandlesAsync("USD_CNH");
+            //await oandaService.GetInstrumentOrderBookAsync("XAU_USD");
+            //await oandaService.GetInstrumentPositionBookAsync("XAU_USD");
+
+            //{
+            //    "order": {
+            //        "units": "100",
+            //        "instrument": "EUR_USD",
+
+            //        "timeInForce": "FOK",
+            //        "type": "MARKET",
+            //        "positionFill": "DEFAULT"
+            //    }
+            //}
+            //LimitOrder orderRequest = new LimitOrder
+            //{
+            //    type = "LIMIT",
+            //    units = "100",
+            //    price = "200",
+            //    instrument = "XAU_USD",
+            //    timeInForce = "FOK",
+            //    positionFill = "DEFAULT"
+            //};
+            //await oandaService.CreateOrderAsync(tradingAccountId, orderRequest);
+            //await oandaService.CancelPendingOrderAsync(tradingAccountId, orderRequest);
+            //await oandaService.GetOrdersAsync(tradingAccountId);
+
+            //using var source = new ActivitySource("Samples.SampleServer");
+            //using var activity = source.StartActivity("beancounter", ActivityKind.Server);
+            //for (int i = 0; i < 999; i++)
+            //{
+            //    activity?.SetTag($"BeanCounter", i);
+            //    Console.WriteLine($"Count {i}");
+            //    Thread.Sleep(1250);
+            //}
+
+
+
+
+            Log.Information("Startup completed");
         }
-        
+
         host.Run();
     }
 }
@@ -146,4 +215,45 @@ static void AddHttpServices(HostApplicationBuilder builder)
 
     // See also the many fun topics about HTTP, eg.
     // https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-sni
+}
+
+static void SetupOpenTelemetry(HostApplicationBuilder builder, string serviceName)
+{
+    // What's next
+    // Send to Splunk
+    // Send to Grafana / Grafana cloud
+
+    //WareLogix.Telemetry.TelemetryConfiguration.AddOpenTelemetry(builder.Configuration, builder.Services);
+    var otel = WareLogix.Telemetry.TelemetryConfiguration.GetOpenTelemetryBuilder(builder.Services);
+    WareLogix.Telemetry.TelemetryConfiguration.DefineResourceService(otel, serviceName + "METHD", "1.0.1");
+    WareLogix.Telemetry.TelemetryConfiguration.AddTracing(otel);
+    WareLogix.Telemetry.TelemetryConfiguration.UseOtlpExporter(otel);
+    // Set via Options API using code:
+    //builder.Services.Configure<OtlpExporterOptions>(o => {
+    //    // ...o.Headers
+    //});
+
+
+    // Using extension methods (requires add namespaces `using WareLogix.Telemetry;`)
+    //otel.DefineResourceService(serviceName + "EXTMETH", "1.0.1")
+    //    .AddTracing()
+    //    .UseOtlpExporter()
+    //    ;
+
+    //otel.DefineResourceService(serviceName, "1.0.1");
+
+
+    // WORKS
+    //using var tracerProvider = Sdk.CreateTracerProviderBuilder()
+    //    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
+    //        serviceName: "DemoApp",
+    //        serviceVersion: "1.0.0"))
+    //    .AddSource("OpenTelemetry.Demo.Jaeger")
+    //    //.AddHttpClientInstrumentation()
+    //    .AddConsoleExporter()
+    //    .AddOtlpExporter(opt =>
+    //    {
+    //        opt.Endpoint = new Uri("http://localhost:4317");
+    //    })
+    //    .Build();
 }

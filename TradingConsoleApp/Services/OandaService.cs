@@ -26,6 +26,56 @@ public class OandaService
         SetAuthorizationHeader(configuration);
     }
 
+    // ORDER ENDPOINTS
+
+    public async Task CreateOrderAsync(string? accountId, Order orderRequest)
+    {
+        if (accountId == null) return;
+
+        string apiUrl = $"/v3/accounts/{accountId}/orders";
+
+        var responseMessage = await httpClient.PostAsJsonAsync(apiUrl, orderRequest);
+        File.WriteAllText($"create-order.json", await responseMessage.Content.ReadAsStringAsync());
+        logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        //var response = await httpClient.GetFromJsonAsync<GetInstrumentPositionBookResponse>(apiUrl);
+        //logger.LogInformation($"Response: {response}");
+        //System.Diagnostics.Debugger.Break();
+    }
+
+    public async Task CancelPendingOrderAsync(string? accountId, string orderId)
+    {
+        if (accountId == null) return;
+
+        string apiUrl = $"/v3/accounts/{accountId}/orders/{orderId}/cancel";
+
+        StringContent emptyStringContent = new StringContent(string.Empty);
+        var responseMessage = await httpClient.PutAsync(apiUrl, emptyStringContent);
+        File.WriteAllText($"{orderId}-cancel-pending-order.json", await responseMessage.Content.ReadAsStringAsync());
+        logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        //var response = await httpClient.GetFromJsonAsync<GetInstrumentPositionBookResponse>(apiUrl);
+        //logger.LogInformation($"Response: {response}");
+        //System.Diagnostics.Debugger.Break();
+    }
+
+
+    public async Task GetOrdersAsync(string? accountId)
+    {
+        if (accountId == null) return;
+
+        string apiUrl = $"/v3/accounts/{accountId}/orders";
+
+        var responseMessage = await httpClient.GetAsync(apiUrl);
+        File.WriteAllText($"{accountId}-orders.json", await responseMessage.Content.ReadAsStringAsync());
+        logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        //var response = await httpClient.GetFromJsonAsync<GetInstrumentPositionBookResponse>(apiUrl);
+        //logger.LogInformation($"Response: {response}");
+        //System.Diagnostics.Debugger.Break();
+    }
+
+
     // ACCOUNT ENDPOINTS
 
     public async Task GetAccountsAsync()
@@ -73,6 +123,7 @@ public class OandaService
         Console.WriteLine(response);
     }
 
+
     // INSTRUMENT ENDPOINTS
 
     public async Task GetInstrumentCandlesAsync(string? instrumentName)
@@ -88,6 +139,36 @@ public class OandaService
         var response = await httpClient.GetFromJsonAsync<GetInstrumentCandlesResponse>(apiUrl);
         logger.LogInformation($"Response: {response}");
         //Console.WriteLine(response);
+    }
+
+    public async Task GetInstrumentOrderBookAsync(string? instrumentName)
+    {
+        if (instrumentName == null) return;
+
+        string apiUrl = $"/v3/instruments/{instrumentName}/orderBook";
+
+        //var responseMessage = await httpClient.GetAsync(apiUrl);
+        //File.WriteAllText($"{instrumentName}-orderBook.json", await responseMessage.Content.ReadAsStringAsync());
+        //logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        var response = await httpClient.GetFromJsonAsync<GetInstrumentOrderBookResponse>(apiUrl);
+        logger.LogInformation($"Response: {response}");
+        //System.Diagnostics.Debugger.Break();
+    }
+
+    public async Task GetInstrumentPositionBookAsync(string? instrumentName)
+    {
+        if (instrumentName == null) return;
+
+        string apiUrl = $"/v3/instruments/{instrumentName}/positionBook";
+
+        //var responseMessage = await httpClient.GetAsync(apiUrl);
+        //File.WriteAllText($"{instrumentName}-positionBook.json", await responseMessage.Content.ReadAsStringAsync());
+        //logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        var response = await httpClient.GetFromJsonAsync<GetInstrumentPositionBookResponse>(apiUrl);
+        logger.LogInformation($"Response: {response}");
+        System.Diagnostics.Debugger.Break();
     }
 
 
@@ -107,6 +188,6 @@ public class OandaService
         httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(System.Net.Mime.MediaTypeNames.Application.Json));
     }
 
-
+    
 }
 

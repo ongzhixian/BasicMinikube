@@ -16,6 +16,8 @@
     <ItemGroup>
       <ProjectReference Include="..\WareLogix.ConnectHttp\WareLogix.ConnectHttp.csproj" />
       <ProjectReference Include="..\WareLogix.ConsoleApp.Logging\WareLogix.ConsoleApp.Logging.csproj" />
+      <ProjectReference Include="..\WareLogix.Messaging.RabbitMq\WareLogix.Messaging.RabbitMq.csproj" />
+      <ProjectReference Include="..\WareLogix.Telemetry\WareLogix.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup>
