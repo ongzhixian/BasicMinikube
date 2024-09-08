@@ -76,6 +76,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WareLogix.Configuration", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskListWebApp", "TaskListWebApp\TaskListWebApp.csproj", "{7744A36F-7D9E-4755-BFC2-E2A2FDE486B4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleBenchmark", "SampleBenchmark\SampleBenchmark.csproj", "{D5FA0B62-3FA6-4715-A5C7-D98CD2624162}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -198,6 +200,10 @@ Global
 		{7744A36F-7D9E-4755-BFC2-E2A2FDE486B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7744A36F-7D9E-4755-BFC2-E2A2FDE486B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7744A36F-7D9E-4755-BFC2-E2A2FDE486B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5FA0B62-3FA6-4715-A5C7-D98CD2624162}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5FA0B62-3FA6-4715-A5C7-D98CD2624162}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5FA0B62-3FA6-4715-A5C7-D98CD2624162}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5FA0B62-3FA6-4715-A5C7-D98CD2624162}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -232,6 +238,7 @@ Global
 		{4A061590-0708-4B06-9002-2CF187413D8F} = {05211A76-E072-4343-B497-31F4288750FA}
 		{A14D51F6-7154-4E13-B24B-D830B5B71B1A} = {05211A76-E072-4343-B497-31F4288750FA}
 		{7744A36F-7D9E-4755-BFC2-E2A2FDE486B4} = {BD53F086-571E-4496-A2D7-F4D2C1F5035D}
+		{D5FA0B62-3FA6-4715-A5C7-D98CD2624162} = {D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E251F12-3C35-492D-A972-6BE83D0D955B}
