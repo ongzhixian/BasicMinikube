@@ -19,8 +19,7 @@ try
     Console.WriteLine("appsettings.json in \"/opt/configmap/appsettings.json\"");
     Console.WriteLine(appsettings);
 
-    //System.Text.Json.JsonSerializer.Serialize(new Version(), );
-    System.Text.Json.JsonSerializer.Deserialize("sd", )
+    //System.Text.Json.JsonSerializer.Serialize(new Version());
 
 
     // Environment variables
