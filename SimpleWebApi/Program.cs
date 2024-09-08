@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,6 +74,26 @@ void AddDefaultRoute(WebApplication app)
         return "OK (SimpleWebApi)";
     })
     .WithName("GetDefault")
+    .WithOpenApi();
+
+    app.MapGet("/200", ([Microsoft.AspNetCore.Mvc.FromQuery] ushort sleep = ushort.MinValue) =>
+    {
+        if (sleep > 0) 
+            Thread.Sleep(sleep);
+
+        return "OK (SimpleWebApi)";
+    })
+    .WithName("GetHttp200")
+    .WithOpenApi();
+
+    app.MapGet("/204", ([Microsoft.AspNetCore.Mvc.FromQuery] ushort sleep = ushort.MinValue) =>
+    {
+        if (sleep > 0)
+            Thread.Sleep(sleep);
+
+        return Microsoft.AspNetCore.Http.Results.NoContent();
+    })
+    .WithName("GetHttp204")
     .WithOpenApi();
 }
 
