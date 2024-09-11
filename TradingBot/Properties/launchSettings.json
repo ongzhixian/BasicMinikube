@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TradingBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
