@@ -1,15 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
+using SimpleWebApi.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        //builder.AllowAnyOrigin()
+        //       .AllowAnyHeader()
+        //       .AllowAnyMethod();
+
+        builder.WithOrigins("http://localhost:5000")
                .AllowAnyHeader()
-               .AllowAnyMethod();
+               .AllowAnyMethod()
+               .AllowCredentials();
+
     });
 
     //options.AddPolicy("mypolicy", builder => builder
@@ -31,6 +39,7 @@ builder.Services.AddCors(options =>
     //        .AllowCredentials());
 });
 
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -62,6 +71,7 @@ AddDefaultRoute(app);
 AddGetEnvironmentVariablesRoute(app);
 AddGetDateRoute(app);
 
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
 
