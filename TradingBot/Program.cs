@@ -8,6 +8,8 @@ using Polly.Timeout;
 
 using Serilog;
 
+using TradingBot.Services;
+
 using TradingConsoleApp.Services;
 
 Log.Logger = new LoggerConfiguration()
@@ -41,14 +43,21 @@ try
     //builder.Services.AddHostedService<CloudAmqpDemoService>();
     //ilder.Services.AddHostedService<Worker>();
     builder.Services.AddSingleton<OandaStreamingService>();
+    //builder.Services.AddSingleton<ChatHubHeartbeatService>();
+    builder.Services.AddHostedService<ChatHubHeartbeatService>();
 
     var serviceName = "TradingBot";
 
     using IHost host = builder.Build();
     
     var tradingAccountId = builder.Configuration["Oanda:TradingAccountId"];
-    var oandaStreamingService = host.Services.GetRequiredService<OandaStreamingService>();
-    await oandaStreamingService.GetPriceStreamAsync(tradingAccountId);
+
+    //var oandaStreamingService = host.Services.GetRequiredService<OandaStreamingService>();
+    //await oandaStreamingService.GetPriceStreamAsync(tradingAccountId);
+
+    //var chatHubHeartbeatService = host.Services.GetRequiredService<ChatHubHeartbeatService>();
+    //await chatHubHeartbeatService.ConnectAsync();
+    //await oandaStreamingService.GetPriceStreamAsync(tradingAccountId);
 
 
     host.Run();
