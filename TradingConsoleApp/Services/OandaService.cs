@@ -1,11 +1,12 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using TradingConsoleApp.Models.OandaApi;
+
 using WareLogix;
+using WareLogix.Models.OandaApiModels;
 
 namespace TradingConsoleApp.Services;
 
@@ -28,11 +29,21 @@ public class OandaService
 
     // ORDER ENDPOINTS
 
-    public async Task CreateOrderAsync(string? accountId, Order orderRequest)
+    public async Task CreateOrderAsync(string? accountId, LimitOrder order)
     {
         if (accountId == null) return;
 
         string apiUrl = $"/v3/accounts/{accountId}/orders";
+
+        OrderRequest orderRequest = new OrderRequest
+        {
+            Order = order
+        };
+
+        System.Text.Json.JsonSerializerOptions options = new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web);
+        options.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+
+        var x = System.Text.Json.JsonSerializer.Serialize(orderRequest, options);
 
         var responseMessage = await httpClient.PostAsJsonAsync(apiUrl, orderRequest);
         File.WriteAllText($"create-order.json", await responseMessage.Content.ReadAsStringAsync());
@@ -109,18 +120,23 @@ public class OandaService
         Console.WriteLine($"Response status code: {responseMessage.StatusCode}");
     }
 
-    public async Task GetAccountTradableInstrumentsAsync(string? accountId)
+    public async Task<Instrument[]> GetAccountTradableInstrumentsAsync(string? accountId)
     {
-        if (accountId == null) return;
+        if (accountId == null) return Array.Empty<Instrument>();
 
         string apiUrl = $"/v3/accounts/{accountId}/instruments";
 
-        //var responseMessage = await httpClient.GetAsync(apiUrl);
-        //File.WriteAllText("instruments.json", await responseMessage.Content.ReadAsStringAsync());
-        //Console.WriteLine($"Response status code: {responseMessage.StatusCode}");
+        var responseMessage = await httpClient.GetAsync(apiUrl);
+        File.WriteAllText("tradable-instruments.json", await responseMessage.Content.ReadAsStringAsync());
+        Console.WriteLine($"Response status code: {responseMessage.StatusCode}");
 
         var response = await httpClient.GetFromJsonAsync<GetAccountTradableInstrumentsResponse>(apiUrl);
         Console.WriteLine(response);
+
+        if (response != null)
+            return response.Instruments;
+
+        return Array.Empty<Instrument>();
     }
 
 
@@ -187,7 +203,6 @@ public class OandaService
         //this.httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(System.Net.Mime.MediaTypeNames.Application.Json));
     }
-
     
 }
 

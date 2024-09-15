@@ -19,8 +19,6 @@ using RabbitMQ.Client;
 //using OpenTelemetry.Trace;
 
 using Serilog;
-
-using TradingConsoleApp.Models.OandaApi;
 using TradingConsoleApp.Services;
 using System.Diagnostics;
 using OpenTelemetry.Resources;
@@ -28,6 +26,8 @@ using WareLogix.Telemetry;
 using OpenTelemetry.Exporter;
 using WareLogix.Messaging;
 using WareLogix.Messaging.RabbitMq;
+using WareLogix.Models.OandaApiModels;
+using System.Text.Json;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -66,7 +66,7 @@ try
     });
     //builder.Services.AddHostedService<JaegerDemoService>();
     //builder.Services.AddHostedService<SimpleApiDemoService>();
-    builder.Services.AddHostedService<CloudAmqpDemoService>();
+    //builder.Services.AddHostedService<CloudAmqpDemoService>();
 
     var serviceName = "TradingConsoleApp";
     
@@ -77,13 +77,22 @@ try
     using (IHost host = builder.Build())
     {
         var oandaService = host.Services.GetRequiredService<OandaService>();
+        var messageQueuePublisher = host.Services.GetRequiredService<IMessageQueuePublisher>();
+
         if (oandaService != null)
         {
             var tradingAccountId = builder.Configuration["Oanda:TradingAccountId"];
 
+            JsonSerializerOptions options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
             //await oandaService.GetAccountsAsync();
             //await oandaService.GetAccountSummaryAsync(tradingAccountId);
-            //await oandaService.GetAccountTradableInstrumentsAsync(tradingAccountId);
+            var instruments = await oandaService.GetAccountTradableInstrumentsAsync(tradingAccountId);
+            foreach (var instr in instruments)
+            {
+                messageQueuePublisher.PublishToQueue("tradable-instruments",
+                    System.Text.Json.JsonSerializer.Serialize(instr, options));
+            }
 
             //await oandaService.GetInstrumentCandlesAsync("USD_CNH");
             //await oandaService.GetInstrumentOrderBookAsync("XAU_USD");
@@ -99,17 +108,40 @@ try
             //        "positionFill": "DEFAULT"
             //    }
             //}
-            //LimitOrder orderRequest = new LimitOrder
+            //OrderRequest orderRequest = new OrderRequest
             //{
-            //    type = "LIMIT",
-            //    units = "100",
-            //    price = "200",
-            //    instrument = "XAU_USD",
-            //    timeInForce = "FOK",
-            //    positionFill = "DEFAULT"
+            //    Order = new LimitOrder
+            //    {
+            //        type = "LIMIT",
+            //        units = "1",
+            //        price = "2490.500",
+            //        instrument = "XAU_USD",
+            //        timeInForce = "GTC",
+            //        positionFill = "DEFAULT"
+            //    }
             //};
-            //await oandaService.CreateOrderAsync(tradingAccountId, orderRequest);
-            //await oandaService.CancelPendingOrderAsync(tradingAccountId, orderRequest);
+            LimitOrder myOrder = new LimitOrder
+            {
+                type = "LIMIT",
+                units = "1",
+                price = "2494.536",
+                instrument = "XAU_USD",
+                timeInForce = "GTC",
+                positionFill = "DEFAULT",
+                takeProfitOnFill = new Takeprofitonfill()
+                {
+                    price = "2494.800"
+                },
+                stopLossOnFill = new Stoplossonfill()
+                {
+                    timeInForce = "GTC",
+                    price = "2494.036"
+                }
+            };
+
+
+            //await oandaService.CreateOrderAsync(tradingAccountId, myOrder);
+            //await oandaService.CancelPendingOrderAsync(tradingAccountId, "10");
             //await oandaService.GetOrdersAsync(tradingAccountId);
 
             //using var source = new ActivitySource("Samples.SampleServer");
