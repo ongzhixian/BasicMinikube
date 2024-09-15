@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Text.Json;
+
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
+
+using TechnicalAnalysisConsoleApp.Models;
 
 using WareLogix.Messaging;
 
@@ -11,12 +13,19 @@ internal class CloudAmqpDemoService : BackgroundService
 {
     private readonly ILogger<CloudAmqpDemoService> logger;
 
-    private readonly IMessageQueueConsumer messageQueueConsumer;
+    private readonly IMessageQueueConsumer<string> messageQueueConsumer;
 
-    public CloudAmqpDemoService(ILogger<CloudAmqpDemoService> logger, IMessageQueueConsumer messageQueueConsumer)
+    private readonly TradableInstrumentService tradableInstrumentService;
+
+    private Dictionary<string, long>? instrumentTypes;
+
+    public CloudAmqpDemoService(ILogger<CloudAmqpDemoService> logger, 
+        IMessageQueueConsumer<string> messageQueueConsumer,
+        TradableInstrumentService tradableInstrumentService)
     {
         this.logger = logger;
         this.messageQueueConsumer = messageQueueConsumer;
+        this.tradableInstrumentService = tradableInstrumentService;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,9 +42,9 @@ internal class CloudAmqpDemoService : BackgroundService
 
         return Task.Run(() =>
         {
-            messageQueueConsumer.ConsumeFromQueue("queue1");
+            messageQueueConsumer.SetMessageHandler(TradableInstrumentsMessageHandler);
+            messageQueueConsumer.ConsumeFromQueue("tradable-instruments");
         });
-
 
         //// add the message receive event
         //consumer.Received += (model, deliveryEventArgs) =>
@@ -58,4 +67,42 @@ internal class CloudAmqpDemoService : BackgroundService
         //_connection?.Close();
         //_connection = null;
     }
+
+    private void TradableInstrumentsMessageHandler(string message)
+    {
+        try
+        {
+            if (instrumentTypes == null)
+                instrumentTypes = tradableInstrumentService.GetOandaIntrumentTypes();
+
+            JsonSerializerOptions options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+            var instrument = System.Text.Json.JsonSerializer.Deserialize<Instrument>(message, options);
+
+            var instrument_id = tradableInstrumentService.AddOandaInstrument(
+                instrument.name,
+                instrumentTypes[instrument.type],
+                instrument.displayName
+                );
+
+            //
+            //instrument.tags
+            if (instrument_id != 0)
+            {
+                foreach (var tag in instrument.tags)
+                {
+                    tradableInstrumentService.AddOandaInstrumentTag(instrument_id,
+                        tag.type,
+                        tag.name);
+                }
+            }
+
+            Console.WriteLine("** Received message: {0} by Consumer thread **", message);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        
+    }
+
 }

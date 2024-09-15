@@ -45,11 +45,12 @@ try
 
     //AddHttpServices(builder);
 
-    builder.Services.AddSingleton<IMessageQueueConsumer, RabbitMqConsumer>(sp =>
+    builder.Services.AddSingleton<IMessageQueueConsumer<string>, RabbitMqConsumer>(sp =>
     {
         return new RabbitMqConsumer(builder.Configuration);
     });
 
+    builder.Services.AddSingleton<TradableInstrumentService>();
     //builder.Services.AddHostedService<Worker>();
     builder.Services.AddHostedService<CloudAmqpDemoService>();
 

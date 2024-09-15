@@ -12,6 +12,7 @@
     <ItemGroup>
         <ProjectReference Include="..\WareLogix.ConsoleApp.Logging\WareLogix.ConsoleApp.Logging.csproj" />
         <ProjectReference Include="..\WareLogix.ConsoleHost\WareLogix.ConsoleHost.csproj" />
+        <ProjectReference Include="..\WareLogix.DatabaseAccess.Sqlite\WareLogix.DatabaseAccess.Sqlite.csproj" />
         <ProjectReference Include="..\WareLogix.Messaging.RabbitMq\WareLogix.Messaging.RabbitMq.csproj" />
     </ItemGroup>
 
