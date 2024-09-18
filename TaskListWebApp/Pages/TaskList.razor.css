@@ -1,0 +1,61 @@
+﻿section {
+    margin-bottom: 1em;
+}
+
+div.task-list {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    grid-template-rows: 1em auto;
+    width: 200px;
+    grid-template-areas:
+        "head-check head-filter"
+        "chk desc";
+    gap:.3em;
+}
+
+    div.task-list .header-checkbox {
+        grid-area: head-check;
+    }
+
+    div.task-list .header-filter {
+        grid-area: head-filter;
+        
+    }
+
+    div.task-list .chk {
+        grid-area: chk;
+    }
+
+    div.task-list .desc {
+        grid-area: desc;
+    }
+
+ul.task.list {
+    padding: 0;
+    list-style-type: none;
+}
+
+    ul.task.list input[type=checkbox] {
+        width: 22px;
+        height: 22px;
+    }
+
+    ul.task.list label {
+        cursor: pointer;
+    }
+
+        ul.task.list label:hover {
+            color: var(--link-hover-color);
+        }
+
+
+input.new {
+    font-family: var(--text-font);
+    font-size: 1.3em;
+    background: transparent;
+    border: 0;
+    border-bottom-width: 0px;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+    border-bottom: 1px solid #232;
+}

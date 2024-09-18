@@ -1,4 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Racing+Sans+One&display=swap');
+
+:root {
+    --heading-font: "Racing Sans One", sans-serif;
+    --text-font: "Permanent Marker", cursive;
+    --body-bg-color: #f6f6f0;
+    --link-color: forestgreen;
+    --link-hover-color: #f49230;
+}
+
 html, body {
+    margin: 0;
+    font-weight: 400;
+    font-style: normal;
+    color: #333;
+    background-color: var(--body-bg-color);
+}
+
+.title {
+    font-family: var(--heading-font);
+}
+
+body {
+    font-family: var(--text-font);
+    font-size: 1.3em;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+
+h1,h2,h3,h4,h5,h6 {
+    margin-top:0;
+}
+/*html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -101,3 +137,4 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+*/

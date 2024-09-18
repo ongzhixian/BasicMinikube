@@ -1,31 +1,36 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">TaskListWebApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
+﻿<div class="brand">
+    <h1>
+        <a href="/">Task List</a>
+    </h1>
+    <!-- 
+    <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    -->
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<nav class="side-menu">
+    <div class="nav-item ">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span aria-hidden="true"></span> Home
+        </NavLink>
+    </div>
+    <div class="nav-item ">
+        <NavLink class="nav-link" href="counter">
+            <span aria-hidden="true"></span> Counter
+        </NavLink>
+    </div>
+    <div class="nav-item ">
+        <NavLink class="nav-link" href="weather">
+            <span aria-hidden="true"></span> Weather
+        </NavLink>
+    </div>
+    <div class="nav-item">
+        <NavLink class="nav-link" href="task-list">
+            <span aria-hidden="true"></span> Task List
+        </NavLink>
+    </div>
+</nav>
 
 @code {
     private bool collapseNavMenu = true;

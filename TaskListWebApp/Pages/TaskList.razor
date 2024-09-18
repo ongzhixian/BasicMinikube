@@ -1,0 +1,87 @@
+﻿@page "/task-list"
+
+<PageTitle>Task List</PageTitle>
+
+<h1>My tasks</h1>
+
+<section>
+    
+    <input class="new task" type="text" placeholder="New task description" @bind="@NewTaskDescription" @bind:event="onchange" @bind:after="PerformSearch" />
+</section>
+
+<section>
+
+    <div class="task-list">
+        <input class="header-checkbox" type="checkbox" />
+        <input class="new task header-filter" type="text" placeholder="Search criteria" />
+
+        <input type="checkbox" class="chk" />
+        <div class="desc">Some urgent task 1</div>
+
+        <input type="checkbox" class="chk" />
+        <div class="desc">Some urgent task 2</div>
+
+        <input type="checkbox" class="chk" />
+        <div class="desc">Some urgent task 3</div>
+
+    </div>
+    
+    <!--
+    <label>
+        <input type="checkbox" />
+        <input class="new task" type="text" placeholder="Search criteria" />
+    </label>
+
+    
+    <ul class="task list">
+        <li>
+            <label>
+                <input type="checkbox" />
+                Do something 1
+            </label>
+        </li>
+
+        <li>
+            <label>
+                <input type="checkbox" />
+                Do something 2
+            </label>
+        </li>
+
+        <li>
+            <label>
+                <input type="checkbox" />
+                Do something 3
+            </label>
+        </li>
+
+        <li>
+            <label>
+                <input type="checkbox" />
+                Do something 4
+            </label>
+        </li>
+    </ul>
+    -->
+</section>
+
+
+@code {
+
+    private string NewTaskDescription { get; set; }
+
+    // private void AddTask(ChangeEventArgs e)
+    // {
+    //     Console.WriteLine("Add task: " + e.Value + "; " + NewTaskDescription);
+    //     // NewTaskDescription = e?.Value?.ToString();
+    //     NewTaskDescription = string.Empty;
+    //     // e.Value = "";
+    //     //StateHasChanged();
+    // }
+
+    private async Task PerformSearch()
+    {
+        Console.WriteLine("Perform search triggered: " + NewTaskDescription);
+        NewTaskDescription = string.Empty;
+    }
+}
