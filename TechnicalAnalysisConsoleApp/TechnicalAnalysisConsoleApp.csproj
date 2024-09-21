@@ -8,6 +8,10 @@
         <UserSecretsId>47df7034-c1c1-4b87-8373-89f5e42fc9ec</UserSecretsId>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
+    </ItemGroup>
+
 
     <ItemGroup>
         <ProjectReference Include="..\WareLogix.ConsoleApp.Logging\WareLogix.ConsoleApp.Logging.csproj" />
