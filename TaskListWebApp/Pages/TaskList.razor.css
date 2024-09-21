@@ -10,7 +10,7 @@ div.task-list {
     grid-template-areas:
         "head-check head-filter"
         "chk desc";
-    gap:.3em;
+    gap: .3em;
 }
 
     div.task-list .header-checkbox {
@@ -19,7 +19,6 @@ div.task-list {
 
     div.task-list .header-filter {
         grid-area: head-filter;
-        
     }
 
     div.task-list .chk {
@@ -49,7 +48,7 @@ ul.task.list {
         }
 
 
-input.new {
+input.new, input.filter, input.edit {
     font-family: var(--text-font);
     font-size: 1.3em;
     background: transparent;
@@ -59,3 +58,56 @@ input.new {
     border-bottom-color: currentcolor;
     border-bottom: 1px solid #232;
 }
+
+input.filter {
+    border-bottom: 2px solid grey;
+}
+
+
+input[type=text]:focus-visible {
+    outline-style: none;
+    border-bottom: 2px solid green;
+}
+
+
+div.task-grid {
+    display: grid;
+    grid-template-rows: 2.67em 1fr;
+    width: 24em;
+    gap: .3em;
+}
+
+    div.task-grid .item, div.task-grid .header-item {
+        display: grid;
+        grid-template-columns: 1.8em 1fr 6em;
+        /*border-top: 2px solid green;*/
+        margin-top: .3em;
+        padding-top: .3em;
+    }
+
+        div.task-grid .header-item input[type=checkbox] {
+            align-self: center;
+        }
+
+        div.task-grid .item .buttons {
+            align-self: center;
+        }
+
+            div.task-grid .item .buttons button:hover {
+                color:green;
+            }
+
+            div.task-grid input[type=checkbox] {
+                width: 24px;
+                height: 24px;
+            }
+
+.buttons {
+    align-self: flex-start;
+}
+
+    .buttons button {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }

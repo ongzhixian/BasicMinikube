@@ -7,6 +7,28 @@ var config = new ProducerConfig
     //Acks = 0,
 };
 
+
+using (var adminClient = new AdminClientBuilder(new AdminClientConfig
+{
+    BootstrapServers = "localhost:9092",
+
+}).Build())
+{
+    
+    var meta = adminClient.GetMetadata(TimeSpan.FromSeconds(20));
+
+    meta.Topics.ForEach(topic =>
+    {
+        Console.WriteLine($"Topic: {topic.Topic} ; Status: {topic.Error} ; Partition count: {topic.Partitions.Count}");
+    });
+}
+
+
+
+
+Console.WriteLine("All done");
+return;
+
 var topic = "test-topic";
 
 using var producer = new ProducerBuilder<Null, string>(config).Build();

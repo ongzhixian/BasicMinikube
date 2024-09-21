@@ -87,12 +87,12 @@ try
 
             //await oandaService.GetAccountsAsync();
             //await oandaService.GetAccountSummaryAsync(tradingAccountId);
-            var instruments = await oandaService.GetAccountTradableInstrumentsAsync(tradingAccountId);
-            foreach (var instr in instruments)
-            {
-                messageQueuePublisher.PublishToQueue("tradable-instruments",
-                    System.Text.Json.JsonSerializer.Serialize(instr, options));
-            }
+            //var instruments = await oandaService.GetAccountTradableInstrumentsAsync(tradingAccountId);
+            //foreach (var instr in instruments)
+            //{
+            //    messageQueuePublisher.PublishToQueue("tradable-instruments",
+            //        System.Text.Json.JsonSerializer.Serialize(instr, options));
+            //}
 
             //await oandaService.GetInstrumentCandlesAsync("USD_CNH");
             //await oandaService.GetInstrumentOrderBookAsync("XAU_USD");
@@ -120,24 +120,24 @@ try
             //        positionFill = "DEFAULT"
             //    }
             //};
-            LimitOrder myOrder = new LimitOrder
-            {
-                type = "LIMIT",
-                units = "1",
-                price = "2494.536",
-                instrument = "XAU_USD",
-                timeInForce = "GTC",
-                positionFill = "DEFAULT",
-                takeProfitOnFill = new Takeprofitonfill()
-                {
-                    price = "2494.800"
-                },
-                stopLossOnFill = new Stoplossonfill()
-                {
-                    timeInForce = "GTC",
-                    price = "2494.036"
-                }
-            };
+            //LimitOrder myOrder = new LimitOrder
+            //{
+            //    type = "LIMIT",
+            //    units = "1",
+            //    price = "2494.536",
+            //    instrument = "XAU_USD",
+            //    timeInForce = "GTC",
+            //    positionFill = "DEFAULT",
+            //    takeProfitOnFill = new Takeprofitonfill()
+            //    {
+            //        price = "2494.800"
+            //    },
+            //    stopLossOnFill = new Stoplossonfill()
+            //    {
+            //        timeInForce = "GTC",
+            //        price = "2494.036"
+            //    }
+            //};
 
 
             //await oandaService.CreateOrderAsync(tradingAccountId, myOrder);
@@ -154,7 +154,8 @@ try
             //}
 
 
-
+            //await oandaService.GetInstrumentCandlesAsync("USD_CNH");
+            await oandaService.GetInstrumentCandlesAsync("XAU_USD");
 
             Log.Information("Startup completed");
         }

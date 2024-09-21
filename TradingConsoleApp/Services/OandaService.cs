@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+﻿using System.Collections.Specialized;
+using System.Net.Http.Json;
+using System.Web;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -148,11 +150,18 @@ public class OandaService
 
         string apiUrl = $"/v3/instruments/{instrumentName}/candles";
 
-        //var responseMessage = await httpClient.GetAsync(apiUrl);
-        //File.WriteAllText($"{instrumentName}-candles.json", await responseMessage.Content.ReadAsStringAsync());
-        //logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+        var uriBuilder = new UriBuilder(httpClient.BaseAddress);
+        uriBuilder.Path = apiUrl;
 
-        var response = await httpClient.GetFromJsonAsync<GetInstrumentCandlesResponse>(apiUrl);
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        query["price"] = "BMA";
+        uriBuilder.Query = query.ToString();
+
+        var responseMessage = await httpClient.GetAsync(uriBuilder.Uri);
+        File.WriteAllText($"{instrumentName}-candles.json", await responseMessage.Content.ReadAsStringAsync());
+        logger.LogInformation($"Response status code: {responseMessage.StatusCode}");
+
+        var response = await httpClient.GetFromJsonAsync<GetInstrumentCandlesResponse>(uriBuilder.Uri);
         logger.LogInformation($"Response: {response}");
         //Console.WriteLine(response);
     }

@@ -1,74 +1,86 @@
 ﻿@page "/task-list"
+@inject HttpClient Http
+@inject IJSRuntime js
+@using TaskListWebApp.Intents
+@using TaskListWebApp.Models
+@implements TaskListWebApp.Intents.ITaskListQueries
+@implements TaskListWebApp.Intents.ITaskListCommands
 
 <PageTitle>Task List</PageTitle>
 
-<h1>My tasks</h1>
+<h1>My tasks for 
+    <small>
+        @(DateTime.Now.ToString("ddd, yyyy MMM dd"))
+    </small>
+</h1>
 
 <section>
-    
-    <input class="new task" type="text" placeholder="New task description" @bind="@NewTaskDescription" @bind:event="onchange" @bind:after="PerformSearch" />
+    <input class="new task" type="text" placeholder="New task description" @bind="@NewTaskDescription" @bind:event="onchange" @bind:after="() => AddTodoTaskAsync(NewTaskDescription)" />
 </section>
 
 <section>
 
-    <div class="task-list">
-        <input class="header-checkbox" type="checkbox" />
-        <input class="new task header-filter" type="text" placeholder="Search criteria" />
+    <div class="task-grid">
+        <div class="header-item">
+            @* <input @onchange="ToggleAllTodoTaskAsComplete" type="checkbox" /> *@
+            <div></div>
+            <input @onchange="@(e => GetTodoTaskListAsync(e.Value?.ToString() ?? string.Empty))" type="text" class="filter" placeholder="Filter criteria" />
+            <div class="buttons">24 / 29</div>
+        </div>
+        @foreach (var todoItem in TodoTaskList)
+        {
+            <div class="item">
+                @* <input type="checkbox" @bind-value="todoItem.IsCompleted" @onchange="@((e) => ToggleTodoTaskCompleteAsync(todoItem.Id, (bool)e.Value ))" /> *@
+                @* <input type="checkbox" checked="@todoItem.IsCompleteFlag" @onchange="@((e) => ToggleTodoTaskCompleteAsync(todoItem.Id, (bool)e.Value ))" /> *@
+                <input type="checkbox" checked="@(todoItem.IsCompleted == 1)" @onchange="@((e) => ToggleTodoTaskCompleteAsync(todoItem.Id, (bool)e.Value ))" />
+                
+                <div class="desc">
+                    
+                    @if (EditedTodoTaskList.FirstOrDefault(r => r.Id == todoItem.Id) is TodoTask editableTodoTask)
+                    {
+                        <input class="edit" type="text" @bind="editableTodoTask.Description" />
+                    }
+                    else
+                    {
+                        @todoItem.Description
+                    }
+                </div>
+                <div class="buttons">
+                    @if (EditedTodoTaskList.Exists(r => r.Id == todoItem.Id))
+                    {
+                        <button class="icon-button" @onclick="@(() => UpdateTodoTaskAsync(todoItem.Id))"><span class="material-icons">save</span></button>
+                        <button class="icon-button" @onclick="@(() => CancelEditTodoTask(todoItem.Id))"><span class="material-icons">cancel</span></button>
+                    }
+                    else
+                    {
+                        <button class="icon-button" @onclick="@(() => EditTodoTask(todoItem.Id))"><span class="material-icons">edit</span></button>
+                    }
+                    <button class="icon-button" @onclick="@(() => DeleteTodoTaskAsync(todoItem.Id))"><span class="material-icons">delete</span></button>
+                </div>
+            </div>
+        }
 
-        <input type="checkbox" class="chk" />
-        <div class="desc">Some urgent task 1</div>
-
-        <input type="checkbox" class="chk" />
-        <div class="desc">Some urgent task 2</div>
-
-        <input type="checkbox" class="chk" />
-        <div class="desc">Some urgent task 3</div>
-
+        <div class="header-item">
+            <input @onchange="ToggleAllTodoTaskAsComplete" type="checkbox" />
+            <div>Tasks completed: 0</div>
+            <div class="buttons">Carry over</div>
+        </div>
     </div>
-    
-    <!--
-    <label>
-        <input type="checkbox" />
-        <input class="new task" type="text" placeholder="Search criteria" />
-    </label>
 
-    
-    <ul class="task list">
-        <li>
-            <label>
-                <input type="checkbox" />
-                Do something 1
-            </label>
-        </li>
-
-        <li>
-            <label>
-                <input type="checkbox" />
-                Do something 2
-            </label>
-        </li>
-
-        <li>
-            <label>
-                <input type="checkbox" />
-                Do something 3
-            </label>
-        </li>
-
-        <li>
-            <label>
-                <input type="checkbox" />
-                Do something 4
-            </label>
-        </li>
-    </ul>
-    -->
 </section>
 
 
 @code {
+    private record NewTodoTask
+    {
+        public string Description { get; set; } = string.Empty;
+    }
 
-    private string NewTaskDescription { get; set; }
+    private string NewTaskDescription { get; set; } = string.Empty;
+    private bool CheckAll { get; set; }
+    private string TodoTaskDescriptionFilterCriteria { get; set; } = string.Empty;
+    private IEnumerable<TodoTask> TodoTaskList { get; set; } = [];
+    private List<TodoTask> EditedTodoTaskList { get; set; } = [];
 
     // private void AddTask(ChangeEventArgs e)
     // {
@@ -78,10 +90,170 @@
     //     // e.Value = "";
     //     //StateHasChanged();
     // }
+    private string todoTaskApiBaseUrl = null!;
+    private readonly System.Text.Json.JsonSerializerOptions jsonSerializerOptions = new(System.Text.Json.JsonSerializerDefaults.Web);
 
-    private async Task PerformSearch()
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Perform search triggered: " + NewTaskDescription);
-        NewTaskDescription = string.Empty;
+        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+
+        // var todoTaskList = await Http.GetFromJsonAsync<IEnumerable<TodoTask>>("http://localhost:5000/todo-tasks/api/todo-task");
+
+        // Console.WriteLine($"Get count {todoTaskList?.Count()}");
+
+        // TODO: Get URL from config or elsewhere
+        todoTaskApiBaseUrl = "http://localhost:5000/todo-tasks/api/todo-task";
+
+        await GetTodoTasksAsync();
+    }
+
+    //                                       GetTodoTasksAsync
+    public async Task<IEnumerable<TodoTask>> GetTodoTaskListAsync(string? filterCriteria)
+    {
+        Console.WriteLine("TODO: GetTodoTaskListAsync: " + filterCriteria);
+
+
+        TodoTaskList = await Http.GetFromJsonAsync<IEnumerable<TodoTask>>($"http://localhost:5000/todo-tasks/api/todo-task?filter={filterCriteria}") ?? [];
+
+        Console.WriteLine($"Get count {TodoTaskList?.Count()}");
+
+        // System.Diagnostics.Debugger.Break();
+        // await js.InvokeVoidAsync("debugger");
+
+        foreach (var item in TodoTaskList)
+        {
+            Console.WriteLine($"item {item.IsCompleted}, {item.Description}");
+        }
+
+        Console.WriteLine(TodoTaskList);
+
+        return TodoTaskList;
+    }
+
+    private bool GetCheckedValue(int val)
+    {
+        Console.WriteLine(val);
+        return true;
+    }
+
+    public async Task AddTodoTaskAsync(string taskDescription) 
+    {
+        //TodoTaskList = await Http.GetFromJsonAsync<IEnumerable<TodoTask>>($"http://localhost:5000/todo-tasks/api/todo-task?filter={TodoTaskDescriptionFilterCriteria}") ?? [];
+        var response = await Http.PostAsJsonAsync(todoTaskApiBaseUrl, new NewTodoTask
+        {
+            Description = taskDescription
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            NewTaskDescription = string.Empty;
+
+            await GetTodoTasksAsync();
+        }
+    }
+
+    public void MarkAllTodoTaskAsComplete() { 
+        throw new NotImplementedException(); 
+    }
+
+
+    public async Task ToggleTodoTaskCompleteAsync(int id, bool flagValue)
+    {
+        var todoTask = TodoTaskList.First(r => r.Id == id);
+
+        todoTask.IsCompleted = flagValue ? 1 : 0;
+
+        var response = await Http.PutAsJsonAsync($"{todoTaskApiBaseUrl}/{id}", todoTask);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await GetTodoTasksAsync();
+        }
+
+    }
+    public void EditTodoTask(int id)
+    {
+        var targetRecord = TodoTaskList.First(r => r.Id == id);
+
+        if (!EditedTodoTaskList.Contains(targetRecord))
+        {
+            EditedTodoTaskList.Add(targetRecord with { });
+        }
+    }
+
+    public async Task DeleteTodoTaskAsync(int id)
+    {
+        var response = await Http.DeleteAsync($"{todoTaskApiBaseUrl}/{id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            await GetTodoTasksAsync();
+        }
+
+    }
+
+    public void CancelEditTodoTask(int id) {
+        EditedTodoTaskList.RemoveAll(r => r.Id == id);
+    }
+
+    public async Task UpdateTodoTaskAsync(int id)
+    {
+        var todoTask = EditedTodoTaskList.First(r => r.Id == id);
+
+        var response = await Http.PutAsJsonAsync($"{todoTaskApiBaseUrl}/{id}", todoTask);
+
+        if (response.IsSuccessStatusCode)
+        {
+            EditedTodoTaskList.Remove(todoTask);
+
+            await GetTodoTasksAsync();
+        }
+    }
+
+
+
+    private async Task GetTodoTasksAsync()
+    {
+        TodoTaskList = await Http.GetFromJsonAsync<IEnumerable<TodoTask>>($"http://localhost:5000/todo-tasks/api/todo-task?filter={TodoTaskDescriptionFilterCriteria}") ?? [];
+
+        Console.WriteLine($"Get count {TodoTaskList?.Count()}");
+
+        // System.Diagnostics.Debugger.Break();
+        // await js.InvokeVoidAsync("debugger");
+
+        foreach (var item in TodoTaskList)
+        {
+            Console.WriteLine($"item {item.IsCompleted}, {item.Description}");
+        }
+
+        Console.WriteLine(TodoTaskList);
+    }
+
+
+    // private async Task AddNewTodoTask()
+    // {
+    //     Console.WriteLine("Perform search triggered: " + NewTaskDescription);
+    //     NewTaskDescription = string.Empty;
+    // }
+
+    // private async Task FilterTodoTaskAsync(ChangeEventArgs e)
+    // {
+    //     Console.WriteLine("TODO: FilterTodoTaskAsync");
+
+    //     await GetTodoTaskListAsync(e.Value?.ToString());
+    // }
+
+    // private void MarkAllTodoTaskAsCompleted(ChangeEventArgs e)
+    // {
+    //     Console.WriteLine("todo: implement method");
+    //     //throw new NotImplementedException();
+    // }
+    private void ToggleAllTodoTaskAsComplete(ChangeEventArgs e)
+    {
+        if (e.Value is bool isChecked)
+        {
+            Console.WriteLine("TODO: ToggleAllTodoTaskAsComplete 1-- State {0}", isChecked);
+        }
     }
 }
+
