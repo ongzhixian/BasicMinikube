@@ -43,7 +43,7 @@ $main = {
 
 Function Build-Assembly($version) {
 	dotnet restore 
-	dotnet build -p:AssemblyVersion=$version --clp:NoSummary --nologo --no-restore --configuration Release
+	dotnet build -p:AssemblyVersion=$version --clp:NoSummary --nologo --no-restore --configuration Release -nowarn:DV2001
 }
 
 Function Build-NugetPackage($version) {
