@@ -165,3 +165,7 @@ minikube host PC, we would need to add the ingress hostnames to host PC's hosts 
 
 5.  Host your own DNS (have not tried this before)
 
+## Saving images
+
+minikube image pull redhat/ubi8-minimal:8.10
+minikube image save redhat/ubi8-minimal:8.10 D:\container-images\ubi8-minimal-8.10.tar
