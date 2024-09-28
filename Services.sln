@@ -32,6 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5F05FA6-7556-4A3C-BB50-4F1417B134ED}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Minikube-CodeAnalysis.ruleset = Minikube-CodeAnalysis.ruleset
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsoleApp", "ConsoleApp", "{D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}"
@@ -91,6 +92,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WareLogix.DatabaseAccess", "WareLogix.DatabaseAccess\WareLogix.DatabaseAccess.csproj", "{E5B55CF0-A875-4A10-9552-7FE1D229CAB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WareLogix.DatabaseAccess.Sqlite", "WareLogix.DatabaseAccess.Sqlite\WareLogix.DatabaseAccess.Sqlite.csproj", "{AE2BA1CE-C8F4-4204-A124-43AE72178380}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleJobConsoleApp", "SimpleJobConsoleApp\SimpleJobConsoleApp.csproj", "{50BDAA79-051E-4592-A3CA-51A762FC4300}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -238,6 +241,10 @@ Global
 		{AE2BA1CE-C8F4-4204-A124-43AE72178380}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE2BA1CE-C8F4-4204-A124-43AE72178380}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE2BA1CE-C8F4-4204-A124-43AE72178380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50BDAA79-051E-4592-A3CA-51A762FC4300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50BDAA79-051E-4592-A3CA-51A762FC4300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50BDAA79-051E-4592-A3CA-51A762FC4300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50BDAA79-051E-4592-A3CA-51A762FC4300}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,6 +285,7 @@ Global
 		{37068C3A-BABC-4ABE-9C3D-36728B26E94B} = {0E63B5D0-DD0D-49B5-9E6B-C2F3234A593E}
 		{E5B55CF0-A875-4A10-9552-7FE1D229CAB8} = {05211A76-E072-4343-B497-31F4288750FA}
 		{AE2BA1CE-C8F4-4204-A124-43AE72178380} = {05211A76-E072-4343-B497-31F4288750FA}
+		{50BDAA79-051E-4592-A3CA-51A762FC4300} = {D4EA0EAF-98BB-437E-8244-C1AEB396AC3A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6E251F12-3C35-492D-A972-6BE83D0D955B}

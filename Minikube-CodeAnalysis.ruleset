@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="New Rule Set" Description=" " ToolsVersion="17.0">
+  <Rules AnalyzerId="Microsoft.DependencyValidation.Analyzers" RuleNamespace="Microsoft.DependencyValidation.Analyzers">
+    <Rule Id="DV2001" Action="None" />
+    <Rule Id="DV2002" Action="None" />
+  </Rules>
+</RuleSet>
