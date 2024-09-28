@@ -19,11 +19,10 @@
         <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+        <PackageReference Include="WareLogix" Version="0.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\WareLogix\WareLogix.csproj" />
-    </ItemGroup>
+    
 
     <ItemGroup>
         <None Update="README.md">
