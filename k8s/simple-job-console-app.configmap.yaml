@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: simple-job-console-app
+data: 
+  appsettings.json: |
+    {
+        "Logging": {
+            "LogLevel": {
+                "Default": "Information"
+            }
+        },
+        "Serilog": {
+            "Using": [ "Serilog.Sinks.File", "Serilog.Enrichers.Environment" ],
+            "MinimumLevel": {
+                "Default": "Information"
+            },
+            "WriteTo": [
+                {
+                    "Name": "Console",
+                    "Args": {
+                        "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Sixteen, Serilog.Sinks.Console",
+                        "applyThemeToRedirectedOutput": true
+                    }
+                }
+            ],
+            "Enrich": [ "FromLogContext", "WithMachineName" ],
+            "Properties": {
+                "ApplicationName": "SimpleJobConsoleApp"
+            }
+        },
+        "FeatureFlags": {
+            "USE_DUMMY_FLAG": false,
+            "TEST_EXCEPTION_FLAG": false
+        }
+    }

@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: test-job
+spec:
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+      name: test-job
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+          - name: simple-job-console-app-configmap-volume
+            configMap:
+              name: simple-job-console-app
+          containers:
+          - image: docker.io/library/simple-job-console-app:0.22
+            name: test-job
+            resources: {}
+            volumeMounts:
+            - name: simple-job-console-app-configmap-volume
+              readOnly: true
+              mountPath: "/opt/configs"
+          restartPolicy: OnFailure
+  schedule: 0 */2 * * *
+status: {}
