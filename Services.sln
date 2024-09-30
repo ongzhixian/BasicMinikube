@@ -32,6 +32,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5F05FA6-7556-4A3C-BB50-4F1417B134ED}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Jenkinsfile = Jenkinsfile
 		Minikube-CodeAnalysis.ruleset = Minikube-CodeAnalysis.ruleset
 	EndProjectSection
 EndProject
