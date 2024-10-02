@@ -26,6 +26,7 @@ pipeline {
             steps {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
                 echo 'Deploying application...'
+                pwsh 'minikube status'
                 echo 'Deploying application done'
             }
         }
