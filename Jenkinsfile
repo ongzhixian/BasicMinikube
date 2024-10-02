@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 dotnetRestore()
-                dotnetBuild(configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER}", option: '-nowarn:DV2001')
+                dotnetBuild(configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
             }
         }
 
