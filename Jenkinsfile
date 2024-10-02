@@ -25,8 +25,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
+                sh 'YST doing something'
                 echo 'Deploying application...'
-                shell('minikube status')
+                sh 'minikube status'
                 echo 'Deploying application done'
             }
         }
