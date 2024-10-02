@@ -28,8 +28,14 @@ pipeline {
                 echo 'Deploying application...'
                 pwsh '''
 minikube status
-$containerImageName = "simple-job-console-app:0.0.0.$env:BUILD_NUMBER"
-Write-Host $containerImageName'''
+$nextContainerImageName = "simple-job-console-app:0.0.0.$env:BUILD_NUMBER"
+Write-Host $nextContainerImageName
+Push-Location
+Set-Location .\\SimpleJobConsoleApp\\
+minikube image build . -t $nextContainerImageName -f .\\Dockerfile
+kubectl set image cronjob/test-job test-job=docker.io/library/$nextContainerImageName
+Pop-Location
+'''
                 echo 'Deploying application done'
             }
         }
