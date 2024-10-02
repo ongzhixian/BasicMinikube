@@ -3,19 +3,15 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Clean') {
             steps {
-                // git url: 'https://github.com/your-username/my-first-pipeline.git', branch: 'main'
-                echo 'Checkout repo2'
-                dotnetClean(nologo: true)
+                dotnetClean(configuration: 'Release', nologo: true)
             }
         }
 
         stage('Build') {
             steps {
-                // Install dependencies
-                //sh 'npm install'
-                echo 'Build assembly'
+                dotnetRestore()
             }
         }
 
