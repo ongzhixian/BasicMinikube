@@ -12,6 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 dotnetRestore()
+                dotnetBuild(configuration: 'Release', noRestore: true, nologo: true)
             }
         }
 
