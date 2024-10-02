@@ -25,7 +25,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
-                sh 'echo \'test\''
+                sh 'minikube'
                 echo 'Deploying application...'
                 echo 'Deploying application done'
             }
