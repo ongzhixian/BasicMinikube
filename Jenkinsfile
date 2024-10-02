@@ -27,7 +27,7 @@ pipeline {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
                 echo 'Deploying application...'
                 shell('minikube status')
-                
+                echo 'Deploying application done'
             }
         }
     }
