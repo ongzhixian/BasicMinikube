@@ -6,7 +6,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 // git url: 'https://github.com/your-username/my-first-pipeline.git', branch: 'main'
-                echo 'Checkout repo'
+                echo 'Checkout repo2'
+                dotnetClean()
             }
         }
 
