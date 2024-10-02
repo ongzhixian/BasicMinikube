@@ -27,6 +27,9 @@ pipeline {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
                 echo 'Deploying application...'
                 pwsh 'minikube status'
+                pwsh '''
+minikube status
+$containerImageName = "simple-job-console-app:0.0.0.${BUILD_NUMBER}"'''
                 echo 'Deploying application done'
             }
         }
