@@ -27,7 +27,6 @@ pipeline {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
                 sh 'echo \'test\''
                 echo 'Deploying application...'
-                sh 'minikube status'
                 echo 'Deploying application done'
             }
         }
