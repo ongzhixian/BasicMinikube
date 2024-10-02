@@ -18,9 +18,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                // Run tests
-                // sh 'npm test'
-                echo 'Test'
+                dotnetTest(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
             }
         }
 
