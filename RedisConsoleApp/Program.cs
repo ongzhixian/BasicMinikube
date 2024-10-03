@@ -10,7 +10,7 @@ ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:26379");
 IDatabase db = redis.GetDatabase();
 
 
-db.StringSet("foo", "bar2");
+db.StringSet("foo", "bar4");
 Console.WriteLine(db.StringGet("foo")); // prints bar
 
 //Console.WriteLine(db.StringGet("gaga")); // prints bar
