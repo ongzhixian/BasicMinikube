@@ -28,7 +28,7 @@ try
 
     for (int i = 0; i < 9999; i++)
     {
-        Console.WriteLine($"MessageF {i}");
+        Console.WriteLine($"MessageG {i}");
         Thread.Sleep(1000);
     }
 
