@@ -28,6 +28,7 @@ try
 
     for (int i = 0; i < 9999; i++)
     {
+        Console.WriteLine(testExceptionFlag.ToString());
         Thread.Sleep(1000);
     }
 
