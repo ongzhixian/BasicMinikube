@@ -9,7 +9,7 @@ IDatabase db = redis.GetDatabase();
 
 
 //db.StringSet("foo", "bar");
-Console.WriteLine(db.StringGet("foo")); // prints bar
+Console.WriteLine(db.StringGet("foo1")); // prints bar
 
 //Console.WriteLine(db.StringGet("gaga")); // prints bar
 
