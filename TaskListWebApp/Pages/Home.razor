@@ -1,7 +1,45 @@
 ﻿@page "/"
+@using System.Security.Claims
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<p>Welcome to your new app.</p>
+
+<p>
+    @User.Identity.IsAuthenticated
+</p>
+
+<AuthorizeView>
+    <Authorized>
+        <p>The user is authorized.</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>The User is not authorized.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="Administrator">
+    <Authorized>
+        <p>The user is administrator.</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>The User is not admin. This content requires admin privileges.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    private ClaimsPrincipal User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        User = authState.User;
+    }
+
+}

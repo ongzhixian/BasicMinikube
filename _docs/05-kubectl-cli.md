@@ -28,6 +28,16 @@ kubectl run bb -it --image=busybox
 
 kubectl attach bb -it -c bb 
 
-
 kubectl exec bb -c bb -i -t
 
+If running busybox with a PV, we have to exec to get a shell
+Attach won't work because the main thread is tied up in the loop.
+```
+kubectl apply -f .\pv-demo.yaml
+kubectl exec test -it -- sh
+```
+
+## Volumes
+
+kubectl delete pv <pv-name> --grace-period=0 --force
+use `kubectl cp` to copy files to mounted volume

@@ -1,0 +1,31 @@
+﻿@page "/debug-environment"
+@using System.Security.Claims
+
+<PageTitle>Environment</PageTitle>
+
+<h1>Environment variables</h1>
+
+@foreach (var item in System.Environment.GetEnvironmentVariables())
+{
+    <p>@item</p>
+    
+}
+
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    private ClaimsPrincipal User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        User = authState.User;
+
+        var x = System.Environment.GetEnvironmentVariables();
+
+    }
+
+}

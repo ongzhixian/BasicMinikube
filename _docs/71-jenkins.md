@@ -17,7 +17,30 @@ java.exe -D"hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true" -jar jenkins.wa
 Plugins to install for Jenkins visualization:
 1.  Pipeline Stage View Plugin  <-- This is the plugin that shows the "green boxes" 😂😂😂
 2.  Pipeline Graph View         <-- This is the plugin that shows the pipeline flow diagram
+3.  .NET SDK Support            <-- For building .NET CORE projects
 
+
+## How to enable Jenkins to build on commit for local repository
+
+1.  Know your local repo. It should be specified in a format like:
+    file://C:/src/github.com/ongzhixian/Minikube
+
+2.  Enable poll SCM
+    You don't have to put a CRON schedule; just need to enable it
+3.  Run your Jenkins with "hudson.plugins.git.GitStatus.NOTIFY_COMMIT_ACCESS_CONTROL=disabled" like:
+    ```cmd
+    java.exe -D"hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true" -D"hudson.plugins.git.GitStatus.NOTIFY_COMMIT_ACCESS_CONTROL=disabled" -jar jenkins.war 
+    ```
+4.  In your local repository, `.git/hooks` folder, create a file `post-commit` with the following contents:
+    ```sh
+    #!/bin/sh
+    curl http://localhost:8080/git/notifyCommit?url=file://C:/src/github.com/ongzhixian/Minikube
+    ```
+
+After this done, whenever there are new commits, Jenkins will auto-build!
+
+Reference:  http://www.andyfrench.info/2015/03/automatically-triggering-jenkins-build.html
+            https://plugins.jenkins.io/git/#plugin-content-push-notification-from-repository
 
 ## Example script
 

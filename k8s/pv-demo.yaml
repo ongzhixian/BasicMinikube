@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: test
+  name: test
+spec:
+  volumes:
+    - name: test-nginx-pv
+      persistentVolumeClaim:
+        claimName: test-nginx-pvc
+  containers:
+  - image: docker.io/library/busybox:1.36
+    name: test
+    command: [ "/bin/sh", "-c", "tail -f /dev/null" ]
+    volumeMounts:
+      - mountPath: "/usr/share/nginx/html"
+        name: test-nginx-pv
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
