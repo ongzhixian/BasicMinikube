@@ -28,7 +28,7 @@ try
 
     for (int i = 0; i < 9999; i++)
     {
-        Console.WriteLine($"MessageB {i}");
+        Console.WriteLine($"MessageC {i}");
         Thread.Sleep(1000);
     }
 
