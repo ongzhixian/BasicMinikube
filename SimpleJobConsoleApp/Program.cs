@@ -28,7 +28,7 @@ try
 
     for (int i = 0; i < 9999; i++)
     {
-        Console.WriteLine(testExceptionFlag.ToString());
+        Console.WriteLine($"Second {i}");
         Thread.Sleep(1000);
     }
 
