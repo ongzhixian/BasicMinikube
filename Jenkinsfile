@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 dotnetRestore()
-                dotnetBuild(configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                dotnetBuild(project: 'SimpleJobConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
             }
         }
 
@@ -30,10 +30,13 @@ pipeline {
 minikube status
 $nextContainerImageName = "simple-job-console-app:0.0.0.$env:BUILD_NUMBER"
 Write-Host $nextContainerImageName
+
 Push-Location
 Set-Location .\\SimpleJobConsoleApp\\
+
 minikube image build . -t $nextContainerImageName -f .\\Dockerfile
 kubectl set image cronjob/test-job test-job=docker.io/library/$nextContainerImageName
+
 Pop-Location
 '''
                 echo 'Deploying application done'
