@@ -17,7 +17,16 @@ pipeline {
 
         stage('Build') {
             steps {
-                def scannerHome = tool 'SonarScanner for .NET'
+                
+                script {
+                    def scannerHome = tool 'SonarScanner for .NET'
+                    withSonarQubeEnv() {
+                      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"SimpleJobConsoleApp\""
+                      bat "dotnet build"
+                      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
+                    }
+                }
+
                 dotnetRestore()
                 dotnetBuild(project: 'RedisConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
             }
