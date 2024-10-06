@@ -10,11 +10,13 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            def scannerHome = tool 'SonarScanner for .NET'
-            withSonarQubeEnv() {
-                bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"RedisConsoleApp\""
-                bat "dotnet build"
-                bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
+            steps {
+                def scannerHome = tool 'SonarScanner for .NET'
+                withSonarQubeEnv() {
+                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"RedisConsoleApp\""
+                    bat "dotnet build"
+                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
+                }
             }
         }
 
