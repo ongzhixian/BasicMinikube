@@ -17,18 +17,10 @@ pipeline {
 
         stage('Build') {
             steps {
-                
-                script {
-                    def scannerHome = tool 'SonarScanner for .NET'
-                    withSonarQubeEnv() {
-                      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"SimpleJobConsoleApp\""
-                      bat "dotnet build"
-                      bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
-                    }
-                }
-
                 dotnetRestore()
+                dotnet sonarscanner begin /k:"RedisConsoleApp" /d:sonar.host.url="http://127.0.0.1:9000"  /d:sonar.token="sqp_0f212a9cbad26a73b8743e04a17f8c93d1b47509"
                 dotnetBuild(project: 'RedisConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                dotnet sonarscanner end /d:sonar.token="sqp_0f212a9cbad26a73b8743e04a17f8c93d1b47509"
             }
         }
 
