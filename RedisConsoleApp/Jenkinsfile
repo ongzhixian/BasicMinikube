@@ -11,12 +11,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                def scannerHome = tool 'SonarScanner for .NET'
-                withSonarQubeEnv() {
-                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll begin /k:\"RedisConsoleApp\""
-                    bat "dotnet build"
-                    bat "dotnet ${scannerHome}\\SonarScanner.MSBuild.dll end"
-                }
+                echo 'TODO: Still figuring this out'
             }
         }
 
