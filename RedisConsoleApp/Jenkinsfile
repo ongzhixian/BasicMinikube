@@ -17,6 +17,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                def scannerHome = tool 'SonarScanner for .NET'
                 dotnetRestore()
                 dotnetBuild(project: 'RedisConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
             }
