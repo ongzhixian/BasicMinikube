@@ -29,7 +29,7 @@ try
     for (int i = 0; i < 9999; i++)
     {
         Console.WriteLine($"MessageI {i}");
-        Thread.Sleep(1000);
+        Thread.Sleep(6000);
     }
 
     Log.Information("Application {ApplicationStatus}", "END");
