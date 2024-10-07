@@ -10,11 +10,8 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-
-
             steps {
                 echo 'TODO: Still figuring this out'
-
             }
         }
 
