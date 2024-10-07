@@ -9,6 +9,6 @@ using StackExchange.Redis;
 ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:26379");
 IDatabase db = redis.GetDatabase();
 
-db.StringSet("foo", "bar17");
+db.StringSet("foo", "bar18");
 
 for (int i = 0; i < 9999; i++) Console.WriteLine(db.StringGet("foo")); // prints bar

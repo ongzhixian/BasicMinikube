@@ -13,10 +13,10 @@ pipeline {
             steps {
                 echo 'TODO: Still figuring this out'
                 script {
-                    scannerHome = tool 'SonarScanner_MSBuild'// must match the name of an actual scanner installation directory on your Jenkins build agent
+                    scannerHome = tool 'SonarScanner_MSBuild'
                 }
-                withSonarQubeEnv('SonarScanner_MSBuild') {// If you have configured more than one global server connection, you can specify its name as configured in Jenkins
-                  sh "${scannerHome}/bin/sonar-scanner"
+                withSonarQubeEnv('Localhost SonarQube') {
+                    bat "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
