@@ -10,13 +10,17 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarQube_Scanner'
+            }
+
             steps {
                 echo 'TODO: Still figuring this out'
-                script {
-                    scannerHome = tool 'SonarScanner_MSBuild'
-                }
-                withSonarQubeEnv('Localhost SonarQube') {
-                    bat "${scannerHome}/bin/sonar-scanner"
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }        
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
