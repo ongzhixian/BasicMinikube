@@ -30,9 +30,16 @@ pipeline {
             }
         }
 
+        stage('Deployment check') {
+            steps {
+                input "Deploy to Minikube?"
+            }
+        }
+
         stage('Deploy') {
             steps {
                 // Deployment logic goes here (e.g., pushing to a cloud provider)
+                
                 echo 'Deploying application...'
                 pwsh '''
 minikube status
