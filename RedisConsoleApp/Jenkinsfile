@@ -16,7 +16,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('Localhost SonarQube') {
                     dotnetRestore()
-                    sh 'printenv'
+                    bat 'set'
                     bat 'dotnet sonarscanner begin /k:"RedisConsoleApp" /d:sonar.host.url="http://127.0.0.1:9000"  /d:sonar.token="$SONAR_TOKEN"'
                     dotnetBuild(project: 'RedisConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     bat 'dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"'
