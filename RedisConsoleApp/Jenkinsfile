@@ -16,6 +16,14 @@ pipeline {
 
             steps {
                 echo 'TODO: Still figuring this out'
+
+                withSonarQubeEnv('Localhost SonarQube') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
