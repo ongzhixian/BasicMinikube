@@ -10,9 +10,7 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarQube_Scanner'
-            }
+
 
             steps {
                 echo 'TODO: Still figuring this out'
