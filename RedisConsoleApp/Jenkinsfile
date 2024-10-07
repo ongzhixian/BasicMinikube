@@ -10,6 +10,10 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarQube_Scanner'
+            }    
+
             steps {
                 echo 'TODO: Still figuring this out'
             }
@@ -19,6 +23,7 @@ pipeline {
             steps {
                 dotnetRestore()
                 dotnetBuild(project: 'RedisConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+            }
         }
 
         stage('Test') {
