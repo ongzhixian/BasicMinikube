@@ -1,0 +1,8 @@
+# .dockerignore
+
+# Build artifacts folders
+bin/
+obj/
+.vs/
+.git/
+.github/
