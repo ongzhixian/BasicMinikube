@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # SonarQube Scanner
 .sonarqube/
+
+# 
+.venv/
