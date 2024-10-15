@@ -1,0 +1,84 @@
+pipeline {
+
+    agent any
+
+    stages {
+        stage('Clean') {
+            steps {
+                dotnetClean(configuration: 'Release', nologo: true)
+            }
+        }
+
+        stage('Build') {
+            environment {
+                //SONAR_TOKEN = credentials('ConsoleJob_sonarToken')
+            }
+            parallel {
+                stage('Build debug') {
+                    steps {
+                        echo 'Build debug'
+                    }
+                }
+                stage('Build release') {
+                    steps {
+                        echo 'Build debug'
+                    }
+                }
+            }
+            steps {
+                dotnetRestore()
+                dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                // withSonarQubeEnv('Localhost SonarQube') {
+                //     dotnetRestore()
+                //     // bat 'set'
+                //     // bat 'dotnet sonarscanner begin /k:"ConsoleJob" /d:sonar.host.url="http://127.0.0.1:9000"  /d:sonar.token="%SONAR_TOKEN%"'
+                //     dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                //     // bat 'dotnet sonarscanner end /d:sonar.token="%SONAR_TOKEN%"'
+                // }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dotnetTest(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
+            }
+        }
+
+        //stage('Deployment check') {
+        //    steps {
+        //        input "Deploy to Minikube?"
+        //    }
+        //}
+
+        stage('Deploy') {
+            steps {
+                // Deployment logic goes here (e.g., pushing to a cloud provider)
+                
+                echo 'Deploying application...'
+//                 pwsh '''
+// minikube status
+// $nextContainerImageName = "redis-console-app:0.0.0.$env:BUILD_NUMBER"
+// Write-Host $nextContainerImageName
+
+// Push-Location
+// Set-Location .\\ConsoleJob\\
+
+// minikube image build . -t $nextContainerImageName -f .\\Dockerfile
+// kubectl set image cronjob/test-job test-job=docker.io/library/$nextContainerImageName
+
+// Pop-Location
+// '''
+                echo 'Deploying application done'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
