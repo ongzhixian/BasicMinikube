@@ -24,10 +24,10 @@ pipeline {
                             name 'PLATFORM'
                             values 'linux'
                         }
-                        // axis {
-                        //     name 'BROWSER'
-                        //     values 'safari'
-                        // }
+                        axis {
+                            name 'BROWSER'
+                            values 'safari'
+                        }
                     }
 
                 }
