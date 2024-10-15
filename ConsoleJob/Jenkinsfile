@@ -10,9 +10,7 @@ pipeline {
         }
 
         stage('Build') {
-            environment {
-                //SONAR_TOKEN = credentials('ConsoleJob_sonarToken')
-            }
+
             parallel {
                 stage('Build debug') {
                     steps {
@@ -21,21 +19,11 @@ pipeline {
                 }
                 stage('Build release') {
                     steps {
-                        echo 'Build debug'
+                        echo 'Build release'
                     }
                 }
             }
-            steps {
-                dotnetRestore()
-                dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
-                // withSonarQubeEnv('Localhost SonarQube') {
-                //     dotnetRestore()
-                //     // bat 'set'
-                //     // bat 'dotnet sonarscanner begin /k:"ConsoleJob" /d:sonar.host.url="http://127.0.0.1:9000"  /d:sonar.token="%SONAR_TOKEN%"'
-                //     dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
-                //     // bat 'dotnet sonarscanner end /d:sonar.token="%SONAR_TOKEN%"'
-                // }
-            }
+
         }
 
         stage('Test') {
