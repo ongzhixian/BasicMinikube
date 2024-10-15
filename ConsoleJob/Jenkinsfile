@@ -11,6 +11,9 @@ pipeline {
 
         stage('Build') {
 
+            steps {
+                echo 'Do restore'
+            }
             parallel {
                 stage('Build debug') {
                     steps {
