@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job2
+spec:
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      serviceAccountName: election-console-app-acct
+      containers:
+      - image: docker.io/library/election-console-app:0.0.0.2
+        name: job2
+        resources: {}
+      restartPolicy: Never

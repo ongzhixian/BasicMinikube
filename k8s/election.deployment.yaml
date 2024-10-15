@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: election
+  name: election
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: election
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: election
+    spec:
+      serviceAccountName: election-console-app
+      containers:
+      - image: docker.io/library/election-console-app:0.0.0.12
+        name: election-console-app
+        resources: {}
+status: {}
