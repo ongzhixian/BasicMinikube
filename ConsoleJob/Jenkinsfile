@@ -9,6 +9,12 @@ pipeline {
             }
         }
 
+        stage('Restore') {
+            steps {
+                dotnetRestore()
+            }
+        }
+
         stage('Build') {
 
             steps {
@@ -17,12 +23,12 @@ pipeline {
             parallel {
                 stage('Build debug') {
                     steps {
-                        echo 'Build debug'
+                        dotnetBuild(project: 'ConsoleJob', configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
                 stage('Build release') {
                     steps {
-                        echo 'Build release'
+                        dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
             }
