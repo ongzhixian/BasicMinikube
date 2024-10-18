@@ -73,6 +73,8 @@ pipeline {
     post {
         always {
             bat 'dir ConsoleJob /s'
+            archiveArtifacts artifacts:'ConsoleJob/bin/Release/net8.0/** , ConsoleJob/bin/Debug/net8.0/**'
+            archiveArtifacts artifacts:'ConsoleJob/bin/Release/net8.0/**'
             echo 'Pipeline completed.'
         }
         failure {
