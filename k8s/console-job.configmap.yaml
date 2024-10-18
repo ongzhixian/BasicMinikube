@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: console-job
+data:
+  appsettings.json: |
+    {
+        "Logging": {
+            "LogLevel": {
+                "Default": "Information"
+            }
+        },
+        "FeatureFlags": {
+            "USE_DUMMY_FLAG": true,
+            "TEST_CONSOLE_JOB_FLAG": false,
+            "TEST_EXCEPTION_FLAG": false,
+            "TEST_KUBEONLY": false
+        }
+    }

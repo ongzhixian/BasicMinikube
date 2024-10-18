@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: console-job-app
+  name: console-job-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-job-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: console-job-app
+    spec:
+      volumes:
+      - name: console-job-configmap-volume
+        configMap:
+          name: console-job
+      containers:
+      - image: docker.io/library/console-job-app:0.0.0.2
+        name: console-job-app
+        resources: {}
+        volumeMounts:
+        - name: console-job-configmap-volume
+          readOnly: true
+          mountPath: "/opt/app/appsettings.json"
+          subPath: "appsettings.json"
+status: {}
