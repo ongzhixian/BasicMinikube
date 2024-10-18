@@ -16,7 +16,7 @@ if (File.Exists(appsettingsJsonPath))
     Console.WriteLine(contents);
 }
 
-for (var i = 0; i < 10; i++)
+for (var i = 0; i < 100; i++)
 {
     Thread.Sleep(3000);
     Console.WriteLine($"Hello, World announced at {DateTime.Now:O}");
