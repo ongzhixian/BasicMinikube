@@ -37,7 +37,7 @@ pipeline {
         stage('Test') {
             steps {
                 dotnetTest(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
-                bat 'dir /s'
+                bat 'dir'
             }
         }
 
@@ -72,6 +72,7 @@ pipeline {
 
     post {
         always {
+            bat 'dir'
             echo 'Pipeline completed.'
         }
         failure {
