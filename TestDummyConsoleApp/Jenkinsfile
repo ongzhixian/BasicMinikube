@@ -22,14 +22,12 @@ pipeline {
             parallel {
                 stage('Build debug') {
                     steps {
-                    dotnetRestore()
-                        dotnetBuild(project: 'TestDummyConsoleApp', configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                        dotnetBuild(project: 'TestDummyConsoleApp', configuration: 'Debug', noRestore: false, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
                 stage('Build release') {
                     steps {
-                    dotnetRestore()
-                        dotnetBuild(project: 'TestDummyConsoleApp', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                        dotnetBuild(project: 'TestDummyConsoleApp', configuration: 'Release', noRestore: false, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
             }
