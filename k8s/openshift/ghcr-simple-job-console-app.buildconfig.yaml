@@ -1,0 +1,27 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: simple-job-console-app
+  name: ghcr-simple-job-console-app
+  namespace: zhixian-dev
+spec:
+  successfulBuildsHistoryLimit: 1
+  failedBuildsHistoryLimit: 1
+  output:
+    pushSecret:
+      name: ghcr-io-secret
+    to:
+      kind: DockerImage
+      name: ghcr.io/ongzhixian/simple-job-console-app:latest
+  strategy:
+    type: Source
+    sourceStrategy:
+      incremental: true
+      from:
+        kind: DockerImage
+        name: ubi8/dotnet-80-runtime
+  source:
+    type: Binary
+    binary: {}
+    
