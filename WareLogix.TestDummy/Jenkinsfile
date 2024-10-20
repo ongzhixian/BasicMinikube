@@ -1,21 +1,53 @@
+// This pipeline demonstrates:
+// 1.   using parameters
+// 2.   compose a variable (ASSEMBLY_VERSION)
+// 3.   conditional steps (if-else in script)
+// 4.   parallel builds
+// 5.
+
+// Parameters:
+// 1. VERSION_*         -- use to generate assembly version number
+// 2. DEBUG_PIPELINE    -- use to conditionally print debug information (like environment variables)
+// 3. PROJECT_NAME      -- use to centrally define a project
+
+
 pipeline {
 
     agent any
 
+    parameters {
+        booleanParam(   name: "DEBUG_PIPELINE"    , defaultValue: true, description: "Prints additional information for debugging")
+        string(         name: "VERSION_MAJOR"     , defaultValue: "0", trim: true, description: "The major component of version number")
+        string(         name: "VERSION_MINOR"     , defaultValue: "0", trim: true, description: "The minor component of version number")
+        string(         name: "VERSION_BUILD"     , defaultValue: "0", trim: true, description: "The build component of version number")
+        string(         name: "PROJECT_NAME"      , defaultValue: "WareLogix.TestDummy", trim: true, description: "The build component of version number")
+    }
+
     stages {
+        
         stage('Clean') {
             steps {
-                dotnetClean(configuration: 'Release', nologo: true)
-                println "ZDEBUG: ${env.JOB_NAME}"
-                bat 'set'
                 
+                script {
+                    // PRINT ENVIRONMENT VARIABLES ONLY IF WE ARE DEBUGGING THE PIPELINE
+                    if (params.DEBUG_PIPELINE) {
+                        bat 'set'
+                        // Note: println is groovy, echo is step
+                        println "ZDEBUG: ${env.JOB_NAME}"
+                    }
+
+                    // DEFINE ASSEMBLY_VERSION FROM PARAMETERS AND BUILD_NUMBER
+                    ASSEMBLY_VERSION = "${params.VERSION_MAJOR}.${params.VERSION_MINOR}.${params.VERSION_BUILD}.${BUILD_NUMBER}"
+                    echo "ASSEMBLY_VERSION is set to be: [${ASSEMBLY_VERSION}]"
+                }
+
+                dotnetClean(configuration: 'Release', nologo: true)
             }
         }
 
         stage('Restore') {
             steps {
-                dotnetRestore()
-                dotnetRestore(project: 'WareLogix.TestDummy')
+                dotnetRestore(project: params.PROJECT_NAME)
             }
         }
 
@@ -23,14 +55,14 @@ pipeline {
             parallel {
                 stage('Build debug') {
                     steps {
-                        dotnetRestore(project: 'WareLogix.TestDummy')
-                        dotnetBuild(project: 'WareLogix.TestDummy', configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                        //dotnetRestore(project: params.PROJECT_NAME)
+                        dotnetBuild(project: params.PROJECT_NAME, configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=${ASSEMBLY_VERSION} -nowarn:DV2001")
                     }
                 }
                 stage('Build release') {
                     steps {
-                        dotnetRestore(project: 'WareLogix.TestDummy')
-                        dotnetBuild(project: 'WareLogix.TestDummy', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
+                        //dotnetRestore(project: 'WareLogix.TestDummy')
+                        dotnetBuild(project: params.PROJECT_NAME, configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=${ASSEMBLY_VERSION} -nowarn:DV2001")
                     }
                 }
             }
@@ -45,7 +77,7 @@ pipeline {
 
         stage('Pack') {
             steps {
-                dotnetPack(project: 'WareLogix.TestDummy', configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
+                dotnetPack(project: params.PROJECT_NAME, configuration: 'Release', noBuild: true, noRestore: true, nologo: true, optionsString: "-p:Version=${ASSEMBLY_VERSION}")
                 //bat 'dir'
             }
         }
@@ -62,7 +94,7 @@ pipeline {
                 
                 echo 'Deploying application...'
 
-                dotnetNuGetPush(root: 'WareLogix.TestDummy/bin/Release/WareLogix.TestDummy.1.0.0.nupkg', source: 'http://localhost:8081/repository/nuget-hosted/', apiKeyId: 'localhost-nexus-nuget-admin-api-key')
+                dotnetNuGetPush(root: "WareLogix.TestDummy/bin/Release/WareLogix.TestDummy.${ASSEMBLY_VERSION}.nupkg", source: 'http://localhost:8081/repository/nuget-hosted/', apiKeyId: 'localhost-nexus-nuget-admin-api-key')
 
 
 //                 pwsh '''
@@ -85,7 +117,13 @@ pipeline {
 
     post {
         always {
-            bat 'dir WareLogix.TestDummy /s'
+            script {
+                if (params.DEBUG_PIPELINE) { // PRINT ENVIRONMENT VARIABLES ONLY IF WE ARE DEBUGGING THE PIPELINE
+                    bat 'set'
+                    bat 'dir WareLogix.TestDummy /s'
+                }
+            }
+
             //archiveArtifacts artifacts:'WareLogix.TestDummy/bin/Release/net8.0/** , WareLogix.TestDummy/bin/Debug/net8.0/**'
             //archiveArtifacts artifacts:'WareLogix.TestDummy/bin/Release/net8.0/**'
             echo 'Pipeline completed.'
