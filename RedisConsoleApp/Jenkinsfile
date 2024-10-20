@@ -30,11 +30,11 @@ pipeline {
             }
         }
 
-        stage('Deployment check') {
-            steps {
-                input "Deploy to Minikube?"
-            }
-        }
+        //stage('Deployment check') {
+        //    steps {
+        //        input "Deploy to Minikube?"
+        //    }
+        //}
 
         stage('Deploy') {
             steps {
@@ -47,7 +47,7 @@ $nextContainerImageName = "redis-console-app:0.0.0.$env:BUILD_NUMBER"
 Write-Host $nextContainerImageName
 
 Push-Location
-Set-Location .\\SimpleJobConsoleApp\\
+Set-Location .\\RedisConsoleApp\\
 
 minikube image build . -t $nextContainerImageName -f .\\Dockerfile
 kubectl set image cronjob/test-job test-job=docker.io/library/$nextContainerImageName
