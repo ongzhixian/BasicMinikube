@@ -62,7 +62,7 @@ pipeline {
                 
                 echo 'Deploying application...'
 
-                dotnetNuGetPush(root: 'WareLogix.TestDummy/bin/Release/WareLogix.TestDummy.1.0.0.nupkg', source: 'http://localhost:8081/repository/nuget-hosted/')
+                dotnetNuGetPush(root: 'WareLogix.TestDummy/bin/Release/WareLogix.TestDummy.1.0.0.nupkg', source: 'http://localhost:8081/repository/nuget-hosted/', apiKeyId: 'localhost-nexus-nuget-admin-api-key')
 
 
 //                 pwsh '''
