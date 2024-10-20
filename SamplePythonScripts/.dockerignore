@@ -1,0 +1,14 @@
+# .dockerignore
+
+# Build artifacts folders
+bin/
+obj/
+.vs/
+.git/
+.github/
+
+# Other artifacts that do not need to go into container image
+helm/
+publish.ps1
+mk-*.ps1
+version.txt

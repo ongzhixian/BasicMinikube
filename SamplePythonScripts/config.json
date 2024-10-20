@@ -1,0 +1,11 @@
+{
+    "minio": {
+        "endpoint": "localhost:19000",
+        "access_key": "eSeskFRnAwg2Jbr7O8Sb",
+        "secure": false
+    },
+    "oanda": {
+        "endpoint": "https://api-fxpractice.oanda.com",
+        "account": "101-003-11976008-005"
+    }
+}

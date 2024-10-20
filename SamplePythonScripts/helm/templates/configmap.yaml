@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-python
+data:
+  myvalue: "Hello World"
+{{ (.Files.Glob "foo/*").AsConfig | indent 2 }}
