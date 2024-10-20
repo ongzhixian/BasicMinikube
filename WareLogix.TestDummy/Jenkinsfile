@@ -15,6 +15,7 @@ pipeline {
         stage('Restore') {
             steps {
                 dotnetRestore()
+                dotnetRestore(project: 'WareLogix.TestDummy')
             }
         }
 
@@ -22,13 +23,13 @@ pipeline {
             parallel {
                 stage('Build debug') {
                     steps {
-                        dotnetRestore()
+                        dotnetRestore(project: 'WareLogix.TestDummy')
                         dotnetBuild(project: 'WareLogix.TestDummy', configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
                 stage('Build release') {
                     steps {
-                        dotnetRestore()
+                        dotnetRestore(project: 'WareLogix.TestDummy')
                         dotnetBuild(project: 'WareLogix.TestDummy', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
                     }
                 }
