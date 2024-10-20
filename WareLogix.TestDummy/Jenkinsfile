@@ -45,7 +45,7 @@ pipeline {
 
         stage('Pack') {
             steps {
-                dotnetPack(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
+                dotnetPack(project: 'WareLogix.TestDummy', configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
                 //bat 'dir'
             }
         }
