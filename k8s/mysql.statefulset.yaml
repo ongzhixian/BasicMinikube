@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mysql-app
+  name: mysql-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mysql-app
+    spec:
+      volumes:
+      - name: console-job-configmap-volume
+        configMap:
+          name: console-job
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+      containers:
+      - image: docker.io/library/mysql:5.7
+        name: mysql-app
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+        - name: MYSQL_DATABASE
+          value: mini
+        - name: MYSQL_USER
+          value: msql_developer
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        resources: {}
+        volumeMounts:
+        - name: console-job-configmap-volume
+          readOnly: true
+          mountPath: "/opt/app/appsettings.json"
+          subPath: "appsettings.json"
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+status: {}
