@@ -42,7 +42,7 @@ pipeline {
 
         stage('Pack') {
             steps {
-                dotnetTest(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
+                dotnetPack(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
                 //bat 'dir'
             }
         }
