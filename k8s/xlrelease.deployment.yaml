@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: xlrelease
+  name: xlrelease
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xlrelease
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: xlrelease
+    spec:
+      containers:
+      - image: docker.io/xebialabs/xl-release:22.3.7
+        name: xl-release
+        ports:
+          - containerPort: 5516
+        env:
+          - name: ADMIN_PASSWORD
+            value: "xlrelease"
+          - name: ACCEPT_EULA
+            value: "y"
+        resources: {}
+status: {}

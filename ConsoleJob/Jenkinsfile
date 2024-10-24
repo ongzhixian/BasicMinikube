@@ -1,84 +1,46 @@
-pipeline {
 
-    agent any
+println GroovySystem.version
 
-    stages {
-        stage('Clean') {
-            steps {
-                dotnetClean(configuration: 'Release', nologo: true)
-                println "ZDEBUG: ${env.JOB_NAME}"
-                bat 'set'
-                
-            }
-        }
+def base_app_name = "someBaseAppName"
 
-        stage('Restore') {
-            steps {
-                dotnetRestore()
-            }
-        }
+def options = [
+    'build_base'    : false,
+    'build_manager' : true,
+    'build_worker'  : false,
+]
 
-        stage('Build') {
-            parallel {
-                stage('Build debug') {
-                    steps {
-                        dotnetBuild(project: 'ConsoleJob', configuration: 'Debug', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
-                    }
-                }
-                stage('Build release') {
-                    steps {
-                        dotnetBuild(project: 'ConsoleJob', configuration: 'Release', noRestore: true, nologo: true, optionsString: "-p:AssemblyVersion=0.0.0.${BUILD_NUMBER} -nowarn:DV2001")
-                    }
-                }
-            }
+println options
+println base_app_name 
 
-        }
+def projects = []
 
-        stage('Test') {
-            steps {
-                dotnetTest(configuration: 'Release', noBuild: true, noRestore: true, nologo: true)
-                //bat 'dir'
-            }
-        }
 
-        //stage('Deployment check') {
-        //    steps {
-        //        input "Deploy to Minikube?"
-        //    }
-        //}
 
-        stage('Deploy') {
-            steps {
-                // Deployment logic goes here (e.g., pushing to a cloud provider)
-                
-                echo 'Deploying application...'
-//                 pwsh '''
-// minikube status
-// $nextContainerImageName = "redis-console-app:0.0.0.$env:BUILD_NUMBER"
-// Write-Host $nextContainerImageName
+// Insert trigger depending on 
 
-// Push-Location
-// Set-Location .\\ConsoleJob\\
-
-// minikube image build . -t $nextContainerImageName -f .\\Dockerfile
-// kubectl set image cronjob/test-job test-job=docker.io/library/$nextContainerImageName
-
-// Pop-Location
-// '''
-                echo 'Deploying application done'
-            }
-        }
-    }
-
-    post {
-        always {
-            bat 'dir ConsoleJob /s'
-            archiveArtifacts artifacts:'ConsoleJob/bin/Release/net8.0/** , ConsoleJob/bin/Debug/net8.0/**'
-            archiveArtifacts artifacts:'ConsoleJob/bin/Release/net8.0/**'
-            echo 'Pipeline completed.'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
+if (options['build_base']) {
+    println 'build_base true'
+    projects.add([
+        'app_name': "baseImage2",
+        'trigger': true
+    ])
 }
+if (options['build_manager']) {
+    println 'build_manager true'
+    projects.add([
+        'app_name': "managerImage2",
+        'trigger': true
+    ])
+    
+}
+if (options['build_worker']) {
+    println 'build_worker true'
+    projects.add([
+        'app_name': "workerIMage2",
+        'trigger': true
+    ])
+}
+
+
+// Print final
+println projects
