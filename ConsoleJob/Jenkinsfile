@@ -81,7 +81,7 @@ node {
     try {
         stage('Misc') {
             echo 'DO: Others'
-        }
+            error "Program failed, please read logs..."        }
     }
     catch (e) {
         echo 'This will always run when error'
