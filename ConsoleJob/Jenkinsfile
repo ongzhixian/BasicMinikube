@@ -44,3 +44,16 @@ if (options['build_worker']) {
 
 // Print final
 println projects
+
+
+node {
+    stage('Example') {
+        echo 'Hello world'
+
+        //if (env.BRANCH_NAME == 'master') {
+        //    echo 'I only execute on the master branch'
+        //} else {
+        //    echo 'I execute elsewhere'
+        //}
+    }
+}
