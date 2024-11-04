@@ -75,16 +75,18 @@ node {
         echo 'DO: dotnet publish'
     }
 
-    stage('Misc') {
-        echo 'DO: Others'
-    }
+    
 
-    post {
-        always {
-            echo 'DO: Always do this action'
+
+    try {
+        stage('Misc') {
+            echo 'DO: Others'
         }
-        failure {
-            echo 'DO: Always do this action when in failure'
-        }
+    }
+    catch (e) {
+        echo 'This will always run when error'
+    }
+    finally {
+        echo 'This will always run'
     }
 }
