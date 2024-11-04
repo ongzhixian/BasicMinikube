@@ -1,6 +1,8 @@
 
 //println GroovySystem.version
 
+def simulateError = false
+
 def base_app_name = "someBaseAppName"
 
 def options = [
@@ -81,7 +83,11 @@ node {
     try {
         stage('Misc') {
             echo 'DO: Others'
-            error "Program failed, please read logs..."        }
+            if (simulateError) {
+                error "(Simulated) Program failed, please read logs..."
+            }
+            
+        }
     }
     catch (e) {
         echo 'This will always run when error'
