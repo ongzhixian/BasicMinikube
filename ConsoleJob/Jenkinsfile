@@ -56,4 +56,35 @@ node {
         //    echo 'I execute elsewhere'
         //}
     }
+
+    // In a .NET Core project, we should be doing the following
+
+    stage('Restore') {
+        echo 'DO: dotnet restore'
+    }
+
+    stage('Build') {
+        echo 'DO: dotnet build'
+    }
+
+    stage('Test') {
+        echo 'DO: dotnet test'
+    }
+
+    stage('Publish') {
+        echo 'DO: dotnet publish'
+    }
+
+    stage('Misc') {
+        echo 'DO: Others'
+    }
+
+    post {
+        always {
+            echo 'DO: Always do this action'
+        }
+        failure {
+            echo 'DO: Always do this action when in failure'
+        }
+    }
 }
