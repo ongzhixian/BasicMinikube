@@ -88,6 +88,7 @@ data:
         #
         # storage.backlog.mem_limit 5M
 
+    # INPUT FOR `manjob` containers
     [INPUT]
         Name              tail
         Tag               kube.*
@@ -98,7 +99,17 @@ data:
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
         Refresh_Interval  10
-        
+
+    [INPUT]
+        Name              tail
+        Tag               kube.*
+        Path              /var/log/containers/basic-console-app*.log
+        #Exclude_Path      /var/log/containers/coredns-*, /var/log/containers/aws-node*, /var/log/containers/kube-proxy*
+        Parser            docker
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10        
 
     # [INPUT]
     #     Name          systemd
@@ -137,6 +148,18 @@ data:
         Splunk_Token    378b2325-088e-42f2-ab7b-7238368cc875
         tls             on
         tls.verify      off
+
+    [OUTPUT]
+        Name                es
+        Match               kube.*
+        Host                sara
+        Port                9200
+        HTTP_User           elastic
+        HTTP_Passwd         d7i*psHJLNMrluKbdws=
+        Index               minikube
+        Suppress_Type_Name  on
+        tls                 on
+        tls.verify          off
 
   parsers.conf: |
     [PARSER]
