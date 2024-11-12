@@ -1,0 +1,98 @@
+
+//println GroovySystem.version
+
+def simulateError = false
+
+def base_app_name = "someBaseAppName"
+
+def options = [
+    'build_base'    : false,
+    'build_manager' : true,
+    'build_worker'  : false,
+]
+
+println options
+println base_app_name 
+
+def projects = []
+
+
+
+// Insert trigger depending on 
+
+if (options['build_base']) {
+    println 'build_base true'
+    projects.add([
+        'app_name': "baseImage2",
+        'trigger': true
+    ])
+}
+if (options['build_manager']) {
+    println 'build_manager true'
+    projects.add([
+        'app_name': "managerImage2",
+        'trigger': true
+    ])
+    
+}
+if (options['build_worker']) {
+    println 'build_worker true'
+    projects.add([
+        'app_name': "workerIMage2",
+        'trigger': true
+    ])
+}
+
+
+// Print final
+println projects
+
+
+node {
+    stage('Example') {
+        echo 'Hello world'
+
+        //if (env.BRANCH_NAME == 'master') {
+        //    echo 'I only execute on the master branch'
+        //} else {
+        //    echo 'I execute elsewhere'
+        //}
+    }
+
+    // In a .NET Core project, we should be doing the following
+
+    stage('Restore') {
+        echo 'DO: dotnet restore'
+    }
+
+    stage('Build') {
+        echo 'DO: dotnet build'
+    }
+
+    stage('Test') {
+        echo 'DO: dotnet test'
+    }
+
+    stage('Publish') {
+        echo 'DO: dotnet publish'
+    }
+
+    
+
+
+    try {
+        stage('Misc') {
+            echo 'DO: Others'
+            if (simulateError) {
+                error "(Simulated) Program failed, please read logs..."
+            }
+            
+        }
+    }
+    catch (e) {
+        echo 'This will always run when error'
+    }
+    finally {
+        echo 'This will always run'
+    }
+}
