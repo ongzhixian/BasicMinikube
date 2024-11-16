@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: httpd
+  name: httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: httpd
+    spec:
+      volumes:
+      - name: apache-httpd-configmap-volume
+        configMap:
+          name: apache-httpd
+      - name: test-httpd-storage
+        persistentVolumeClaim:
+          claimName: test-httpd-pvc
+      containers:
+      - image: docker.io/library/httpd:2.4
+        name: httpd
+        resources: {}
+        volumeMounts:
+        - mountPath: "/usr/local/apache2/htdocs"
+          name: test-httpd-storage
+        - mountPath: "/usr/local/apache2/conf/httpd.conf"
+          name: apache-httpd-configmap-volume
+          subPath: httpd.conf
+          readOnly: true
+          
+status: {}

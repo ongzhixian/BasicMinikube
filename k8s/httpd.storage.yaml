@@ -1,0 +1,24 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: 'test-httpd-pv'
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/test-httpd
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-httpd-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
