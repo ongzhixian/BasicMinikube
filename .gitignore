@@ -400,5 +400,8 @@ FodyWeavers.xsd
 # SonarQube Scanner
 .sonarqube/
 
+# JetBrains
+.idea/
+
 # 
 .venv/
