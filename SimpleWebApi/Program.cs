@@ -1,11 +1,6 @@
 using System.Net;
 
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 using SimpleWebApi.Extensions;
@@ -15,10 +10,10 @@ using SimpleWebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.AddServerHeader = false;
+    // Suppress "Server" headers in response ; not sure if can set in appsettings.json instead
+    options.AddServerHeader = false; 
 });
 
 //builder.Services.AddProblemDetails();
@@ -70,7 +65,7 @@ var app = builder.Build();
 
 // See: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-9.0#exception-handler-lambda
 // See: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-9.0#exception-handler-page
-//app.UseExceptionHandler(exceptionHandlerApp => {exceptionHandlerApp.Run(async context => await Results.Problem().ExecuteAsync(context)));
+
 app.UseExceptionHandler(exceptionHandler =>
 {
     exceptionHandler.Run(async context =>
@@ -92,9 +87,11 @@ app.UseExceptionHandler(exceptionHandler =>
             return;
         }
 
+        //app.UseExceptionHandler(exceptionHandlerApp => {exceptionHandlerApp.Run(async context => await Results.Problem().ExecuteAsync(context)));
         await Results.Problem().ExecuteAsync(context);
     });
 });
+
 
 app.UseCors("AllowAll");
 
@@ -107,10 +104,11 @@ if (app.Environment.IsDevelopment())
         {
             swagger.Info.Title = "Eima API";
             swagger.Info.Version = "v1";
-            swagger.Info.TermsOfService = new Uri("http://localhost");
-            swagger.Info.License = new OpenApiLicense { Name = "TODO: Add licence", Url = new Uri("http://localhost-lic") };
-            swagger.Info.Description = "API for Eima";
-            swagger.Info.Contact = new OpenApiContact { Name = "Contact person", Email = "zhixian@hotmail.com", Url = new Uri("http://todo-localhostcontact") };
+            swagger.Info.Description = "API for Education Institution Management Application (Eima for short)";
+            // Eima => acronym for Education Institution Management Application
+            swagger.Info.License = new OpenApiLicense { Name = "Apache License 2.0", Url = new Uri($"{httpReq.Scheme}://{httpReq.Host.Value}/license.html") };
+            swagger.Info.TermsOfService = new Uri($"{httpReq.Scheme}://{httpReq.Host.Value}/terms-of-service.html");
+            swagger.Info.Contact = new OpenApiContact { Name = "Contact person", Email = "zhixian@hotmail.com", Url = new Uri($"{httpReq.Scheme}://{httpReq.Host.Value}/contact.html") };
 
             swagger.Servers = new List<OpenApiServer> {
                 new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}" },
@@ -129,36 +127,35 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles();
+
+app.UseStaticFiles();
+
+app.UseCorrelationIdMiddleware();
+
 //AddDefaultRoute(app);
 //AddGetEnvironmentVariablesRoute(app);
 //AddGetDateRoute(app);
 //StudentApi.AddStudentApi(app);
 
+//app.MapGet("/terms-of-service", () =>
+//{
+//    return Results.Content("<h1>Thanks for accepting our terms of service!</h1>", "text/html");
+//});
+//app.MapGet("/contact", () =>
+//{
+//    return Results.Content("<h1>Contact information to be added here!</h1>", "text/html");
+//});
+
 app.MapGroup("/public/course")
     .WithCourseApi();
-
-    //.WithOpenApi(operation =>
-    //{
-        
-    ////     //operation.OperationId = "CourseOps";
-    ////     //operation.Summary = "This is a summary";
-    ////     //operation.Description = "This is a description";
-
-    ////     //operation.Deprecated = true;
-    ////     operation.Tags = new List<OpenApiTag> { new() { Name = "Course" } };
-    ////     //var parameter = operation.Parameters[0];
-    ////     //parameter.Description = "The ID associated with the created Todo";
-
-    //    return operation;
-    //});
 
 
 app.MapHub<ChatHub>("/chatHub");
 
-
 //app.UseCors("AllowAnyPolicy");
 
-app.UseCorrelationIdMiddleware();
+
 
 app.Run();
 
@@ -240,5 +237,18 @@ void AddGetDateRoute(WebApplication app)
     })
     .WithName("GetDate")
     .WithOpenApi();
+    //.WithOpenApi(operation =>
+    //{
 
+    ////     //operation.OperationId = "CourseOps";
+    ////     //operation.Summary = "This is a summary";
+    ////     //operation.Description = "This is a description";
+
+    ////     //operation.Deprecated = true;
+    ////     operation.Tags = new List<OpenApiTag> { new() { Name = "Course" } };
+    ////     //var parameter = operation.Parameters[0];
+    ////     //parameter.Description = "The ID associated with the created Todo";
+
+    //    return operation;
+    //});
 }

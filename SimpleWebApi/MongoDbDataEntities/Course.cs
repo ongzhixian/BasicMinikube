@@ -18,7 +18,6 @@ public record Course
     [Description("An integer that describes the education standard of course. For example 10 for grade 10 course")]
     [Required, Range(1, ushort.MaxValue)]
     public required ushort Level { get; set; }
-
     
     [Description("Descriptive name for the course. For example English for an course in English")]
     [Required]
