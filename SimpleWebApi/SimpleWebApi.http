@@ -1,6 +1,29 @@
-@SimpleWebApi_HostAddress = http://localhost:5205
+# See https://learn.microsoft.com/en-us/aspnet/core/test/http-files
+# @SimpleWebApi_HostAddress = http://localhost:5206
+# Use 
 
 GET {{SimpleWebApi_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+
+GET {{HostAddress}}/date?dd={{$datetime "dd-MM-yyyy"}}
+X-API-KEY: {{VAR_test2}}
+X-UserName: {{$processEnv USERNAME}}
+Content-Type: application/json; charset=utf-8
+Accept: application/json
+{
+    "date": "2023-05-10",
+    "temperatureC": 30,
+    "summary": "Warm"
+}
+
+### POST
+
+POST {{HostAddress}}/public/course
+Content-Type: application/json; charset=utf-8
+{
+  "subjectCode": "stri",
+  "name": "string"
+}
