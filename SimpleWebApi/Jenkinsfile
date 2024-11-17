@@ -1,7 +1,6 @@
-
-//println GroovySystem.version
-
-def simulateError = false
+/*  About
+    This is a Scripted Pipeline to build SimpleWebApi
+*/
 
 def base_app_name = "someBaseAppName"
 
