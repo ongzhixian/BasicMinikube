@@ -36,5 +36,11 @@ public class MongoDbServices
             return database.GetCollection<Course>((string)key);
         });
 
+        services.AddKeyedSingleton("student", (sp, key) =>
+        {
+            var database = sp.GetRequiredKeyedService<IMongoDatabase>(databaseName);
+            return database.GetCollection<Student>((string)key);
+        });
+
     }
 }

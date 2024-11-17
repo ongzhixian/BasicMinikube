@@ -1,8 +1,13 @@
 using System.Net;
+using System.Text;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using SimpleWebApi;
 using SimpleWebApi.Extensions;
 using SimpleWebApi.Hubs;
 using SimpleWebApi.RouteGroups;
@@ -13,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
 {
     // Suppress "Server" headers in response ; not sure if can set in appsettings.json instead
-    options.AddServerHeader = false; 
+    options.AddServerHeader = false;
 });
 
 //builder.Services.AddProblemDetails();
@@ -51,6 +56,33 @@ builder.Services.AddCors(options =>
     //        .AllowCredentials());
 });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+    SymmetricSecurityKey issuerSigningKey = new(
+        Encoding.UTF8.GetBytes(
+            builder.Configuration["DailyWorkJournalSecurityKey"] ?? throw new NullReferenceException("DailyWorkJournalSecurityKey configuration missing")));
+
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateLifetime = false,
+
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Authentication:Schemes:Bearer:Issuer"],
+
+        ValidateAudience = true,
+        ValidAudiences = builder.Configuration.GetSection("Authentication:Schemes:Bearer:Audiences").Get<IEnumerable<string>>(),
+        //ValidAudience = builder.Configuration["Authentication:Schemes:Bearer:Audiences"],
+
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = issuerSigningKey,
+    };
+
+});
 
 
 MongoDbServices.AddDefinitions(builder.Services, builder.Configuration);
@@ -59,7 +91,11 @@ builder.Services.AddScoped<CourseService>();
 
 builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(op =>
+{
+    op.OperationFilter<AuthResponsesOperationFilter>();
+    //op.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 var app = builder.Build();
 
@@ -78,12 +114,12 @@ app.UseExceptionHandler(exceptionHandler =>
                 Microsoft.AspNetCore.Http.BadHttpRequestException => (int)HttpStatusCode.BadRequest,
                 _ => (int)HttpStatusCode.InternalServerError
             };
-            
+
             if (exceptionHandlerFeature.Error.InnerException != null)
                 await context.Response.WriteAsync($"{exceptionHandlerFeature.Error.Message}\r\n{exceptionHandlerFeature.Error.InnerException.Message}");
             else
                 await context.Response.WriteAsync($"{exceptionHandlerFeature.Error.Message}");
-                
+
             return;
         }
 
@@ -95,11 +131,16 @@ app.UseExceptionHandler(exceptionHandler =>
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(swaggerOptions =>
     {
+        
         swaggerOptions.PreSerializeFilters.Add((swagger, httpReq) =>
         {
             swagger.Info.Title = "Eima API";
@@ -115,13 +156,58 @@ if (app.Environment.IsDevelopment())
                 new OpenApiServer { Url = $"https://localhost:5207" },
             };
 
+            //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            //{
+            //    Name = "Authorization",
+            //    Type = SecuritySchemeType.ApiKey,
+            //    Scheme = "Bearer",
+            //    BearerFormat = "JWT",
+            //    In = ParameterLocation.Header,
+            //    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+            //});
+
+            //swagger.Components.SecuritySchemes.Add("Bearer", new OpenApiSecurityScheme()
+            //{
+            //    Name = "Authorization",
+            //    Type = SecuritySchemeType.ApiKey,
+            //    Scheme = "Bearer",
+            //    BearerFormat = "JWT",
+            //    In = ParameterLocation.Header,
+            //    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+            //});
+
+            // This add security requirements for all operations
+            // But ideally, we want to skip adding security requirements (the 'padlock') if its an anonymous operation
+            //swagger.SecurityRequirements.Add(new OpenApiSecurityRequirement
+            //{
+            //    {
+            //        new OpenApiSecurityScheme
+            //        {
+                      
+            //            Reference = new OpenApiReference
+            //            {
+            //                Type=ReferenceType.SecurityScheme,
+            //                Id="Bearer"
+            //            }
+            //        },
+            //        []
+            //    }
+            //});
+
+            
             // TODO: Further investigare what can be customized with "swagger"
         });
+
+
     });
 
     app.UseSwaggerUI(swaggerUiOptions =>
     {
         swaggerUiOptions.DocumentTitle = "Eima Open API";
+        //swaggerUiOptions.RoutePrefix = "swagger";
+        //swaggerUiOptions.SwaggerEndpoint("v1/swagger.json", "My API V1");
+
+        
     });
 }
 
@@ -147,14 +233,23 @@ app.UseCorrelationIdMiddleware();
 //    return Results.Content("<h1>Contact information to be added here!</h1>", "text/html");
 //});
 
+
+app.MapGroup("/health")
+    .WithHealthApi()
+    //.RequireAuthorization();
+    //.AllowAnonymous()
+    ;
+
 app.MapGroup("/public/course")
     .WithCourseApi();
+
+app.MapGroup("/public/json-web-token")
+    .WithJsonWebTokenApi();
 
 
 app.MapHub<ChatHub>("/chatHub");
 
 //app.UseCors("AllowAnyPolicy");
-
 
 
 app.Run();
@@ -177,7 +272,7 @@ void AddDefaultRoute(WebApplication app)
     //.WithDisplayName("Default endpoint")
     //.WithTags("TodoGroup")
     //.WithName("GetDefault") // Operation id
-    .WithOpenApi(operation => 
+    .WithOpenApi(operation =>
     {
         operation.OperationId = "GetTodos";
         operation.Summary = "This is a summary";
@@ -186,7 +281,7 @@ void AddDefaultRoute(WebApplication app)
         operation.Tags = new List<OpenApiTag> { new() { Name = "Todos" } };
 
 
-        
+
         //var parameter = operation.Parameters[0];
         //parameter.Description = "The ID associated with the created Todo";
 
@@ -195,7 +290,7 @@ void AddDefaultRoute(WebApplication app)
 
     app.MapGet("/200", ([Microsoft.AspNetCore.Mvc.FromQuery] ushort sleep = ushort.MinValue) =>
     {
-        if (sleep > 0) 
+        if (sleep > 0)
             Thread.Sleep(sleep);
 
         return "OK (SimpleWebApi)";
