@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Diagnostics;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 
@@ -6,6 +7,7 @@ namespace SimpleWebApi.RouteGroups;
 
 public static class HealthRouteGroup
 {
+    private static ActivitySource activitySource = new ActivitySource("SimpleWebApi");
 
     public static RouteGroupBuilder WithHealthApi(this RouteGroupBuilder group)
     {
@@ -50,6 +52,14 @@ public static class HealthRouteGroup
     [Authorize]
     private static Microsoft.AspNetCore.Http.HttpResults.Ok GetHealth(HttpContext context)
     {
+        
+
+        using var activity = activitySource.StartActivity("GetHealth");
+        //_logger.LogInformation("HTTP GET request received"); 
+        //return Ok(new { Message = "Hello, world!" });
+
+        Console.WriteLine("KOKOK");
+
         return TypedResults.Ok();
     }
 }
