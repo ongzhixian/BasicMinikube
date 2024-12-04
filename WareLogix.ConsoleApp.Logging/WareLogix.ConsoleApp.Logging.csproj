@@ -19,6 +19,7 @@
         <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
         <PackageReference Include="WareLogix" Version="0.0.1" />
     </ItemGroup>
 

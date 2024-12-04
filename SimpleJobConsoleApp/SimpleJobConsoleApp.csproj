@@ -16,6 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
         <PackageReference Include="WareLogix.Configuration" Version="1.0.6" />
         <PackageReference Include="WareLogix.ConsoleApp.Logging" Version="0.0.17" />
     </ItemGroup>
