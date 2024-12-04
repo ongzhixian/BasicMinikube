@@ -6,6 +6,9 @@ metadata:
     app: httpd
   name: httpd
 spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
   ports:
   - port: 80
     protocol: TCP
