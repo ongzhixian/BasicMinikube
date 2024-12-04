@@ -10,6 +10,7 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
         <ProjectReference Include="..\WareLogix.Caching\WareLogix.Caching.csproj" />
         <ProjectReference Include="..\WareLogix.WebApi.Logging\WareLogix.WebApi.Logging.csproj" />
         <ProjectReference Include="..\WareLogix.WebApi.Metrics\WareLogix.WebApi.Metrics.csproj" />

@@ -18,6 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
         <PackageReference Include="WareLogix" Version="0.0.1" />
     </ItemGroup>
 
