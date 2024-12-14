@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Data Source=D:/data/sqlite/object-storage.sqlite3;Cache=Shared" Microsoft.EntityFrameworkCore.Sqlite --project .\ObjectStoreWebApi\ --context-dir DbContexts --output-dir DbModels --table storage_bucket --table storage_object --no-onconfiguring --force
