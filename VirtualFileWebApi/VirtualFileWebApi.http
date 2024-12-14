@@ -1,0 +1,6 @@
+@VirtualFileWebApi_HostAddress = http://localhost:5267
+
+GET {{VirtualFileWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
