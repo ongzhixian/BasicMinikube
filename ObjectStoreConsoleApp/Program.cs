@@ -1,166 +1,69 @@
 ﻿using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using Amazon.S3.Model;
 
 using Microsoft.Extensions.Configuration;
 
-//IAmazonS3 client = new AmazonS3Client();
-//string bucketName = string.Empty;
-//string filePath = string.Empty;
-//string keyName = string.Empty;
+using ObjectStoreConsoleApp.Configuration;
+using ObjectStoreConsoleApp.Services;
 
-AWSConfigs.LoggingConfig.LogResponses = ResponseLoggingOption.Always;
-AWSConfigs.LoggingConfig.LogResponsesSizeLimit = int.MaxValue; //1024 * 1024 * 36;
-AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Console;
-//AWSConfigs.AddTraceListener
+ConfigureAwsLogging();
 
 IConfigurationRoot configurationRoot = GetConfiguration();
+Console.WriteLine($"{configurationRoot}");
 
-string accessKeyID = configurationRoot["minio_aws_access_key_id"] ?? throw new NullReferenceException("minio_aws_access_key_id");
-string secretAccessKeyID = configurationRoot["minio_aws_secret_access_key"] ?? throw new NullReferenceException("minio_aws_secret_access_key");
+var objectStoreConfiguration = new ObjectStoreConfiguration();
+configurationRoot.GetSection("ObjectStore").Bind(instance: objectStoreConfiguration);
 
-BasicAWSCredentials awsCredentials = new BasicAWSCredentials(accessKeyID, secretAccessKeyID);
+Console.WriteLine($"AppContext.BaseDirectory {AppContext.BaseDirectory}");
+Console.WriteLine($"AppDomain.CurrentDomain.BaseDirectory {AppDomain.CurrentDomain.BaseDirectory}");
+Console.WriteLine($"Environment.CurrentDirectory is {Environment.CurrentDirectory}");
+Console.WriteLine($"Directory.GetCurrentDirectory() is {Directory.GetCurrentDirectory()}");
+Console.WriteLine($"Selected profile: {objectStoreConfiguration.SelectedProfile}");
 
-var s3ClientConfig = new AmazonS3Config
-{
-    ServiceURL = "http://localhost:19000",
+BasicAWSCredentials awsCredentials = objectStoreConfiguration.GetBasicAWSCredentials(configurationRoot);
 
-    // ForcePathStyle
-    // Forces requests to be sent to using path addressing style: http://localhost:19000/{bucket-name}
-    // Otherwise by default it will use virtual host addressing style and send requests to:
-    // http://{bucket-name}.localhost:19000
-    // Which would failed with an error message of: 'No such host is known. (mybucket.localhost:19000)'
-    // Reference: https://github.com/localstack/localstack/issues/7652
-    ForcePathStyle = true,
-
-    //ProxyHost = "localhost",
-    //ProxyPort = 8083
-
-    //Profile = new Amazon.Profile("minio")
-    //RegionEndpoint = Amazon.RegionEndpoint.USEast1 // Set appropriate region if needed
-};
+AmazonS3Config s3ClientConfig = objectStoreConfiguration.GetAmazonS3Config();
 
 string bucketName = "mybucket";
+bucketName = "lab-bucket1";
 
-using (var s3Client = new AmazonS3Client(awsCredentials, s3ClientConfig))
-{
-    // Before
-    await ListBuckets(s3Client, "Before we start");
-    
-    //await CreateBucketAsync(s3Client, bucketName);
-    //await ListBuckets(s3Client, "After PutBucketAsync");
+var s3 = new S3Service(awsCredentials, s3ClientConfig);
 
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\bag.jpg");
+// SCRIPT
 
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\camera.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\clipper-board.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\cloud.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\feather.png");
+await ListBuckets(s3, "[START]");
 
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\flower.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\large-lens.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\mountain.png");
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\yellow-flower.png");
+//await AddBucket(s3, bucketName);
 
-    //await PutObjectIntoBucketAsync(s3Client, bucketName, "C:\\src\\temp\\test-pics\\TestEmfPptx.pptx");
+//await ListBuckets(s3, "after add bucket");
 
-    await displayBucketContents("Bucket contents after PutObjectAsync", s3Client, bucketName);
+await RemoveBucket(s3, bucketName);
 
-    // Create a GetObject request
-    //Console.WriteLine(">>>" + $"Getting object");
-    //var getObjectRequest = new GetObjectRequest
-    //{
-    //    BucketName = bucketName,
-    //    Key = "7334e2d3-a4e6-4a8e-b95d-7e660be76a3c",
-    //};
+await ListBuckets(s3, "after remove bucket");
 
-    //// Issue request and remember to dispose of the response
-    //using GetObjectResponse getObjectResponse = await s3Client.GetObjectAsync(getObjectRequest);
-    
-    //await getObjectResponse.WriteResponseStreamToFileAsync($"C:\\src\\temp\\getobject-{Guid.NewGuid().ToString("N")}.pptx", true, CancellationToken.None);
+Console.WriteLine("[All done]");
 
-
-    //// Remove item from bucket
-    //var deleteObjectRequest = new DeleteObjectRequest
-    //{
-    //    BucketName = bucketName,
-    //    Key = "bag.jpg",
-    //};
-
-    //Console.WriteLine(">>>" + $"Deleting object");
-    //await s3Client.DeleteObjectAsync(deleteObjectRequest);
-    //deleteObjectRequest = new DeleteObjectRequest
-    //{
-    //    BucketName = bucketName,
-    //    Key = "TestEmfPptx.pptx",
-    //};
-
-    //Console.WriteLine($"Deleting object: {keyName}");
-    //await s3Client.DeleteObjectAsync(deleteObjectRequest);
-    //await displayBucketContents("Bucket contents after DeleteObjectAsync", s3Client, bucketName);
-
-
-    // Delete bucket
-    //await RemoveBucketAsync(s3Client, bucketName);
-    //await ListBuckets(s3Client, "After DeleteBucketAsync");
-}
-
-
-
-async Task PutObjectIntoBucketAsync(AmazonS3Client s3Client, string bucketName, string filePath)
-{
-    Console.WriteLine($"    [Putting {filePath} into bucket {bucketName}]");
-
-    var putObjectRequest = new PutObjectRequest
-    {
-        BucketName = bucketName,
-        Key = Guid.NewGuid().ToString(),
-        InputStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read),
-        ContentType = System.Net.Mime.MediaTypeNames.Image.Png
-        //FilePath = "C:\\src\\temp\\bag.jpg",
-        
-    };
-
-    var response = await s3Client.PutObjectAsync(putObjectRequest);
-
-    Console.WriteLine($">>> PutObjectResponse >>> {response}");
-
-    
-}
-
-async Task RemoveBucketAsync(AmazonS3Client s3Client, string bucketName)
-{
-    Console.WriteLine($"    [Removing bucket {bucketName}]");
-
-    var response = await s3Client.DeleteBucketAsync(bucketName);
-
-    Console.WriteLine($">>> DeleteBucketResponse >>> {response}");
-}
-
-async Task CreateBucketAsync(AmazonS3Client s3Client, string bucketName)
-{
-    Console.WriteLine($"    [Putting bucket {bucketName}]");
-
-    PutBucketRequest putBucketRequest = new PutBucketRequest();
-    putBucketRequest.BucketName = bucketName;
-    
-    var response = await s3Client.PutBucketAsync(putBucketRequest);
-    Console.WriteLine($">>> PutBucketResponse >>> {response}");
-}
-
+return;
 
 // PRIVATE METHODS
+static void ConfigureAwsLogging()
+{
+    AWSConfigs.LoggingConfig.LogResponses = ResponseLoggingOption.Always;
+    AWSConfigs.LoggingConfig.LogResponsesSizeLimit = int.MaxValue; //1024 * 1024 * 36;
+    AWSConfigs.LoggingConfig.LogTo = LoggingOptions.Console;
+    //AWSConfigs.AddTraceListener
+}
 
 static IConfigurationRoot GetConfiguration()
 {
-
     //Console.WriteLine($"Environment.CurrentDirectory is {Environment.CurrentDirectory}");
     //Console.WriteLine($"Directory.GetCurrentDirectory() is {Directory.GetCurrentDirectory()}");
-    //Findings: They are the same for console app;
+    //Findings: They are the same for console app; but we should really be using AppContext.BaseDirectory
+    //          This is because if we run the executable in a different directory, CurrentDirectory will reference that location
 
     var builder = new ConfigurationBuilder()
-        .SetBasePath(Environment.CurrentDirectory)
+        .SetBasePath(AppContext.BaseDirectory)
         .AddUserSecrets("47df7034-c1c1-4b87-8373-89f5e42fc9ec")
         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
         //A plain old console app does not have "env" (that comes from host builder)
@@ -174,53 +77,46 @@ static IConfigurationRoot GetConfiguration()
     return builder.Build();
 }
 
-static async Task ListBuckets(AmazonS3Client s3Client, string comment)
+static async Task ListBuckets(S3Service s3, string? comment = null)
 {
-    Console.WriteLine($"    [{comment}]");
-    var response = await s3Client.ListBucketsAsync();
+    Console.Write($"[{nameof(ListBuckets)}]");
+    if (comment == null)
+        Console.WriteLine();
+    else
+        Console.WriteLine($" - {comment}");
 
-    Console.WriteLine($">>> {response.Buckets.Count} bucket(s) found:");
-    response.Buckets.ForEach(bucket => Console.WriteLine($">>> {bucket.BucketName}"));
+    var buckets = await s3.ListBucketsAsync();
 
-    Console.WriteLine($">>> ListBucketsResponse >>> {response}");
+    foreach (var item in buckets)
+        Console.WriteLine(item.BucketName);
+
+    Console.WriteLine();
 }
 
-static async Task ListDirectoryBuckets(string v, AmazonS3Client s3Client)
+static async Task AddBucket(S3Service s3, string bucketName, string? comment = null)
 {
-    Console.WriteLine(v);
+    Console.Write($"[{nameof(AddBucket)}]");
+    if (comment == null)
+        Console.WriteLine();
+    else
+        Console.WriteLine($" - {comment}");
 
-    ListDirectoryBucketsRequest req = new ListDirectoryBucketsRequest();
+    var response = await s3.CreateBucketAsync(bucketName);
 
-    var actionResponse = await s3Client.ListDirectoryBucketsAsync(req);
-    Console.WriteLine(">>>" + $"{actionResponse.Buckets.Count} bucket(s) found in directory:");
-    actionResponse.Buckets.ForEach(bucket =>
-    {
-        Console.WriteLine(bucket.BucketName);
-    });
+    Console.WriteLine($"[{nameof(AddBucket)}] received {response}");
+    Console.WriteLine();
 }
 
-static async Task displayBucketContents(string v, AmazonS3Client s3Client, string bucketName)
+static async Task RemoveBucket(S3Service s3, string bucketName, string? comment = null)
 {
-    Console.WriteLine(">>>" + $"{v}: {bucketName}");
+    Console.Write($"[{nameof(RemoveBucket)}]");
+    if (comment == null)
+        Console.WriteLine();
+    else
+        Console.WriteLine($" - {comment}");
 
-    ListObjectsV2Request listObjectsRequest;
-    ListObjectsV2Response listObjectResponse;
+    var response = await s3.DeleteBucketAsync(bucketName);
 
-    listObjectsRequest = new ListObjectsV2Request
-    {
-        BucketName = bucketName,
-        MaxKeys = 5,
-    };
-    do
-    {
-        listObjectResponse = await s3Client.ListObjectsV2Async(listObjectsRequest);
-
-        listObjectResponse.S3Objects
-            .ForEach(obj => Console.WriteLine(">>>" + $"{obj.Key,-35}{obj.LastModified.ToShortDateString(),10}{obj.Size,10}"));
-
-        // If the response is truncated, set the request ContinuationToken
-        // from the NextContinuationToken property of the response.
-        listObjectsRequest.ContinuationToken = listObjectResponse.NextContinuationToken;
-    }
-    while (listObjectResponse.IsTruncated);
+    Console.WriteLine($"[{nameof(RemoveBucket)}] received {response}");
+    Console.WriteLine();
 }
