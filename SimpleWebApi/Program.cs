@@ -70,7 +70,7 @@ builder.Services.AddOpenTelemetry()
               opt.Endpoint = new Uri("https://tempo-us-central1.grafana.net");
 
               string username = "someusername";
-              string password = somepassword";
+              string password = "somepassword";
               
               //var authenticationString = $"{username}:{password}";
               //var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(authenticationString));
