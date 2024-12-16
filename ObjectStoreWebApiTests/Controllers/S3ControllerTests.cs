@@ -16,13 +16,12 @@ public class S3ControllerTests
     {
     }
 
-    
-
+    [TestMethod]
     public void GetBucketListTest()
     {
         objectStoreService.Setup(m => m.ListBuckets());
 
-        S3Controller controller = new S3Controller(logger.Object, objectStoreService.Object);
+        var controller = new S3Controller(logger.Object, objectStoreService.Object);
 
         controller.GetBucketList();
 
