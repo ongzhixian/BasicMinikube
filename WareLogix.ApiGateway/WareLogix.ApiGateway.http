@@ -1,0 +1,6 @@
+@WareLogix.ApiGateway_HostAddress = http://localhost:5278
+
+GET {{WareLogix.ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
