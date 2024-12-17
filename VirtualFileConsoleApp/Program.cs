@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
 
 //String proxyURL = "http://103.167.135.111:80";
 //WebProxy webProxy = new WebProxy(proxyURL);
@@ -16,9 +17,10 @@ client.BaseAddress = new Uri("http://localhost:5266");
 
 //await GetFileListAsync();
 
-string uploadDirectory = "C:\\src\\temp\\test-pics";
+//string uploadDirectory = "C:\\src\\temp\\test-pics";
+//await AddFile("pics/camera.png", "C:\\src\\temp\\test-pics\\camera.png");
 
-await AddFile("pics/camera.png", "C:\\src\\temp\\test-pics\\camera.png");
+//await AddFile("pics/camera.png", "C:\\src\\temp\\test-pics\\camera.png");
 
 //foreach (var filePath in System.IO.Directory.GetFiles(uploadDirectory))
 //{
@@ -33,7 +35,66 @@ await AddFile("pics/camera.png", "C:\\src\\temp\\test-pics\\camera.png");
 
 //await DeleteFile("virtualFilePath");
 
+//await GetFileListAsync();
+
+var byteArray = CreateVirtualFileAsByteArray(1024 * 1024);
+
+
+for (int i = 0; i < 1024; i++)
+{
+    await PostContent($"Path1/Path2/File{i}", byteArray, System.Net.Mime.MediaTypeNames.Application.Octet);
+    Console.WriteLine("Line [{0, 5:0000}]", i);
+}
+
+
 return;
+
+Stream CreateVirtualFile(int targetSize)
+{
+    int currentLine = 0;
+    StringBuilder sb = new StringBuilder();
+    while (sb.Length < (1024 * 83))
+    {
+        // 12345678901234567890123456789012345678901234567890
+        // LINE 00000123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+        sb.AppendLine($"Hello world from bucket-object; Line {currentLine++, -5}");
+    }
+
+    return new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString()));
+    
+    //Console.WriteLine($"Message has {currentLine} lines");
+}
+
+byte[] CreateVirtualFileAsByteArray(int targetSize)
+{
+    int currentLine = 0;
+    StringBuilder sb = new StringBuilder();
+    while (sb.Length < (1024 * 83))
+    {
+        sb.AppendLine($"Hello world from bucket-object; Line {currentLine++,-5}");
+    }
+
+    return new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+
+}
+
+async Task PostContent(string virtualPath, byte[] dataBytes, string contentType)
+{
+    using ByteArrayContent content = new ByteArrayContent(dataBytes);
+    content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+    var response = await client.PostAsync($"/file/{virtualPath}", content);
+    //Console.WriteLine(response);
+    //Console.WriteLine(response.StatusCode);
+}
+
+async Task PostStreamContent(string virtualPath, Stream dataStream, string contentType)
+{
+    using StreamContent content = new StreamContent(dataStream);
+    content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+    var response = await client.PostAsync($"/file/{virtualPath}", content);
+    Console.WriteLine(response);
+    Console.WriteLine(response.StatusCode);
+}
 
 async Task AddFile(string virtualPath, string physicalFilePath)
 {

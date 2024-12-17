@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using VirtualFileWebApi.DbContexts;
 
 namespace VirtualFileWebApi.Controllers;
 
 [ApiController]
-[Route("")]
+[Route("[controller]")]
 public class VirtualFileController : ControllerBase
 {
     private readonly ILogger<VirtualFileController> logger;
@@ -34,8 +35,8 @@ public class VirtualFileController : ControllerBase
         return TypedResults.Ok("TODO: GetFileList");
     }
 
-    [HttpGet("file/{**filePath}", Name = "GetFile")]
     //[Route()]
+    [HttpGet("file/{**filePath}", Name = "GetFile")]
     public IResult GetFile(string filePath)
     {
         return TypedResults.Ok("TODO: GetFile: " + filePath);
@@ -48,30 +49,76 @@ public class VirtualFileController : ControllerBase
         using MemoryStream ms = new MemoryStream();
         await Request.Body.CopyToAsync(ms);
 
-        dbContext.VirtualFiles.Add(new DbModels.VirtualFile
+        var virtualFile = await dbContext.VirtualFiles.FirstOrDefaultAsync(r => r.VirtualPath == filePath);
+
+        if (virtualFile == null)
         {
-            VirtualPath = filePath,
-            MimeType = Request.ContentType ?? System.Net.Mime.MediaTypeNames.Application.Octet,
-            FileSize = ms.Length,
-            FileContent = ms.ToArray(),
-            ModifiedDatetime = DateTime.UtcNow,
-        });
+            dbContext.VirtualFiles.Add(new DbModels.VirtualFile
+            {
+                VirtualPath = filePath,
+                MimeType = Request.ContentType ?? System.Net.Mime.MediaTypeNames.Application.Octet,
+                FileSize = ms.Length,
+                FileContent = ms.ToArray(),
+                ModifiedDatetime = DateTime.UtcNow,
+            });
+        }
+        else
+        {
+            virtualFile.MimeType = Request.ContentType ?? System.Net.Mime.MediaTypeNames.Application.Octet;
+            virtualFile.FileSize = ms.Length;
+            virtualFile.FileContent = ms.ToArray();
+            virtualFile.ModifiedDatetime = DateTime.UtcNow;
+        }
+
         dbContext.SaveChanges();
 
-        return TypedResults.Ok("TODO: PostFile");
+        return TypedResults.Ok();
     }
 
     [HttpPut]
     [Route("/file/{**filePath}")]
-    public IResult Put(string filePath)
+    public async Task<IResult> PutAsync(string filePath)
     {
+        using MemoryStream ms = new MemoryStream();
+        await Request.Body.CopyToAsync(ms);
+
+        var virtualFile = await dbContext.VirtualFiles.FirstOrDefaultAsync(r => r.VirtualPath == filePath);
+
+        if (virtualFile == null)
+        {
+            dbContext.VirtualFiles.Add(new DbModels.VirtualFile
+            {
+                VirtualPath = filePath,
+                MimeType = Request.ContentType ?? System.Net.Mime.MediaTypeNames.Application.Octet,
+                FileSize = ms.Length,
+                FileContent = ms.ToArray(),
+                ModifiedDatetime = DateTime.UtcNow,
+            });
+        }
+        else
+        {
+            virtualFile.MimeType = Request.ContentType ?? System.Net.Mime.MediaTypeNames.Application.Octet;
+            virtualFile.FileSize = ms.Length;
+            virtualFile.FileContent = ms.ToArray();
+            virtualFile.ModifiedDatetime = DateTime.UtcNow;
+        }
+
+        dbContext.SaveChanges();
+
         return TypedResults.Ok("TODO: PutFile");
     }
 
     [HttpDelete]
     [Route("/file/{**filePath}")]
-    public IResult Delete(string filePath)
+    public async Task<IResult> DeleteAsync(string filePath)
     {
-        return TypedResults.Ok("TODO: DeleteFile");
+        var virtualFile = await dbContext.VirtualFiles.FirstOrDefaultAsync(r => r.VirtualPath == filePath);
+
+        if (virtualFile != null)
+            dbContext.VirtualFiles.Remove(virtualFile);
+
+        await dbContext.SaveChangesAsync();
+
+        return TypedResults.Ok();
     }
 }
