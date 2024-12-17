@@ -11,5 +11,5 @@ public partial class StorageBucket
 
     public string CreateDatetime { get; set; } = null!;
 
-    public virtual StorageObject? StorageObject { get; set; }
+    public virtual ICollection<StorageObject> StorageObjects { get; set; } = new List<StorageObject>();
 }

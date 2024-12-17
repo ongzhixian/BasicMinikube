@@ -22,7 +22,7 @@ public partial class ObjectStorageContext : DbContext
         {
             entity.ToTable("storage_bucket");
 
-            entity.HasIndex(e => e.Name, "IX_storage_bucket_name").IsUnique();
+            entity.HasIndex(e => e.Name, "UIX_storage_bucket").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreateDatetime)
@@ -35,11 +35,7 @@ public partial class ObjectStorageContext : DbContext
         {
             entity.ToTable("storage_object");
 
-            entity.HasIndex(e => e.BucketId, "IX_storage_object_bucket_id").IsUnique();
-
-            entity.HasIndex(e => e.Key, "IX_storage_object_key").IsUnique();
-
-            entity.HasIndex(e => new { e.BucketId, e.Key }, "bucket_object_uidx");
+            entity.HasIndex(e => new { e.BucketId, e.Key }, "UIX_storage_object").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.BucketId).HasColumnName("bucket_id");
@@ -50,7 +46,7 @@ public partial class ObjectStorageContext : DbContext
             entity.Property(e => e.StorageClass).HasColumnName("storage_class");
             entity.Property(e => e.StoragePath).HasColumnName("storage_path");
 
-            entity.HasOne(d => d.Bucket).WithOne(p => p.StorageObject).HasForeignKey<StorageObject>(d => d.BucketId);
+            entity.HasOne(d => d.Bucket).WithMany(p => p.StorageObjects).HasForeignKey(d => d.BucketId);
         });
 
         OnModelCreatingPartial(modelBuilder);

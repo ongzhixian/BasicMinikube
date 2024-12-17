@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -16,7 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WareLogix.IntegrationTesting\WareLogix.IntegrationTesting.csproj" />
     <ProjectReference Include="..\WareLogix.Models.S3Models\WareLogix.Models.S3Models.csproj" />
   </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ObjectStoreWebApiTests" />
+    </ItemGroup>
 
 </Project>

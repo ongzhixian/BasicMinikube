@@ -37,6 +37,8 @@ app.Run();
 
 return;
 
+
+
 void SetupStorageService(ConfigurationManager configuration, IServiceCollection services)
 {
     var storageMedium = (configuration["StorageService:StorageMedium"] ?? string.Empty).ToUpperInvariant();
@@ -117,3 +119,6 @@ void SetHttpsRedirection(ConfigurationManager configuration)
         app.UseHttpsRedirection();
     }
 }
+
+// For exposing Program for integration testing
+public partial class Program { }

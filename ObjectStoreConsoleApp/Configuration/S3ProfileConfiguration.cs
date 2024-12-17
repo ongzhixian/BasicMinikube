@@ -29,7 +29,7 @@ internal class ObjectStoreConfiguration
             //ProxyPort = 8083
 
             //Profile = new Amazon.Profile("minio")
-            //RegionEndpoint = Amazon.RegionEndpoint.USEast1 // Set appropriate region if needed
+            , RegionEndpoint = Amazon.RegionEndpoint.USEast1 // Set appropriate region if needed
         };
 
         var selectedProfile = Profiles[SelectedProfile];
