@@ -1,0 +1,89 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<header>
+    <nav>
+        <section class="align-center-start">
+            <a asp-page="/" class="brand active">
+                Mobile App
+                <!--
+                    <span class="material-symbols-outlined">home</span>
+                -->
+            </a>
+        </section>
+        <section class="align-center-center">
+            @* <a asp-page="/logout"><span class="material-symbols-outlined">logout</span></a> *@
+        </section>
+        <section class="align-center-end">
+            @* 
+            <a href="#contact"><span class="material-symbols-outlined">notifications</span></a>
+            <a href="#contact"><span class="material-symbols-outlined">notification_important</span></a> 
+            *@
+            <a href="#contact"><span class="material-symbols-outlined">shopping_cart</span></a>
+            <a asp-page="/settings"><span class="material-symbols-outlined">settings</span></a>
+
+        </section>
+    </nav>
+</header>
+
+<main>
+
+    <section>
+        <h1>Last Activity</h1>
+
+        <p>You logged in on 18th Dec 2024 at 1600.</p>
+    </section>
+
+    <section>
+        <h1>Outstanding Tasks</h1>
+
+        <p>You have no outstanding tasks.</p>
+    </section>
+
+    <section>
+        <h1>Upcoming Tasks</h1>
+
+        @* <p>You have no upcoming tasks.</p> *@
+
+        <p>You need to <a href="#">log</a> your hours for 18 Dec 2024.</p>
+
+        <!-- 
+
+        <ul>
+            <li>You need to log your hours for 18 Dec 2024.</li>
+        </ul>
+        -->
+    </section>
+
+    <section>
+        <h1>Journal</h1>
+
+        <p>Your petty cash claims submitted on 18 Dec 2024 is pending approval.</p>
+    </section>
+
+    <!--
+    <span class="material-symbols-outlined">favorite</span>
+    <a asp-page="/logout"><span class="material-symbols-outlined">logout</span></a>
+
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+    -->
+
+</main>
+
+<footer>
+    <nav>
+        <a asp-page="/groups" title="Groups"><span class="material-symbols-outlined">groups</span></a>
+        <a asp-page="/contacts" title="Contacts"><span class="material-symbols-outlined">contacts</span></a>
+        <a asp-page="/conversations" title="Conversations" class="chat"><span class="material-symbols-outlined">chat</span>
+            <span class="badge">99+</span>
+            </a>
+        <a asp-page="/user-profile" title="Profile"><span class="material-symbols-outlined">person_edit</span></a>
+    </nav>
+</footer>
