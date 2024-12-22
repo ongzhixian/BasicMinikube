@@ -1,0 +1,36 @@
+﻿@inject IConfiguration configuration
+<footer>
+    <nav>
+        @if (configuration["FeatureFlags:GroupsPage"].IsTrue())
+        {
+            <a asp-page="/groups" title="Groups"><span class="material-symbols-outlined">groups</span></a>
+        }
+        else
+        {
+            <span></span>
+        }
+
+        @if (configuration["FeatureFlags:ContactsPage"].IsTrue())
+        {
+            <a asp-page="/contacts" title="Contacts"><span class="material-symbols-outlined">contacts</span></a>
+        }
+        else
+        {
+            <span></span>
+        }
+
+        @if (configuration["FeatureFlags:ConversationsPage"].IsTrue())
+        {
+            <a asp-page="/conversations" title="Conversations" class="chat">
+                <span class="material-symbols-outlined">chat</span>
+                <span class="badge">99+</span>
+            </a>
+        }
+        else
+        {
+            <span></span>
+        }
+
+        <a asp-page="/userprofile" title="Profile"><span class="material-symbols-outlined">person_edit</span></a>
+    </nav>
+</footer>

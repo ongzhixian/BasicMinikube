@@ -1,0 +1,27 @@
+﻿section.grid-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1em;
+}
+
+    section.grid-list div.experiment {
+        border: 4px solid #CCAFA5;
+        padding: .5em;
+        min-height: 9.67em;
+        max-height: 9.67em;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        grid-row-gap: .36em;
+    }
+
+        section.grid-list div.experiment header > h2 {
+            margin: 0;
+        }
+
+        section.grid-list div.experiment section.content {
+            overflow-y: scroll;
+        }
+
+        section.grid-list div.experiment footer {
+            border-top: 2px dotted #CCAFA5;
+        }

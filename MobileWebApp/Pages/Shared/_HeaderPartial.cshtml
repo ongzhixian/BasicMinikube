@@ -1,24 +1,30 @@
-﻿<header>
+﻿@inject IConfiguration configuration
+@{
+    
+}
+<header>
     <nav>
         <section class="align-center-start">
-            <a asp-page="/" class="brand active">
-                Mobile App
-                <!--
-                    <span class="material-symbols-outlined">home</span>
-                -->
-            </a>
+            <a asp-page="/index" class="brand">@configuration["Application:Title"]</a>
         </section>
-        <section class="align-center-center">
-            @* <a asp-page="/logout"><span class="material-symbols-outlined">logout</span></a> *@
-        </section>
+        <section class="align-center-center"></section>
         <section class="align-center-end">
-            @* 
-            <a href="#contact"><span class="material-symbols-outlined">notifications</span></a>
-            <a href="#contact"><span class="material-symbols-outlined">notification_important</span></a> 
-            <a href="#contact"><span class="material-symbols-outlined">search</span></a>
-            *@
-            <a asp-page="/settings"><span class="material-symbols-outlined">settings</span></a>
+
+            <a asp-page="/experiments/index"><span class="material-symbols-outlined">experiment</span></a>
+
+            @if (configuration["FeatureFlags:SettingsPage"].IsTrue())
+            {
+                <a asp-page="/settings"><span class="material-symbols-outlined">settings</span></a>
+            }
+
+            <a asp-page="/authentication/logout"><span class="material-symbols-outlined">logout</span></a>
 
         </section>
     </nav>
 </header>
+
+@* 
+<a href="#contact"><span class="material-symbols-outlined">notifications</span></a>
+<a href="#contact"><span class="material-symbols-outlined">notification_important</span></a> 
+<a href="#contact"><span class="material-symbols-outlined">search</span></a>
+*@

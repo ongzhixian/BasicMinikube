@@ -1,3 +1,24 @@
+:root {
+    /* default text */
+    --text-font: "Lato", serif;
+    --text-color: #0A0708;
+    /* ui elements */
+    --ui-font-family: "Outfit", serif;
+    --ui-font-size: .96em;
+    /* href */
+    --default-href-color: #873F49;
+    --hover-href-color: #CCAFA5;
+    /* colors */
+    --default-bg-color: #F2F1F0;
+    /**
+        a
+    */
+    --color1: #D9A3D0; /* PINK */
+    --color2: #260124; /* PURPLE */
+    --color3: #80BFB4; /* GREEN */
+    --color4: #F2B366; /* YELLOW */
+}
+
 html, body {
     height: 100vh;
 }
@@ -11,9 +32,11 @@ body {
     background-position-x: center;
     background-position-y: bottom;
     */
-    font-family: "Lato", serif;
+    font-family: var(--text-font);
     font-weight: 400;
     font-style: normal;
+    color: var(--text-color);
+    background-color: var(--default-bg-color);
 }
 
 h1, h2, h3, h4, h5, h6, .brand {
@@ -40,7 +63,7 @@ body {
 
     body > main {
         grid-area: main;
-        background-color: lightgrey;
+        /*background-color: var(--default-bg-color);*/
         padding: 0 1em;
     }
 
@@ -53,9 +76,11 @@ div.center-content {
     display: grid;
 }
 
+
+
 a.brand {
     text-decoration: none;
-    font-size:1.44em;
+    font-size: 1.44em;
 }
 
 header > nav, footer > nav {
@@ -85,9 +110,7 @@ header > nav, footer > nav {
             justify-self: flex-end;
         }
 
-.badge {
-    font-size: .76em;
-}
+
 
 footer > nav {
     display: grid;
@@ -98,7 +121,7 @@ footer > nav {
 }
 
     footer > nav > a {
-        text-decoration:none;
+        text-decoration: none;
     }
 
     footer > nav > section {
@@ -109,10 +132,76 @@ footer > nav {
             justify-self: flex-end;
         }
 
+.tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.task.card {
+    border: 2px outset orange;
+    padding: .36em;
+}
+
+    .task.card > header {
+        font-weight: 700;
+    }
+
+
+.badge {
+    font-size: .76em;
+}
 
 .swiper {
     width: 100%;
     height: 300px;
+}
+
+a {
+    text-decoration: none;
+    font-family: var(--ui-font-family);
+    font-size: var(--ui-font-size);
+    color: var(--default-href-color);
+}
+
+    a:hover {
+        color: var(--hover-href-color) !important;
+    }
+
+    a:active {
+        color: #F2B366;
+    }
+
+button {
+    font-family: var(--ui-font-family);
+    font-size: var(--ui-font-size);
+    color: var(--default-href-color);
+    padding: 2px;
+}
+
+input, textarea {
+    font-family: var(--ui-font-family);
+}
+
+    input[type=text], input[type=password] {
+        border-color: #873F49;
+        border-radius: .2em;
+        padding: .2em;
+    }
+
+form.send-test-email .layout label {
+    justify-self: end;
+}
+
+form.send-test-email .layout textarea.email-content {
+    min-height: 16em;
+}
+
+.positive {
+    color: #01949A;
+}
+
+.negative {
+    color: #DB1F48;
 }
 
 

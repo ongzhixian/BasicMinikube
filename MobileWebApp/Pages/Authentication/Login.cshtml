@@ -1,0 +1,36 @@
+﻿@page "/login"
+@model LoginPageModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Log in";
+}
+
+<section class="login-form">
+
+    <h1>Log in</h1>
+
+    <form method="post">
+
+        <div class="layout">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" autocomplete="off" />
+            <div></div>
+
+
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="login" type="submit">Log in</button>
+            <div></div>
+        </div>
+
+    </form>
+
+    @if ((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empty).Equals("Development", StringComparison.InvariantCultureIgnoreCase))
+    {
+        <a class="login" href="/register-new-user">Register new user</a>
+    }
+
+</section>

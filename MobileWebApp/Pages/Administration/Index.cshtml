@@ -1,0 +1,46 @@
+﻿@page "/man"
+@model ManagementIndexModel
+@{
+    ViewData["Title"] = "Management Home Page";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+    <h1>Manage</h1>
+    
+    <section class="tasks-grid">
+
+        <div class="task card">
+            <header>Users</header>
+            <div class="actions">
+                <div>Add</div>
+                <div>Search</div>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<partial name="_FooterPartial" />
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        'use strict';
+
+        window.addEventListener('DOMContentLoaded', (ev) => {
+            let btn = document.getElementById('requestNotificationsButton');
+            btn.addEventListener('click', (ev) => {
+                //let prom = Notification.requestPermission();
+                const img = "/favicon.ico";
+                const text = `Hi! Your task is now overdue.`;
+                const notification = new Notification("To do list", { body: text, icon: img });
+            });
+
+        });
+        
+    </script>
+}

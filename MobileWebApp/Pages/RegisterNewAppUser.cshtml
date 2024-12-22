@@ -1,0 +1,62 @@
+﻿@page "/register-new-user"
+@using MobileWebApp.Pages.Authentication
+@model RegisterNewAppUserPageModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Register New User";
+}
+
+<section class="login-form">
+
+    <h1>@ViewData["Title"]</h1>
+
+    <form method="post">
+
+        <div class="layout">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" autocomplete="off" />
+            <div></div>
+
+
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="login" type="submit">Register</button>
+            <div></div>
+        </div>
+
+    </form>
+
+    
+    
+    @if ((ViewData["message-class"]?.ToString() ?? string.Empty).Equals("positive", StringComparison.InvariantCultureIgnoreCase))
+    {
+        <div class="feedback @ViewData["message-class"]">@ViewData["message"]</div>
+
+        @* <div class="feedback @ViewData["message-class"]">@ViewData["message"]</div> *@
+        <div>
+            <a asp-page="/login">Log in</a> using registered account
+        </div>
+    }
+    else
+    {
+        <table>
+            <tbody>
+                @foreach (KeyValuePair<string, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateEntry> item in ModelState)
+                {
+                    @* <p>@item.Key -- @item.Value -- @item.Value.RawValue -- @item.Value.Errors.Count -- @item.Value.Errors.FirstOrDefault().ErrorMessage</p> *@
+                    <tr>
+                        <td class="feedback negative">@item.Value.Errors.FirstOrDefault()?.ErrorMessage</td>
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+        
+    }
+
+    
+
+</section>

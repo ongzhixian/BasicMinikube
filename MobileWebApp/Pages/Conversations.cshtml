@@ -4,11 +4,35 @@
     ViewData["Title"] = "Conversations ";
 }
 
+<partial name="_HeaderPartial" />
 
-<h1>Conversations</h1>
-<!--
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
--->
+<main>
+    <h1>Conversations</h1>
+    <!--
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+    -->
+</main>
+
+<partial name="_FooterPartial" />
+
+@section Scripts
+{
+    <script type="text/javascript">
+        'use strict';
+
+        window.addEventListener('DOMContentLoaded', (ev) => {
+            // let btn = document.getElementById('requestNotificationsButton');
+            // btn.addEventListener('click', (ev) => {
+            //     //let prom = Notification.requestPermission();
+            //     const img = "/favicon.ico";
+            //     const text = `Hi! Your task is now overdue.`;
+            //     const notification = new Notification("To do list", { body: text, icon: img });
+            // });
+
+        });
+
+    </script>
+}
