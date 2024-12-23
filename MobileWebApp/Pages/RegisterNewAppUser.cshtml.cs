@@ -90,6 +90,14 @@ public class RegisterNewAppUserPageModel : PageModel
             //    return Redirect(returnUrl);
             //}
 
+            // 
+            //List<string> testUsers = ["Cheryl", "Sheryl", "Rebecca", "Priscilla", "Sok Wah", "Hui Juan", "Claire", "Boon", "Siong", "Siang", "She Wee", "Alvin", "Jason", "Melvin", "Joseph", "Arjay", "Max", "Null"];
+
+            //foreach (string testUser in testUsers)
+            //{
+            //    await appUserService.AddAppUserAsync(testUser, "P@ssw0rd1234");
+            //}
+
             await appUserService.AddAppUserAsync(Username, Password);
 
             ViewData["message"] = "User registered.";

@@ -1,0 +1,99 @@
+﻿@page "/user-role-assignees/{id?}"
+@model ManageUserRoleAssigneesPageModel
+@{
+    ViewData["Title"] = $"Manage Users Assigned to {Model.RoleName}";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/experiments/ManageUserRoles">Back to Manage User Roles</a>
+    </header>
+
+    <section>
+        <header>
+            <h1>@ViewData["Title"]</h1>
+        </header>
+
+        <p>@ViewData["message"]</p>
+
+        <section>
+
+            <header>
+                <h2>Assign User To Role</h2>
+            </header>
+
+            <form method="post" class="assign-user-role">
+                <div>
+                    <label asp-for="AssigneeUserName"></label>
+                    <input asp-for="AssigneeUserName" autocomplete="off" />
+                    <button type="submit" asp-page-handler="AddNewRole">Assign Role</button>
+                </div>
+            </form>
+
+        </section>
+
+        <section>
+            <header>
+                <h2>@Model.RoleName Role Users @* (@Model.AvailableRolesCount) *@</h2>
+            </header>
+
+            <div class="grid-list-4-col">
+@*                 @foreach (var item in Model.AvailableRoles)
+                {
+                    <a href="#" title="Manage users assigned to role">@item</a>
+                }
+*@
+                @for (int i = 0; i < 7; i++)
+                {
+                    <span>User @i</span>
+                } 
+            </div>
+
+        </section>
+
+    </section>
+
+    @*
+
+    
+    <form method="post" class="send-test-email">
+
+        <div class="layout">
+
+            <div></div>
+            <header>
+                <h1>@ViewData["Title"]</h1>
+            </header>
+            <div></div>
+
+            <label asp-for="Recipient"></label>
+            <input asp-for="Recipient" autocomplete="off" />
+            <div></div>
+
+
+            <label asp-for="EmailBody"></label>
+            <textarea asp-for="EmailBody" class="email-content"></textarea>
+            <div></div>
+
+            <div></div>
+            <button class="login" type="submit">Send E-mail</button>
+            <div></div>
+
+            @if (ViewData["message"] != null)
+            {
+                <div></div>
+                <p>@ViewData["message"]</p>
+                <div></div>
+            }
+
+        </div>
+
+    </form>
+    *@
+
+</main>
+
+<partial name="_FooterPartial" />

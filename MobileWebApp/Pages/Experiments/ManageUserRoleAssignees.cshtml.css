@@ -1,0 +1,32 @@
+﻿main > header {
+    margin: .5em 0;
+}
+
+main > section > section {
+    margin: 0 0 2em;
+}
+
+main > form {
+    margin-bottom: calc(100vh/3.67);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 760px;
+    border: 1px solid;
+}
+
+    main > form .layout {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        grid-template-rows: repeat(3, auto);
+        gap: .36em;
+    }
+
+        main > form .layout label {
+            justify-self: end;
+        }
+
+
+        a.login {
+            margin: 1em 0;
+        }

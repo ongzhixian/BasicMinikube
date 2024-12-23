@@ -1,0 +1,110 @@
+﻿@page "/assign/user-roles/{handler?}"
+@model AssignUserRolesPageModel
+@{
+    ViewData["Title"] = "Assign User Roles";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/experiments/index">Back to Experiments</a>
+    </header>
+
+    <section>
+        <header>
+            <h1>@ViewData["Title"]</h1>
+        </header>
+
+        <p>@ViewData["message"]</p>
+
+        <!-- USERS SELECTION -->
+
+        <section>
+
+            <header>
+                <h2>Select user(s)</h2>
+            </header>
+
+            <div class="panel add-user">
+                <div>
+                    <label for="usernameInput">Username</label>
+                    <input id="usernameInput" autocomplete="off" />
+                    <button type="button" id="addUserButton">Add User</button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ROLES SELECTION -->
+
+        <section>
+            <header>
+                <h2>Select role(s)</h2>
+            </header>
+
+            <div class="panel add-role">
+                <div>
+                    <label for="roleNameInput">Role Name</label>
+                    <input id="roleNameInput" autocomplete="off" />
+                    <button type="button" id="addRoleButton">Add Role</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section>
+            <header>
+                <h2>Action Summary</h2>
+            </header>
+            <div class="description">
+                <p>You intend to assign the following role(s):</p>
+
+                <div>
+                    some list of roles
+                </div>
+
+                <p>to the following user(s):</p>
+
+                <div>
+                    some list of users
+                </div>
+            </div>
+            <div>
+                <p>If the above is correct, click on the following button to proceed with action.</p>
+                
+                <button>Assign roles to users</button>
+            </div>
+        </section>
+
+    </section>
+
+
+</main>
+
+<partial name="_FooterPartial" />
+
+@section Scripts
+{
+    <script type="text/javascript">
+        'use strict';
+
+        let addUserButton = document.getElementById('addUserButton')
+            , usernameInput = document.getElementById('usernameInput')
+            , addRoleButton = document.getElementById('addRoleButton')
+            , roleNameInput = document.getElementById('roleNameInput');
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            addUserButton.addEventListener('click', addUser);
+            addRoleButton.addEventListener('click', addRole);
+        });
+
+        function addUser(event) {
+            window.alert('Add user button clicked');
+        }
+        function addRole(event) {
+            window.alert('Add role button clicked');
+        }
+    </script>
+}
