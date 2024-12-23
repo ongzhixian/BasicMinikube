@@ -1,0 +1,37 @@
+﻿@page "/access-denied"
+@model AccessDeniedPageModel
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Access Denied";
+}
+
+<section class="login-form">
+
+    <h1>Access Denied</h1>
+
+    <div>
+        Return to <a asp-page="/Authentication/Login">log in</a> page to try again.
+    </div>
+
+    @*
+    <form method="post">
+
+        <div class="layout">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" autocomplete="off" />
+            <div></div>
+
+
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="login" type="submit">Log in</button>
+            <div></div>
+        </div>
+
+    </form>
+    *@
+
+</section>

@@ -69,13 +69,14 @@ public class LoginPageModel : PageModel
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-
+                
                 return Redirect(returnUrl);
             }
         }
 
         ModelState.AddModelError(string.Empty, "Invalid login attempt");
 
+        return new ForbidResult();
         return Page();
     }
 
