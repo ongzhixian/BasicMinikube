@@ -65,6 +65,7 @@ body {
         grid-area: main;
         /*background-color: var(--default-bg-color);*/
         padding: 0 1em;
+        overflow-y: auto;
     }
 
     body > footer {
