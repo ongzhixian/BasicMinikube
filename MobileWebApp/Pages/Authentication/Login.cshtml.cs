@@ -77,7 +77,7 @@ public class LoginPageModel : PageModel
         ModelState.AddModelError(string.Empty, "Invalid login attempt");
 
         return new ForbidResult();
-        return Page();
+        //return Page();
     }
 
 }
