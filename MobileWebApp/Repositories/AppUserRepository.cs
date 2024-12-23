@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Claims;
 
 using MobileWebApp.MongoDbModels;
 
@@ -41,5 +42,28 @@ public class AppUserRepository
         var filter = Builders<AppUser>.Filter.Eq("Username", username);
 
         return await appUserCollection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    internal async Task<long> GetUserCountAsync()
+    {
+        var filter = Builders<AppUser>.Filter.Empty;
+
+        return await appUserCollection.CountDocumentsAsync(filter);
+    }
+
+    internal async Task<List<AppUser>> GetUserList(int pageNumber, byte pageSize = 10)
+    {
+        var filter = Builders<AppUser>.Filter.Empty;
+        
+        var recordsToSkip = (pageNumber - 1) * pageSize;
+
+        return await appUserCollection
+            .Find(filter)
+            .SortBy(r => r.Username)
+            .Skip(recordsToSkip)
+            .Limit(pageSize)
+            .ToListAsync();
+
+        //var results = await appUserCollection.Find(filter).Skip(recordsToSkip).Limit(pageSize);
     }
 }

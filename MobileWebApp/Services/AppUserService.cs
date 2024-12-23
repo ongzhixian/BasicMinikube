@@ -56,6 +56,18 @@ public class AppUserService
         return appUser.Claims.Select(r => r);
     }
 
+
+    internal async Task<long> GetUserCountAsync()
+    {
+        return await appUserRepository.GetUserCountAsync();
+    }
+
+
+    internal async Task<List<MongoDbModels.AppUser>> GetUserListAsync(int pageNumber, byte pageSize)
+    {
+        return await appUserRepository.GetUserList(pageNumber, pageSize);
+    }
+
     // PRIVATE
 
     private async Task<bool> SameHashAsync(string password, string passwordSalt, string passwordHash)
@@ -80,6 +92,9 @@ public class AppUserService
 
         return (await sha256.ComputeHashAsync(ms, CancellationToken.None)).ToBase64();
     }
+
+
+
 
     //public async Task GetAppUserAsync(string username)
     //{

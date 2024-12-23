@@ -13,9 +13,102 @@
     </header>
 
     <div class="main-content">
-        <p>TODO: Put your dashboard content here.</p>
+
+        <div>
+            Total number of users: @Model.UserCount
+        </div>
+
     </div>
+
+    <h2>Users</h2>
+
+    <p>Page <span id="currentPageNumberIndicator">1</span> of <span id="lastPageNumberIndicator">@((Model.UserCount / Model.PageSize) + 1)</span> 
+        @* (@Model.PageSize records per page) *@
+    </p>
+
+    <div>
+        <div id="userList" class="grid-list-3-col">
+            @for (int i = 0; i < 9; i++)
+            {
+                <span>Some item @i</span>
+            }
+        </div>
+        &nbsp;
+        <footer class="pager">
+            <button id="previousPageOfUsers">Previous 5</button>
+            <button id="nextPageOfUsers">Next 5</button>
+        </footer>
+    </div>
+
 
 </main>
 
+<input type="hidden" id="pageSize" value="@Model.PageSize" />
+
 <partial name="_FooterPartial" />
+
+@section Scripts
+{
+    <script type="text/javascript">
+        'use strict';
+
+        let page = {
+            UserListPageNumber : 1
+        }
+        , previousPageOfUsersButton = document.getElementById('previousPageOfUsers')
+        , nextPageOfUsersButton = document.getElementById('nextPageOfUsers')
+        , userList = document.getElementById('userList')
+        , lastPageNumberIndicator = document.getElementById('lastPageNumberIndicator')
+        , currentPageNumberIndicator = document.getElementById('currentPageNumberIndicator')
+        ;
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Setup pagination buttons
+            previousPageOfUsersButton.addEventListener('click', DisplayPreviousPageOfUsers);
+            nextPageOfUsersButton.addEventListener('click', DisplayNextPageOfUsers);
+            RefreshUserList();
+        });
+
+        function DisplayPreviousPageOfUsers() {
+            if (page.UserListPageNumber <= 1) return;
+            page.UserListPageNumber = page.UserListPageNumber - 1;
+            currentPageNumberIndicator.innerHTML = page.UserListPageNumber.toString();
+            RefreshUserList();
+        }
+        function DisplayNextPageOfUsers() {
+            let LastPageNumber = parseInt(lastPageNumberIndicator.innerHTML, 10);
+            if (page.UserListPageNumber >= LastPageNumber) return;
+            page.UserListPageNumber = page.UserListPageNumber + 1;
+            currentPageNumberIndicator.innerHTML = page.UserListPageNumber.toString();
+            RefreshUserList();
+        }
+
+        function UpdateUserList(json) {
+            userList.replaceChildren();
+            json.map((val, idx, arr) => {
+                let newSpanElement = document.createElement('span');
+                newSpanElement.innerHTML = val;
+                userList.appendChild(newSpanElement);
+            });
+        }
+
+        async function RefreshUserList() {
+            const url = `/api/user/${page.UserListPageNumber}`;
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const json = await response.json();
+                console.log(json);
+                UpdateUserList(json);
+
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+
+    </script>
+}
