@@ -12,12 +12,21 @@ builder.WebHost.UseKestrel(option => option.AddServerHeader = false);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+builder.Services.AddAntiforgery(antiforgeryOptions =>
+{
+    antiforgeryOptions.Cookie.Name = "AppNonce";
+});
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(authBuilder =>
     {
-        authBuilder.LoginPath = "/Login";
-        authBuilder.LogoutPath = "/Logout";
-        authBuilder.AccessDeniedPath = "/AccessDenied";
+        authBuilder.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        authBuilder.SlidingExpiration = true;
+
+        authBuilder.LoginPath = "/login";
+        authBuilder.LogoutPath = "/logout";
+        authBuilder.AccessDeniedPath = "/access-denied";
+
+        authBuilder.Cookie.Name = "App";
     });
 
     builder.Services.ConfigureApplicationCookie(options =>
@@ -41,10 +50,13 @@ builder.Services.AddKeyedScoped<IMongoDatabase>("minitools", (sp, key) =>
 });
 
 builder.Services.AddScoped<AppUserRepository>();
+builder.Services.AddScoped<AppRoleRepository>();
 
 builder.Services.AddScoped<AppUserAuthenticationService>();
 builder.Services.AddScoped<AppUserAuthorizationService>();
 builder.Services.AddScoped<AppUserService>();
+builder.Services.AddScoped<AppRoleService>();
+
 
 builder.Services.AddHttpClient<EmailService>(client =>
 {
