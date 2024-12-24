@@ -1,4 +1,5 @@
-﻿using MobileWebApp.MongoDbModels;
+﻿
+using MobileWebApp.MongoDbModels;
 
 using MongoDB.Driver;
 
@@ -35,6 +36,29 @@ public class AppRoleRepository
         var filter = Builders<AppRole>.Filter.Empty;
 
         return await appRoleCollection.CountDocumentsAsync(filter);
+    }
+
+    internal async Task<IEnumerable<MongoDbModels.AppRole>> FindMatchingUser(string searchCriteria)
+    {
+        try
+        {
+            var filter = Builders<AppRole>.Filter.Empty;
+
+            if (!searchCriteria.Equals("*"))
+                filter = Builders<AppRole>.Filter.Regex(r => r.RoleName,
+                    new MongoDB.Bson.BsonRegularExpression(searchCriteria, "i"));
+
+            var results = await appRoleCollection
+                .Find(filter)
+                .SortBy(r => r.RoleName)
+                .ToListAsync();
+
+            return results;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     internal async Task<AppRole> GetRoleAsync(string roleName)

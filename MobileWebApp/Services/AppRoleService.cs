@@ -1,4 +1,6 @@
 ﻿
+
+
 using MobileWebApp.Repositories;
 
 namespace MobileWebApp.Services;
@@ -28,5 +30,15 @@ public class AppRoleService
     {
         return await appRoleRepository.GetRolesCountAsync();
             
+    }
+
+    internal async Task<IEnumerable<MongoDbModels.AppRole>> FindMatchingUserAsync(string searchCriteria)
+    {
+        return await appRoleRepository.FindMatchingUser(searchCriteria);
+    }
+
+    internal async Task<MongoDbModels.AppRole> GetRoleAsync(string roleName)
+    {
+        return await appRoleRepository.GetRoleAsync(roleName);
     }
 }

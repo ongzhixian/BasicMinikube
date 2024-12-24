@@ -15,13 +15,28 @@
     <section>
         <header>
             <h1>@ViewData["Title"]</h1>
+
+            <p>Search and select the users and roles to assign.<br />Then click on button in action summary to assign roles.</p>
         </header>
+
+        <div class="stage-diagram">
+            <div class="node header">Stage</div>
+            <div class="node active" title="Select user(s)">1</div>
+            <div class="node space">
+                <span class="material-symbols-outlined">chevron_forward</span>
+            </div>
+            <div class="node disabled" title="Select role(s)">2</div>
+            <div class="node space">
+                <span class="material-symbols-outlined">chevron_forward</span>
+            </div>
+            <div class="node disabled" title="Assign roles to users">3</div>
+        </div>
 
         <p>@ViewData["message"]</p>
 
         <!-- USERS SELECTION -->
 
-        <section>
+        <section id="selectUsersSection">
 
             <header>
                 <h2>Select user(s)</h2>
@@ -31,15 +46,23 @@
                 <div>
                     <label for="usernameInput">Username</label>
                     <input id="usernameInput" autocomplete="off" />
-                    <button type="button" id="addUserButton">Add User</button>
+                    <button type="button" id="findUserButton">Find User</button>
                 </div>
+
+                <div id="usernameSearchResults" class="hide">
+
+                    <h3>Username search results <span id="usernameSearchCriteria"></span></h3>
+                    <div id="usernameSearchResultsList" class="search-results-list">
+                    </div>
+                </div>
+                
             </div>
 
         </section>
 
         <!-- ROLES SELECTION -->
 
-        <section>
+        <section id="selectRolesSection" class="">
             <header>
                 <h2>Select role(s)</h2>
             </header>
@@ -48,33 +71,43 @@
                 <div>
                     <label for="roleNameInput">Role Name</label>
                     <input id="roleNameInput" autocomplete="off" />
-                    <button type="button" id="addRoleButton">Add Role</button>
+                    <button type="button" id="findRoleButton">Find Role</button>
+                </div>
+            </div>
+
+            <div id="roleNameSearchResults" class="hide">
+
+                <h3>Role name search results <span id="usernameSearchCriteria"></span></h3>
+                <div id="roleNameSearchResultsList" class="search-results-list">
                 </div>
             </div>
 
         </section>
 
-        <section>
+        <!-- ACTION SUMMARY -->
+
+        <section id="actionSummarySection" class="">
             <header>
                 <h2>Action Summary</h2>
             </header>
             <div class="description">
                 <p>You intend to assign the following role(s):</p>
 
-                <div>
-                    some list of roles
-                </div>
+                <div id="selectedRolesList">No roles selected</div>
 
                 <p>to the following user(s):</p>
 
-                <div>
-                    some list of users
-                </div>
+                <div id="selectedUsersList">No users selected</div>
             </div>
             <div>
+
                 <p>If the above is correct, click on the following button to proceed with action.</p>
                 
-                <button>Assign roles to users</button>
+                <form id="userRoleAssignmentForm" method="post">
+                    <button type="submit">Assign roles to users</button>
+                    <input type="hidden" id="selectedUsersHiddenInput" name="selectedUsers" />
+                    <input type="hidden" id="selectedRolesHiddenInput" name="selectedRoles" />
+                </form>
             </div>
         </section>
 
@@ -87,24 +120,314 @@
 
 @section Scripts
 {
+    <script type="module" src="/js/WebComponents/HelloWorld.js"></script>
     <script type="text/javascript">
         'use strict';
 
-        let addUserButton = document.getElementById('addUserButton')
-            , usernameInput = document.getElementById('usernameInput')
-            , addRoleButton = document.getElementById('addRoleButton')
-            , roleNameInput = document.getElementById('roleNameInput');
+        function DomHelper() {
 
+            // dom.newElement('span', val);
+            this.element = function(elementName, innerHtml = undefined, value = undefined) {
+                let newElement = document.createElement(elementName);
+                if (innerHTML) newElement.innerHTML = innerHtml;
+                if (value) newElement.value = value;
+                return newElement;
+            }
+
+            this.newSpan = function(innerHTML, value) {
+                let newElement = document.createElement('span');
+                newElement.innerHTML = innerHTML;
+                newElement.value = value;
+                return newElement;
+            }
+
+            this.newCheckBox = function(innerHTML) {
+                let newElement = document.createElement('input');
+                newElement.type = 'checkbox';
+                return newElement;
+            }
+        }
+        
+        let dom = new DomHelper();
+        let actionSummaryPanel;
+        let usersSelectionPanel;
+        let rolesSelectionPanel;
+
+        function ActionSummaryPanel() {
+            
+            this.selectedUsers = [];
+            this.selectedRoles = [];
+
+            this.selectedUsersList = document.getElementById('selectedUsersList');
+            this.selectedRolesList = document.getElementById('selectedRolesList');
+
+            this.userRoleAssignmentForm = document.getElementById('userRoleAssignmentForm');
+            this.selectedUsersHiddenInput = document.getElementById('selectedUsersHiddenInput');
+            this.selectedRolesHiddenInput = document.getElementById('selectedRolesHiddenInput');
+
+            this.userRoleAssignmentForm.addEventListener('submit', (event) => {
+                this.selectedUsersHiddenInput.value = this.selectedUsers.join('|');
+                this.selectedRolesHiddenInput.value = this.selectedRoles.join('|');
+            });
+
+            this.UpdateSelectedUserList = function () {
+                
+                selectedUsersList.replaceChildren();
+
+                this.selectedUsers.map((val) => {
+                    let newSpanElement = document.createElement('span');
+                    newSpanElement.innerHTML = val;
+                    // dom.newElement('span', val);
+                    selectedUsersList.appendChild(newSpanElement);
+                });
+            }
+
+            this.AddSelectedUser = function(targetValue) {
+                if (!this.selectedUsers.includes(targetValue)) {
+                    this.selectedUsers.push(targetValue);
+                    this.UpdateSelectedUserList();
+                }
+            }
+
+            this.RemoveSelectedUser = function(targetValue) {
+                if (this.selectedUsers.includes(targetValue)) {
+                    let targetValueIndex = this.selectedUsers.indexOf(targetValue);
+                    if (targetValueIndex >= 0) {
+                        this.selectedUsers.splice(targetValueIndex , 1);
+                        this.UpdateSelectedUserList();
+                    }
+                }
+            }
+
+            // ROLE
+
+            this.UpdateSelectedRoleList = function () {
+
+                this.selectedRolesList.replaceChildren();
+
+                this.selectedRoles.map((val) => {
+                    let newSpanElement = document.createElement('span');
+                    newSpanElement.innerHTML = val;
+
+                    this.selectedRolesList.appendChild(newSpanElement);
+                });
+            }
+
+            this.AddSelectedRole = function(targetValue) {
+                if (!this.selectedRoles.includes(targetValue)) {
+                    this.selectedRoles.push(targetValue);
+                    this.UpdateSelectedRoleList();
+                }
+            }
+
+            this.RemoveSelectedRole = function(targetValue) {
+                if (this.selectedRoles.includes(targetValue)) {
+                    let targetValueIndex = this.selectedRoles.indexOf(targetValue);
+                    if (targetValueIndex >= 0) {
+                        this.selectedRoles.splice(targetValueIndex , 1);
+                        this.UpdateSelectedRoleList();
+                    }
+                }
+            }
+
+        }
+
+        function UsersSelectionPanel(actionSummaryPanel) {
+            // Associate document elements for user selection panel (section)
+            this.findUserButton = document.getElementById('findUserButton');
+            this.usernameInput = document.getElementById('usernameInput');
+            this.usernameSearchResultsList = document.getElementById('usernameSearchResultsList');
+            this.usernameSearchResults = document.getElementById('usernameSearchResults');
+
+            this.actionSummaryPanel = actionSummaryPanel;
+
+            // Setup methods
+            this.UpdateUsernameSearchResultsList = function (json) {
+                
+                // 
+                // let checkboxes = this.usernameSearchResultsList.querySelectorAll('input[type=checkbox]')
+                // checkboxes.forEach((val, key, arr) => {
+                //     // TODO:?
+                //     //val.removeEventListener()
+                // });
+
+                this.usernameSearchResultsList.replaceChildren();
+
+                if (Array.isArray(json) && json.length > 0) {
+                    json.map((val, idx, arr) => {
+                        let newLabelElement = document.createElement('label');
+
+                        let newCheckBoxInputElement = document.createElement('input');
+                        newCheckBoxInputElement.type = 'checkbox';
+                        newCheckBoxInputElement.addEventListener('change', (ev) => {
+                            
+                            let targetValue = ev.target.nextElementSibling.value;
+
+                            if (ev.currentTarget.checked) {
+                                this.actionSummaryPanel.AddSelectedUser(targetValue);
+                            } else {
+                                this.actionSummaryPanel.RemoveSelectedUser(targetValue);
+                            }
+                        });
+                        newLabelElement.append(newCheckBoxInputElement);
+
+                        let newSpanElement = document.createElement('span');
+                        newSpanElement.innerHTML = val;
+                        newSpanElement.value = val;
+
+                        newLabelElement.append(newSpanElement);
+
+                        usernameSearchResultsList.appendChild(newLabelElement);
+                    });
+
+                } else {
+                    // dom.element('span', 'No results found.')
+                    let newSpanElement = document.createElement('span');
+                    newSpanElement.innerHTML = 'No results found.';
+                    this.usernameSearchResultsList.appendChild(newSpanElement);
+                }
+
+                this.usernameSearchResults.classList.remove('hide');
+            }
+
+            this.findUser = async (event) => {
+
+                const url = `/api/UserSearch/${usernameInput.value}`;
+
+                try {
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+
+                    const json = await response.json();
+                    this.UpdateUsernameSearchResultsList(json);
+
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+            // Setup event listeners
+            this.usernameInput.addEventListener('keyup', (event) => {
+                if (event.key === "Enter") this.findUserButton.click();
+            });
+            this.findUserButton.addEventListener('click', this.findUser, false);
+        }
+
+        function RolesSelectionPanel(actionSummaryPanel) {
+            // Associate document elements for role selection panel (section)
+            this.findRoleButton = document.getElementById('findRoleButton');
+            this.roleNameInput = document.getElementById('roleNameInput');
+            this.roleNameSearchResultsList = document.getElementById('roleNameSearchResultsList');
+            this.roleNameSearchResults = document.getElementById('roleNameSearchResults');
+
+            this.actionSummaryPanel = actionSummaryPanel;
+
+            // Setup methods
+
+            this.UpdateRoleNameSearchResultsList = function (json) {
+                // let checkboxes = this.roleNameSearchResultsList.querySelectorAll('input[type=checkbox]')
+                // checkboxes.forEach((val, key, arr) => {
+                //     // TODO:?
+                //     //val.removeEventListener()
+                // });
+
+                this.roleNameSearchResultsList.replaceChildren();
+
+                if (Array.isArray(json) && json.length > 0) {
+                    json.map((val, idx, arr) => {
+                        let newLabelElement = document.createElement('label');
+
+                        let newCheckBoxInputElement = document.createElement('input');
+                        newCheckBoxInputElement.type = 'checkbox';
+                        newCheckBoxInputElement.addEventListener('change', (ev) => {
+
+                            // Update selected list
+                            let targetValue = ev.target.nextElementSibling.value;
+                            if (ev.currentTarget.checked) {
+                                this.actionSummaryPanel.AddSelectedRole(targetValue);
+                                // if (!page.selectedRoles.includes(targetValue))
+                                //     page.selectedRoles.push(targetValue);
+                            } else {
+                                this.actionSummaryPanel.RemoveSelectedRole(targetValue);
+                                // Remove from list (if contain)
+                                // if (page.selectedRoles.includes(targetValue))
+                                // {
+                                //     let targetValueIndex = page.selectedRoles.indexOf(targetValue);
+                                //     if (targetValueIndex >= 0)
+                                //         page.selectedRoles.splice(targetValueIndex , 1);
+                                // }
+                            }
+
+                            //UpdateSelectedRoleList();
+
+                        });
+                        newLabelElement.append(newCheckBoxInputElement);
+
+                        let newSpanElement = document.createElement('span');
+                        newSpanElement.innerHTML = val;
+                        newSpanElement.value = val;
+                        newLabelElement.append(newSpanElement);
+
+                        this.roleNameSearchResultsList.appendChild(newLabelElement);
+                    });
+
+                } else {
+                    let newSpanElement = document.createElement('span');
+                        newSpanElement.innerHTML = 'No results found.';
+                        this.roleNameSearchResultsList.appendChild(newSpanElement);
+                }
+
+                this.roleNameSearchResults.classList.remove('hide');
+            }
+
+            this.findRoleName = async (event) => {
+                console.debug('Find role name');
+
+                const url = `/api/RoleSearch/${roleNameInput.value}`;
+                try {
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
+
+                    const json = await response.json();
+                    console.log(json);
+
+                    this.UpdateRoleNameSearchResultsList(json);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+            // Setup event listeners
+            this.roleNameInput.addEventListener('keyup', (event) => {
+                if (event.key === "Enter") this.findRoleButton.click();
+            });
+            this.findRoleButton.addEventListener('click', this.findRoleName, false);
+        }
+        
         window.addEventListener('DOMContentLoaded', (event) => {
-            addUserButton.addEventListener('click', addUser);
-            addRoleButton.addEventListener('click', addRole);
+
+            actionSummaryPanel = new ActionSummaryPanel();
+            
+
+            // SETUP FOR USERS SELECTION
+            // usernameInput.addEventListener('keyup', (event) => {
+            //     if (event.key === "Enter") findUserButton.click();
+            // });
+            // findUserButton.addEventListener('click', findUser);
+            usersSelectionPanel = new UsersSelectionPanel(actionSummaryPanel);
+
+            // SETUP FOR ROLES SELECTION
+            rolesSelectionPanel = new RolesSelectionPanel(actionSummaryPanel);
+            //addRoleButton.addEventListener('click', addRole);
+
+            //UpdateDisplay();
         });
 
-        function addUser(event) {
-            window.alert('Add user button clicked');
-        }
-        function addRole(event) {
-            window.alert('Add role button clicked');
-        }
     </script>
 }

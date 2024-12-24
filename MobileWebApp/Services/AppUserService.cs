@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Security.Cryptography;
 
+using MobileWebApp.MongoDbModels;
 using MobileWebApp.Repositories;
 
 namespace MobileWebApp.Services;
@@ -63,9 +64,15 @@ public class AppUserService
     }
 
 
+
     internal async Task<List<MongoDbModels.AppUser>> GetUserListAsync(int pageNumber, byte pageSize)
     {
         return await appUserRepository.GetUserList(pageNumber, pageSize);
+    }
+
+    internal async Task<List<MongoDbModels.AppUser>> FindMatchingUserAsync(string searchCriteria)
+    {
+        return await appUserRepository.FindMatchingUser(searchCriteria);
     }
 
     // PRIVATE
@@ -93,7 +100,30 @@ public class AppUserService
         return (await sha256.ComputeHashAsync(ms, CancellationToken.None)).ToBase64();
     }
 
+    internal async Task AssignRoleAsync(string username, MongoDbModels.AppRole role)
+    {
+        var user = await appUserRepository.GetUserAsync(username);
 
+        if ((user != null) && (!user.Claims.Any(r => r.Type == ClaimTypes.Role && r.Value == role.RoleName)))
+        {
+            Claim roleClaim = new Claim(ClaimTypes.Role, role.RoleName);
+
+            user.Claims.Add(roleClaim);
+
+            await appUserRepository.SaveAsync(user);
+        }
+        
+    }
+
+    internal async Task<MongoDbModels.AppUser> GetUserAsync(string username)
+    {
+        return await appUserRepository.GetUserAsync(username);
+    }
+
+    internal async Task<MongoDB.Driver.ReplaceOneResult> UpdateUserAsync(AppUser user)
+    {
+        return await appUserRepository.UpdateUserAsync(user);
+    }
 
 
     //public async Task GetAppUserAsync(string username)

@@ -37,9 +37,33 @@ public class AppUserRepository
         });
     }
 
+    internal async Task<List<AppUser>> FindMatchingUser(string searchCriteria)
+    {
+        try
+        {
+            var filter = Builders<AppUser>.Filter.Empty;
+
+            if (!searchCriteria.Equals("*"))
+                filter = Builders<AppUser>.Filter.Regex(r => r.Username,
+                    new MongoDB.Bson.BsonRegularExpression(searchCriteria, "i"));
+
+            var results = await appUserCollection
+                .Find(filter)
+                .SortBy(r => r.Username)
+                .ToListAsync();
+
+            return results;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        
+    }
+
     internal async Task<AppUser> GetUserAsync(string username)
     {
-        var filter = Builders<AppUser>.Filter.Eq("Username", username);
+        var filter = Builders<AppUser>.Filter.Eq(r => r.Username, username);
 
         return await appUserCollection.Find(filter).FirstOrDefaultAsync();
     }
@@ -65,5 +89,25 @@ public class AppUserRepository
             .ToListAsync();
 
         //var results = await appUserCollection.Find(filter).Skip(recordsToSkip).Limit(pageSize);
+    }
+
+    internal async Task<ReplaceOneResult> SaveAsync(AppUser user)
+    {
+        var filter = Builders<AppUser>.Filter.Eq(r => r.Username, user.Username);
+
+        ReplaceOneResult result = await appUserCollection.ReplaceOneAsync(filter, user);
+
+        return result;
+
+        //throw new NotImplementedException();
+    }
+
+    internal async Task<ReplaceOneResult> UpdateUserAsync(AppUser user)
+    {
+        var filter = Builders<AppUser>.Filter.Eq(r => r.Username, user.Username);
+
+        ReplaceOneResult result = await appUserCollection.ReplaceOneAsync(filter, user);
+
+        return result;
     }
 }
