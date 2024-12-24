@@ -13,24 +13,24 @@
     <section style="margin-bottom:3.67em;">
 
         <h2>User Information
-
-            <a asp-page="/settings"><span class="material-symbols-outlined">edit</span></a>
+            @* <a asp-page="/settings"><span class="material-symbols-outlined">edit</span></a> *@
         </h2>
 
         <div style="display:grid; grid-template-columns: 7.67em auto; grid-gap: .67em;">
 
             <span>Username</span>
-            <span>zzz</span>
+            <span>@Model.Username</span>
 
+            @*
             <span>First Name</span>
-            <span>zzz</span>
+            <span>@Model.FirstName</span>
 
             <span>Last Name</span>
-            <span>zzz</span>
+            <span>@Model.LastName</span>
 
             <span>Display Name</span>
-            <span>zzz</span>
-
+            <span>@Model.DisplayName</span>
+            *@
 
         </div>
 
@@ -40,21 +40,35 @@
 
         <h2>Assigned Roles</h2>
 
-        <div style="display:grid; grid-template-columns: repeat(4, auto); grid-gap: .67em;">
+        <div style="display:inline-grid; grid-template-columns: repeat(4, 12em); grid-gap: .67em;">
 
-            @for (int i = 0; i < 7; i++)
+            @foreach (var claimName in Model.ClaimNames)
             {
-                <span>Role @i</span>
+                <span>@claimName</span>
             }
-
         </div>
         
-        <div class="panel">
+        @* <div class="panel">
             <button>Assign Roles</button>
-        </div>
+        </div> *@
 
     </section>
 
+    <section>
+
+        <h2>Password</h2>
+
+        <p>Password was last changed at @Model.PasswordLastUpdateDateTime.ToShortDateString() 
+            (@(Math.Truncate((DateTime.UtcNow - Model.PasswordLastUpdateDateTime).TotalDays)) days ago)
+        </p>
+
+        <div class="panel">
+            <a asp-page="ChangePassword">Go change password</a>
+            @* <button>Change password</button> *@
+        </div>
+
+    </section>
+@* 
     <section>
 
         <h2>Password</h2>
@@ -65,19 +79,8 @@
             <button>Change password</button>
         </div>
 
-    </section>
-
-    <section>
-
-        <h2>Password</h2>
-
-        <p>Password was last changed at 22-12-2024 13:28.</p>
-
-        <div class="panel">
-            <button>Change password</button>
-        </div>
-
-    </section>
+    </section> 
+    *@
 
 </main>
 

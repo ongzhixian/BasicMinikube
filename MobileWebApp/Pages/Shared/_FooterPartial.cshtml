@@ -16,7 +16,9 @@
         }
         else
         {
-            <span></span>
+            @* <span></span> *@
+            <a asp-page="/scan-qr" title="Groups"><span class="material-symbols-outlined">qr_code_scanner</span></a>
+            
         }
 
         @if (configuration["FeatureFlags:ConversationsPage"].IsTrue())

@@ -5,10 +5,18 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>47df7034-c1c1-4b87-8373-89f5e42fc9ec</UserSecretsId>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Pages\ChangePassword.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
     <!-- 

@@ -29,10 +29,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         authBuilder.Cookie.Name = "App";
     });
 
-    builder.Services.ConfigureApplicationCookie(options =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Login";
-    options.LogoutPath = "/Logout";
+options.LoginPath = "/Login";
+options.LogoutPath = "/Logout";
 });
 
 //builder.Services.AddScoped<IMongoClient>(sp =>

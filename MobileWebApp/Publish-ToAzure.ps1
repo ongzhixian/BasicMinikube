@@ -1,0 +1,1 @@
+az webapp up --resource-group telera-resource-group --plan telera-app-service-plan --name telera-mobile-app --runtime "dotnet:9"

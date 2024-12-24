@@ -405,3 +405,8 @@ FodyWeavers.xsd
 
 # 
 .venv/
+
+# Ignore Visual Studio to Azure deployment files
+/MobileWebApp/.config
+/MobileWebApp/.azure
+/MobileWebApp/Properties/ServiceDependencies/telera-mobile-app - Web Deploy
