@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using MobileWebApp.Services;
@@ -11,12 +9,12 @@ public class UserProfilePageModel : PageModel
     private readonly ILogger<UserProfilePageModel> logger;
     private readonly AppUserService appUserService;
 
-    public string Username { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string DisplayName { get; set; }
+    public string Username { get; set; } = string.Empty;
+    //public string FirstName { get; set; }
+    //public string LastName { get; set; }
+    //public string DisplayName { get; set; }
 
-    public string[] ClaimNames { get; set; }
+    public string[] ClaimNames { get; set; } = [];
 
     public DateTime PasswordLastUpdateDateTime { get; set; }
 
@@ -33,9 +31,9 @@ public class UserProfilePageModel : PageModel
         var user = await appUserService.GetUserAsync(User.Identity?.Name ?? string.Empty);
 
         this.Username = user.Username;
-        this.FirstName = user.Username;
-        this.LastName = user.Username;
-        this.DisplayName = user.Username;
+        //this.FirstName = user.Username;
+        //this.LastName = user.Username;
+        //this.DisplayName = user.Username;
 
         PasswordLastUpdateDateTime = user.PasswordLastUpdateDateTime;
 

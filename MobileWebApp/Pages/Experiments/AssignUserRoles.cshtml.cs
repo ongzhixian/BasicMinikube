@@ -36,7 +36,7 @@ public class AssignUserRolesPageModel : PageModel
         this.appRoleService = appRoleService;
     }
 
-    public async Task OnGetAsync()
+    public void OnGet()
     {
         //var getAllRolesTask = appRoleService.GetAllRolesAsync();
         //var getAllRolesCountTask = appRoleService.GetAllRolesCountAsync();

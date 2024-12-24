@@ -32,7 +32,7 @@ public class ChangePasswordPageModel : PageModel
     }
 
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public IActionResult OnPost(string? returnUrl = null)
     {
         if (User.Identity == null)
         {

@@ -17,7 +17,7 @@ public class ManageUserRoleAssigneesPageModel : PageModel
     [TempData]
     public string ErrorMessage { get; set; } = string.Empty;
 
-    public string RoleName { get; set; }
+    public string RoleName { get; set; } = null!;
     
 
     [BindProperty, Required]
@@ -34,18 +34,16 @@ public class ManageUserRoleAssigneesPageModel : PageModel
         this.appRoleService = appRoleService;
     }
 
-    public async Task<PageResult> OnGetAsync(string id)
+    public PageResult OnGet(string id)
     {
 
         if (RoleIsValidAndUserCanAssignRole(id))
         {
             RoleName = id;
             ViewData["message"] = $"id is {id}";
-
         }
         else
         {
-            
             ViewData["message"] = $"id is {id}";
         }
 
@@ -66,7 +64,7 @@ public class ManageUserRoleAssigneesPageModel : PageModel
         return true;
     }
 
-    public async Task<IActionResult> OnPostAddNewRole()
+    public IActionResult OnPostAddNewRole()
     {
         //try
         //{
