@@ -24,6 +24,6 @@ public class AppUser
 
     public string[] Applications { get; set; } = [];
 
-    public Claim[] Claims { get; set; } = [];
+    public IList<Claim> Claims { get; set; } = [];
 
 }
