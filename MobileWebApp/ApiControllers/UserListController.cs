@@ -8,12 +8,12 @@ namespace MobileWebApp.Api
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserListController : ControllerBase
     {
-        private readonly ILogger<UserController> logger;
+        private readonly ILogger<UserListController> logger;
         private readonly AppUserService appUserService;
 
-        public UserController(ILogger<UserController> logger, AppUserService appUserService)
+        public UserListController(ILogger<UserListController> logger, AppUserService appUserService)
         {
             this.logger = logger;
             this.appUserService = appUserService;
