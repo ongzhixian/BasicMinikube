@@ -3,6 +3,8 @@
 
 // Write your JavaScript code.
 
+return; // KIV
+
 const registerServiceWorker = async () => {
 
     if ("serviceWorker" in navigator) { // Test that "serviceWorker" is supported

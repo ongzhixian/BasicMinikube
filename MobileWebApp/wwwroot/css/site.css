@@ -244,6 +244,11 @@ section.grid-list {
         }
 
 
+div.search-results-list {
+    display:flex;
+    flex-direction:column;
+}
+
 .positive {
     color: #01949A;
 }
@@ -252,6 +257,9 @@ section.grid-list {
     color: #DB1F48;
 }
 
+.hide {
+    display:none;
+}
 
 /*html {
   font-size: 14px;
