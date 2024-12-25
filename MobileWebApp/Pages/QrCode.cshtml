@@ -1,0 +1,29 @@
+﻿@page "/qr-code"
+@model QrCodePageModel
+@{
+    ViewData["Title"] = "QR Code";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <h1>@ViewData["Title"]</h1>
+
+    <form method="post">
+        <input type="text" asp-for="QRCodeContent" />
+        <input type="submit" value="Generate" asp-page-handler="Generate" />
+    </form>
+
+    &nbsp;
+
+    <div>
+        @if (Model.QRCodeImage != null)
+        {
+            <img src="@Model.QRCodeImage" alt="" style="height:150px;width:150px" />
+        }
+    </div>
+
+</main>
+
+<partial name="_FooterPartial" />

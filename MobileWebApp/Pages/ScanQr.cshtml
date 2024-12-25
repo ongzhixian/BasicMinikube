@@ -4,19 +4,39 @@
     ViewData["Title"] = "Scan QR";
 }
 
-
 <partial name="_HeaderPartial" />
 
 <main>
 
-    <h1>Groups</h1>
-    <!--
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    </div>
-    -->
+    <h1>@ViewData["Title"]</h1>
+
+    <div id="reader"></div>
+    <div id="result"></div>
 
 </main>
 
 <partial name="_FooterPartial" />
+
+@section Scripts 
+{
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script type="text/javascript">
+        'use strict';
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the scanned code as you like
+            document.getElementById('result').innerText = `Scanned QR Code: ${decodedText}`;
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure
+            console.warn(`QR Code scan error: ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+    </script>
+
+}
