@@ -14,6 +14,53 @@
         </footer>
     </div>
 
+
+    <div class="experiment">
+        <header>
+            <h2>Generate QR</h2>
+        </header>
+        <section class="content">
+            <p class="description">
+                Use this module to generate a QR code.
+            </p>
+        </section>
+        <footer>
+            @* <a asp-page="/QrCode" title="QR Code"><span class="material-symbols-outlined">qr_code</span></a> *@
+            <a asp-page="/QrCode">Go generate QR code</a>
+        </footer>
+    </div>
+
+
+    <div class="experiment">
+        <header>
+            <h2>Scan QR Code</h2>
+        </header>
+        <section class="content">
+            <p class="description">
+                Use this module to scan QR code.
+            </p>
+        </section>
+        <footer>
+            @* <a asp-page="/ScanQr" title="Scan QR"><span class="material-symbols-outlined">qr_code_scanner</span></a> *@
+            <a asp-page="/ScanQr">Go scan QR code</a>
+        </footer>
+    </div>
+
+
+    <div class="experiment">
+        <header>
+            <h2>Telegram</h2>
+        </header>
+        <section class="content">
+            <p class="description">
+                Use this module to manage Telegram bot-related matters.
+            </p>
+        </section>
+        <footer>
+            <a asp-page="/experiments/TelegramBots">Go manage Telegram bots</a>
+        </footer>
+    </div>
+
     @*         
     @for (int i = 1; i <= 5; i++)
         {

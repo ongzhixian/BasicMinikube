@@ -65,6 +65,15 @@ builder.Services.AddHttpClient<EmailService>(client =>
     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", mailerSendApiToken);
 });
 
+
+builder.Services.AddHttpClient<TelegramService>(client =>
+{
+    var baseUrl = "https://api.telegram.org";
+    client.BaseAddress = new Uri(baseUrl);
+    //var mailerSendApiToken = builder.Configuration["mailersend_api_token"] ?? throw new NullConfigurationException("mailersend_api_token");
+    //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", mailerSendApiToken);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

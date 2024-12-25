@@ -1,0 +1,43 @@
+﻿@page "/telegram-bots"
+@model TelegramBotsPageModel
+@{
+    ViewData["Title"] = "Telegram Bots";
+}
+
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <h1>@ViewData["Title"]</h1>
+
+    <section>
+
+        <form method="post">
+
+            <div>
+                <button type="submit" name="action" value="SetWebhook">Set webhook</button>
+            </div>
+
+            <div>
+                <button type="submit" name="action" value="SetMe">Get Me</button>
+            </div>
+
+            <div>
+                <button type="submit" name="action" value="GetWebhook">Get webhook</button>
+            </div>
+
+        </form>
+
+    </section>
+
+    <!--
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+    -->
+
+</main>
+
+<partial name="_FooterPartial" />
