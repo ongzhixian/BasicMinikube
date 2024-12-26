@@ -13,12 +13,13 @@ public sealed class TelegramService : IDisposable
     private readonly ILogger<TelegramService> logger;
     private readonly HttpClient httpClient;
 
-    private readonly string botToken = "bot";
+    private readonly string botToken;
 
-    public TelegramService(ILogger<TelegramService> logger, HttpClient httpClient)
+    public TelegramService(ILogger<TelegramService> logger, IConfiguration configuration, HttpClient httpClient)
     {
         this.logger = logger;
         this.httpClient = httpClient;
+        this.botToken = configuration["telegram_bot_warelogix_token"] ?? throw new ConfigurationNullException("telegram_bot_warelogix_token");
     }
 
 

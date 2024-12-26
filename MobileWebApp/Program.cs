@@ -61,7 +61,7 @@ builder.Services.AddScoped<AppRoleService>();
 builder.Services.AddHttpClient<EmailService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["MailerSend:BaseAddressUri"] ?? "https://api.mailersend.com");
-    var mailerSendApiToken = builder.Configuration["mailersend_api_token"] ?? throw new NullConfigurationException("mailersend_api_token");
+    var mailerSendApiToken = builder.Configuration["mailersend_api_token"] ?? throw new ConfigurationNullException("mailersend_api_token");
     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", mailerSendApiToken);
 });
 
