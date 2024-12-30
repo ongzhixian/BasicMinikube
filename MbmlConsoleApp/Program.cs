@@ -1,8 +1,11 @@
 ﻿// Mbml -- Model-based Machine Learning Console App
 using MbmlConsoleApp;
 
-TruncatedGaussian truncatedGaussian = new TruncatedGaussian();
-truncatedGaussian.Run();
+LearningGaussian learningGaussian = new LearningGaussian();
+learningGaussian.Run();
+
+//TruncatedGaussian truncatedGaussian = new TruncatedGaussian();
+//truncatedGaussian.Run();
 
 //TutorialTwoCoins tutorialTwoCoins = new TutorialTwoCoins();
 //tutorialTwoCoins.Run();
