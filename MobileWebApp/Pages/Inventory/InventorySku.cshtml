@@ -1,0 +1,72 @@
+﻿@page "/inventory/sku/{id?}/{pageNumber?}"
+@model InventorySkuPageModel
+@{
+    ViewData["Title"] = "Inventory SKUs";
+}
+
+<partial name="_HeaderPartial" />
+
+<main class="hamburger-grid-layout">
+
+    <header>
+        <a asp-page="/Inventory/Index">Back to Inventory</a>
+    </header>
+
+    <section class="inventory-display">
+        <header>
+            <h1>@Model.ItemName SKU(s)</h1>
+        </header>
+
+        <div class="content">
+            <table class="inventory">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <partial name="_PageOfDataPartial" model="Model.SkuList" />
+
+                            @* 
+                            Page @Model.SkuList.PageNumber of @Model.SkuList.LastPageNumber 
+                            (record @Model.SkuList.StartRecordNumber to @Model.SkuList.EndRecordNumber of @Model.SkuList.TotalRecords)
+                            <a asp-route-id="@Model.ItemName" asp-route-pageNumber="@Model.SkuList.PreviousPage">Previous 5</a>
+                            <a asp-route-id="@Model.ItemName" asp-route-pageNumber="@Model.SkuList.NextPage">Next 5</a> 
+                            *@
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sku in Model.SkuList.Data)
+                    {
+                        <tr>
+                            @* <td><a asp-page="/Inventory/InventorySku" asp-route-id="@sku.SkuId">@sku.SkuId</a></td> *@
+                            <td>@sku.SkuId</td>
+                            <td>@sku.Quantity @sku.Status</td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">
+                            @* [END] *@
+                            @* <partial name="_PageOfDataPartial" model="Model.SkuList" /> *@
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <footer>
+            <div class="panel">
+                <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Go add SKUs</a>
+                @* | <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Add SKUs by scanning QR code</a> *@
+            </div>
+        </footer>
+    </section>
+
+</main>
+
+<partial name="_FooterPartial" />

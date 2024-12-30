@@ -49,7 +49,7 @@ button.accept-policy {
 
 
 body {
-    height: 100vh;
+    height: 100dvh;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;

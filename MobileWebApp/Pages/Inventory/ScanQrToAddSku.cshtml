@@ -1,0 +1,42 @@
+﻿@page "/inventory/scan/add-sku/{id?}"
+@model ScanQrToAddSkuPageModel
+@{
+    ViewData["Title"] = "Scan QR SKU(s)";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <h1>@ViewData["Title"]</h1>
+
+    <div id="reader"></div>
+    <div id="result"></div>
+
+</main>
+
+<partial name="_FooterPartial" />
+
+@section Scripts 
+{
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script type="text/javascript">
+        'use strict';
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the scanned code as you like
+            document.getElementById('result').innerText = `Scanned QR Code: ${decodedText}`;
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure
+            console.warn(`QR Code scan error: ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250, showTorchButtonIfSupported: true, rememberLastUsedCamera: true });
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+    </script>
+
+}

@@ -37,6 +37,11 @@ public class AppUserRepository
         });
     }
 
+    internal async Task AddUserAsync(AppUser appUser)
+    {
+        await appUserCollection.InsertOneAsync(appUser);
+    }
+
     internal async Task<List<AppUser>> FindMatchingUser(string searchCriteria)
     {
         try

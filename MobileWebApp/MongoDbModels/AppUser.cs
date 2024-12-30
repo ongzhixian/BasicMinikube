@@ -26,4 +26,9 @@ public class AppUser
 
     public IList<Claim> Claims { get; set; } = [];
 
+    // Enhanced for OAuth
+    public string Email { get; set; } = string.Empty;
+    public string? OAuthProvider { get; set; } = null;
+    public string? DisplayName { get; set; } = null;
+
 }

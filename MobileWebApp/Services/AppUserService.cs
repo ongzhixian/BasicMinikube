@@ -125,6 +125,11 @@ public class AppUserService
         return await appUserRepository.UpdateUserAsync(user);
     }
 
+    internal async Task AddAppUserAsync(AppUser appUser)
+    {
+        await appUserRepository.AddUserAsync(appUser);
+    }
+
 
     //public async Task GetAppUserAsync(string username)
     //{

@@ -1,0 +1,13 @@
+﻿@model MobileWebApp.Models.IPageMetaData
+
+<div class="pager">
+    
+    <a class="previous" asp-route-pageNumber="@Model.PreviousPage">Previous 5</a>
+
+    <span class="center">
+        Page @Model.PageNumber of @Model.LastPageNumber<br/>
+        (record @Model.StartRecordNumber to @Model.EndRecordNumber of @Model.TotalRecords)
+    </span>
+    
+    <a class="next" asp-route-pageNumber="@Model.NextPage">Next 5</a>
+</div>

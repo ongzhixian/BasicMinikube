@@ -1,14 +1,19 @@
-﻿@page "/login"
-@model LoginPageModel
+﻿@page "/sign-in/{handler?}"
+@model ExternalSignInPageModel
 @{
     Layout = "_LoginLayout";
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "OAuth Sign In";
 }
 
 <section class="login-form">
 
-    <h1>Log in</h1>
+    <h1>@ViewData["Title"]</h1>
 
+    <div>
+        Return to <a asp-page="/Authentication/Login">log in</a> page to try again.
+    </div>
+
+    @*
     <form method="post">
 
         <div class="layout">
@@ -27,12 +32,6 @@
         </div>
 
     </form>
-
-    @if ((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empty).Equals("Development", StringComparison.InvariantCultureIgnoreCase))
-    {
-        <a class="login" href="/register-new-user">Register new user</a>
-    }
-
-    <a class="login" asp-page="/Authentication/ExternalSignIn" asp-page-handler="google" >Sign in using Google</a>
+    *@
 
 </section>

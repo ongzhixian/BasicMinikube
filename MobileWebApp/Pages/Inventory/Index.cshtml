@@ -1,0 +1,67 @@
+﻿@page "/inventory"
+@model InventoryIndexPageModel
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <section class="inventory-display">
+        <header>
+            <h1>Inventory</h1>
+        </header>
+
+        <div class="content">
+            <table class="inventory">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <partial name="_PageOfDataPartial" model="Model.InventoryItems" />
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InventoryItems.Data)
+                    {
+                        <tr>
+                            <td><a asp-page="/Inventory/InventorySku" asp-route-id="@item.Name">@item.Name</a></td>
+                            <td>@item.Quantity @item.Status</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    
+        <footer>
+            <div class="panel">
+                
+                <a asp-page="/Inventory/AddInventoryItem"><span class="material-symbols-outlined">add</span></a>
+
+                <a asp-page="/Inventory/AddInventoryItem" title="Download all inventory item list"><span class="material-symbols-outlined" >download_for_offline</span></a>
+                @* 
+                
+                &nbsp;<a asp-page="/Inventory/AddInventoryItem" title="TODO: Upload list of inventory items"><span class="material-symbols-outlined">upload</span></a>
+                &nbsp;<a asp-page="/Inventory/AddInventoryItem" title="TODO: Download list of inventory items"><span class="material-symbols-outlined">download</span></a>
+
+                | <a asp-page="/Inventory/AddInventoryItem">Go add item</a>
+                | <a asp-page="/Inventory/UploadInventoryItems" title="Upload list of inventory items">Upload Inventory Item List</a>
+                | <a asp-page="/Inventory/DownloadInventoryItem" title="Download list of inventory items">Download Inventory Item List</a>
+                    
+                | <a asp-page="/Inventory/AddInventoryItem">Remove item</a>
+                <button>Add item</button> 
+
+                *@
+            </div>
+        </footer>
+    </section>
+
+</main>
+
+<partial name="_FooterPartial" />

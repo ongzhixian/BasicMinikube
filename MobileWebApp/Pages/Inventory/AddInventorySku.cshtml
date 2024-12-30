@@ -1,0 +1,59 @@
+﻿@page "/inventory/add-sku/{id?}"
+@model AddInventorySkuPageModel
+@{
+    ViewData["Title"] = "Add Inventory Sku";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/Inventory/Index">Back to Inventory</a>
+    </header>
+
+    <form method="post" class="send-test-email">
+
+        <div class="layout">
+
+            <div></div>
+            <header>
+                <h1>@ViewData["Title"] (@Model.ItemName)</h1>
+            </header>
+            <div></div>
+
+            <label asp-for="ItemQuantity"></label>
+            <input asp-for="ItemQuantity" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="" type="submit">Increase quantity</button>
+            <div></div>
+
+            @if (ViewData["message"] != null)
+            {
+                <div></div>
+                <p>@ViewData["message"]</p>
+                <div></div>
+            }
+
+        </div>
+
+    </form>
+
+
+    <a asp-page="/Inventory/ScanQrToAddSku">Add items by QR code</a>
+
+
+    <a asp-page="/Inventory/NativeScanQr">Native Scan</a>
+
+    <!--
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+    -->
+
+</main>
+
+<partial name="_FooterPartial" />

@@ -7,7 +7,8 @@
         }
         else
         {
-            <a href="#">Timesheets</a>
+            @* <a href="#">Timesheets</a> *@
+            <span></span>
         }
 
         @if (configuration["FeatureFlags:ContactsPage"].IsTrue())
@@ -16,9 +17,7 @@
         }
         else
         {
-            @* <span></span> *@
-            
-            
+            <span></span>
         }
 
         @if (configuration["FeatureFlags:ConversationsPage"].IsTrue())
@@ -30,8 +29,12 @@
         }
         else
         {
+            <a asp-page="/Inventory/Index" title="Inventory"><span class="material-symbols-outlined">inventory</span></a>
+            @*
+
             <a asp-page="/ScanQr" title="Scan QR"><span class="material-symbols-outlined">qr_code_scanner</span></a>
             <a asp-page="/QrCode" title="QR Code"><span class="material-symbols-outlined">qr_code</span></a>
+            *@
         }
 
         <a asp-page="/userprofile" title="Profile"><span class="material-symbols-outlined">person_edit</span></a>

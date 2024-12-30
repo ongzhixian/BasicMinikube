@@ -1,0 +1,53 @@
+﻿@page "/inventory/add-item"
+@model AddInventoryItemPageModel
+@{
+    ViewData["Title"] = "Add Inventory Item";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/Inventory/Index">Back to Inventory</a>
+    </header>
+
+    <form method="post" class="send-test-email">
+
+        <div class="layout">
+
+            <div></div>
+            <header>
+                <h1>@ViewData["Title"]</h1>
+            </header>
+            <div></div>
+
+            <label asp-for="ItemName"></label>
+            <input asp-for="ItemName" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="" type="submit">Add Item</button>
+            <div></div>
+
+            @if (ViewData["message"] != null)
+            {
+                <div></div>
+                <p>@ViewData["message"]</p>
+                <div></div>
+            }
+
+        </div>
+
+    </form>
+
+    <!--
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+    -->
+
+</main>
+
+<partial name="_FooterPartial" />

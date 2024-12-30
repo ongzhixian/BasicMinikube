@@ -1,0 +1,99 @@
+﻿@page "/inventory/native-scan"
+@model NativeScanQrPageModel
+@{
+    ViewData["Title"] = "Native Scan";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <h1>@ViewData["Title"]</h1>
+
+    <section class="barcode-scanner">
+        <div id="reader" class="camera-viewport"></div>
+        <div id="result" class="scan-result">N/A</div>
+        <div class="button-panel">
+            <button id="startButton">Start</button>
+            <button id="stopButton">Stop</button>
+        </div>
+    </section>
+    
+
+</main>
+
+<partial name="_FooterPartial" />
+
+@section Scripts
+{
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script type="text/javascript">
+        'use strict';
+
+
+        let startButton = document.getElementById('startButton');
+        let stopButton = document.getElementById('stopButton');
+        let resultDisplay = document.getElementById('result');
+
+        const html5QrCode = new Html5Qrcode(/* element id */ "reader");
+        
+
+        stopButton.addEventListener('click', (event) => {
+            html5QrCode.stop().then((ignore) => {
+                // QR Code scanning is stopped.
+            }).catch((err) => {
+                // Stop failed, handle it.
+            });
+        });
+
+        startButton.addEventListener('click', (event) => {
+            html5QrCode.start(
+                //cameraId,
+                { facingMode: 'environment' },
+                {
+                    fps: 10,    // Optional, frame per seconds for qr code scanning
+                    qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
+                },
+                (decodedText, decodedResult) => {
+                    // do something when code is read
+                    
+                    resultDisplay.innerHTML = `${decodedText} | ${decodedResult}`
+                    // 
+
+                },
+                (errorMessage) => {
+                    // parse error, ignore it.
+                }
+            )
+            .then(a => {
+                //html5QrCode.applyVideoConstraints({ focusMode: 'continuous', advanced: [ { zoom: 2.0 } ] })
+            })
+            .catch((err) => {
+                // Start failed, handle it.
+            });
+        });
+
+
+
+        
+
+        // // This method will trigger user permissions
+        // Html5Qrcode.getCameras().then(devices => {
+        //   /**
+        //    * devices would be an array of objects of type:
+        //    * { id: "id", label: "label" }
+        //    */
+        //   if (devices && devices.length) {
+        //     var cameraId = devices[0].id;
+            
+        //     // .. use this to start scanning.
+
+
+        //   }
+        // }).catch(err => {
+        //   // handle err
+        // });
+
+    </script>
+
+}

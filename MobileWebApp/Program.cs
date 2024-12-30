@@ -27,6 +27,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         authBuilder.AccessDeniedPath = "/access-denied";
 
         authBuilder.Cookie.Name = "App";
+    })
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:WareLogix:ClientId"] ?? throw new ConfigurationNullException("Authentication:Google:WareLogix:ClientId");
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:WareLogix:ClientSecret"] ?? throw new ConfigurationNullException("Authentication:Google:WareLogix:ClientSecret");
     });
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -51,11 +56,16 @@ builder.Services.AddKeyedScoped<IMongoDatabase>("minitools", (sp, key) =>
 
 builder.Services.AddScoped<AppUserRepository>();
 builder.Services.AddScoped<AppRoleRepository>();
+builder.Services.AddScoped<InventoryItemRepository>();
+builder.Services.AddScoped<InventorySkuRepository>();
+
 
 builder.Services.AddScoped<AppUserAuthenticationService>();
 builder.Services.AddScoped<AppUserAuthorizationService>();
 builder.Services.AddScoped<AppUserService>();
 builder.Services.AddScoped<AppRoleService>();
+builder.Services.AddScoped<InventoryService>();
+builder.Services.AddScoped<BorrowService>();
 
 
 builder.Services.AddHttpClient<EmailService>(client =>
@@ -83,6 +93,17 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+if (true) // Initialize MongoDb indexes
+{
+    using var scope = app.Services.CreateScope();
+    var inventoryItemRepository = scope.ServiceProvider.GetRequiredService<InventoryItemRepository>();
+    await inventoryItemRepository.CreateUniqueNameIndexAsync();
+    var inventorySkuRepository = scope.ServiceProvider.GetRequiredService<InventorySkuRepository>();
+    await inventorySkuRepository.CreateUniqueSkuIdIndexAsync();
+}
+
 
 //app.UseHttpsRedirection();
 
