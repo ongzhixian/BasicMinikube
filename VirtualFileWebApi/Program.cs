@@ -47,6 +47,14 @@ static void ConfigureDbContexts(WebApplicationBuilder builder)
 
     }, ServiceLifetime.Scoped);
 
+    //builder.Services.AddDbContextFactory<EimaContext>(dbContextOption =>
+    //{
+    //    dbContextOption.UseSqlServer(eimaDbConnectionString, sqlServerOption =>
+    //    {
+    //        sqlServerOption.CommandTimeout(60);
+    //    });
+    //}, ServiceLifetime.Scoped);
+
     //builder.Services.AddDbContextFactory
     //builder.Services.AddDbContextPool
 }
