@@ -410,3 +410,6 @@ FodyWeavers.xsd
 /MobileWebApp/.config
 /MobileWebApp/.azure
 /MobileWebApp/Properties/ServiceDependencies/telera-mobile-app - Web Deploy
+
+# Ignore MBML generated Artifacts
+/GeneratedSource
