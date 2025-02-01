@@ -4,8 +4,6 @@ using MobileWebApp.Repositories;
 
 using MongoDB.Driver;
 
-using static MobileWebApp.Repositories.InventorySkuRepository;
-
 namespace MobileWebApp.Services;
 
 public class InventoryService
@@ -16,7 +14,7 @@ public class InventoryService
     private readonly IMongoClient mongoClient;
 
     public InventoryService(ILogger<InventoryService> logger,
-        [FromKeyedServices("WareLogixMongoDb")]IMongoClient mongoClient,
+        [FromKeyedServices("WareLogixMongoDb")] IMongoClient mongoClient,
         InventoryItemRepository inventoryItemRepository, InventorySkuRepository inventorySkuRepository)
     {
         this.logger = logger;
@@ -24,6 +22,8 @@ public class InventoryService
         this.inventoryItemRepository = inventoryItemRepository;
         this.inventorySkuRepository = inventorySkuRepository;
     }
+
+    // INVENTORY ITEM
 
     internal async Task AddNewItemAsync(string itemName)
     {
@@ -50,6 +50,22 @@ public class InventoryService
     {
         return await inventoryItemRepository.GetInventoryItemAsync(itemName);
     }
+    
+    internal async Task<OperationResult> RemoveItemAsync(string itemName)
+    {
+        const string operationName = "Remove Inventory Item";
+
+        var documentCount = await inventorySkuRepository.GetInventorySkuCountAsync(itemName);
+
+        if (documentCount > 0) return new FailureResult(operationName, "SKUs exists for inventory item");
+
+        if (await inventoryItemRepository.RemoveInventoryItem(itemName) > 0)
+            return new SuccessResult(operationName, "Inventory item removed");
+        
+        return new FailureResult(operationName, "Inventory item not removed");
+
+        //var results = await inventorySkuRepository.GetInventorySkuListAsync(itemName, pageNumber, pageSize);
+    }
 
     //internal async Task<List<InventoryItem>> GetInventoryItemQuantitiesAsync()
     //{
@@ -58,6 +74,8 @@ public class InventoryService
     //    return inventoryItems;
     //    //return await inventorySkuRepository.GetItemQuantitiesByItemNameAsync(inventoryItems);
     //}
+
+    // INVENTORY SKUs
 
     internal async Task<PageOf<InventorySku>> GetSkusByItemNameAsync(string itemName, int pageNumber, int pageSize)
     {
@@ -75,8 +93,6 @@ public class InventoryService
 
     internal async Task IncreaseItemQuantityAsync(string itemName, decimal itemQuantity)
     {
-        
-
         using (var mongodbSession = await mongoClient.StartSessionAsync())
         {
             mongodbSession.StartTransaction();
@@ -106,8 +122,39 @@ public class InventoryService
 
         }
 
-            
-
         //return await inventoryItemRepository.IncreaseItemQuantityAsync(itemName, itemQuantity);
     }
+
+    internal async Task<OperationResult> AddInventorySkuAsync(string itemName, string skuId)
+    {
+        const string operationName = "Add Inventory SKU";
+
+        using (var mongodbSession = await mongoClient.StartSessionAsync())
+        {
+            mongodbSession.StartTransaction();
+
+            var inventoryItem = await inventoryItemRepository.GetInventoryItemAsync(itemName);
+
+            try
+            {
+                await inventorySkuRepository.AddNewSkuAsync(inventoryItem.Name, 1, inventoryItem.QuanityUnit, skuId);
+
+                inventoryItem.Quantity += 1;
+
+                await inventoryItemRepository.UpdateAsync(inventoryItem);
+
+                await mongodbSession.CommitTransactionAsync();
+
+                return new SuccessResult(operationName, "Inventory SKU added");
+            }
+            catch (Exception)
+            {
+                await mongodbSession.AbortTransactionAsync();
+
+                return new FailureResult(operationName, "Inventory SKU not added");
+            }
+
+        }
+    }
+
 }

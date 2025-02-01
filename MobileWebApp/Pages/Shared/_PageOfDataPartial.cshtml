@@ -1,13 +1,23 @@
 ﻿@model MobileWebApp.Models.IPageMetaData
 
 <div class="pager">
-    
-    <a class="previous" asp-route-pageNumber="@Model.PreviousPage">Previous 5</a>
 
-    <span class="center">
-        Page @Model.PageNumber of @Model.LastPageNumber<br/>
-        (record @Model.StartRecordNumber to @Model.EndRecordNumber of @Model.TotalRecords)
-    </span>
+    @if ((Model.PageNumber <= Model.LastPageNumber) && Model.TotalRecords > 0)
+    {
+        <a class="previous" asp-route-pageNumber="@Model.PreviousPage" asp-route-pageSize="@Model.PageSize">Previous @Model.PageSize</a>
+
+        <span class="center">
+            Page @Model.PageNumber of @Model.LastPageNumber<br />
+            (record @Model.StartRecordNumber to @Model.EndRecordNumber of @Model.TotalRecords)
+        </span>
+
+        <a class="next" asp-route-pageNumber="@Model.NextPage" asp-route-pageSize="@Model.PageSize">Next @Model.PageSize</a>
+    }
+    else
+    {
+        <span></span>
+        <span class="center">No data</span>
+        <span></span>
+    }
     
-    <a class="next" asp-route-pageNumber="@Model.NextPage">Next 5</a>
 </div>

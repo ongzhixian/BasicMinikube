@@ -1,18 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using MobileWebApp.Models;
-using MobileWebApp.Repositories;
 using MobileWebApp.Services;
 
 namespace MobileWebApp.Pages;
 
-public class AddInventorySkuPageModel : PageModel
+public class RemoveInventoryItemPageModel : PageModel
 {
-    private readonly ILogger<AddInventorySkuPageModel> _logger;
+    private readonly ILogger<RemoveInventoryItemPageModel> logger;
     private readonly InventoryService inventoryService; 
 
     [TempData]
@@ -20,15 +17,16 @@ public class AddInventorySkuPageModel : PageModel
 
     [BindProperty, Required]
     [DataType(DataType.Text)]
-    [Display(Name = "Increase Quantity")]
-    public decimal ItemQuantity { get; set; }
-
-    [BindProperty]
+    [Display(Name = "Item Name")]
     public string ItemName { get; set; } = string.Empty;
 
-    public AddInventorySkuPageModel(ILogger<AddInventorySkuPageModel> logger, InventoryService inventoryService)
+    [DataType(DataType.Text)]
+    [Display(Name = "Unit of Measurement")]
+    public string QuantityUnit { get; set; } = "PIECE";
+
+    public RemoveInventoryItemPageModel(ILogger<RemoveInventoryItemPageModel> logger, InventoryService inventoryService)
     {
-        _logger = logger;
+        this.logger = logger;
         this.inventoryService = inventoryService;
     }
 
@@ -39,6 +37,7 @@ public class AddInventorySkuPageModel : PageModel
         if (inventoryItem != null)
         {
             ItemName = inventoryItem.Name;
+            QuantityUnit = inventoryItem.QuanityUnit;
         }
     }
 
@@ -48,24 +47,19 @@ public class AddInventorySkuPageModel : PageModel
         {
             try
             {
-                var inventoryItem = await inventoryService.GetInventoryItemAsync(ItemName);
+                var operationResult = await inventoryService.RemoveItemAsync(ItemName);
 
-                if (inventoryItem != null)
-                {
-                    // ItemName
-                    await inventoryService.IncreaseItemQuantityAsync(inventoryItem.Name, ItemQuantity);
-                    ViewData["message"] = "Item added";
-                }
+                ViewData["message"] = operationResult.Message;
 
-                
+                //if (operationResult.IsSuccess)
+                //    ViewData["message"] = $"'{ItemName}' removed";
+                //else
+                //    ViewData["message"] = $"'{ItemName}' cannot be removed.";
             }
             catch (Exception ex)
             {
-
-                ViewData["message"] = "Cannot add item " + ex.Message;
+                ViewData["message"] = $"Cannot remove item; {ex.Message}";
             }
-            
-
         }
 
         return Page();

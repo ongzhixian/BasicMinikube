@@ -39,6 +39,7 @@ public class PageOf<T> : IPageMetaData
         {
             //return ((int)(TotalRecords / PageSize)) + ((TotalRecords % PageSize > 0) ? 1 : 0);
 
+            // TODO: BUG: crashes if PageSize is 0
             var lastPageNumber = (int)(TotalRecords + PageSize - 1) / PageSize;
             return lastPageNumber <= 0 ? 1 : lastPageNumber;
         }

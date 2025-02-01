@@ -133,6 +133,9 @@ footer > nav {
             justify-self: flex-end;
         }
 
+
+/* .tasks-grid */
+
 .tasks-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -192,6 +195,22 @@ footer > nav {
 .grid-list-5-col {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+}
+
+.action-grid-4-column {
+    width: auto;
+    align-items: center;
+    display: inline-grid;
+    grid-template-columns: repeat(4, auto);
+    grid-gap: .36em;
+}
+
+.action-grid-5-column {
+    width: auto;
+    align-items: center;
+    display: inline-grid;
+    grid-template-columns: repeat(5, auto);
+    grid-gap: .36em;
 }
 
 .swiper {
@@ -296,6 +315,7 @@ section.inventory-display {
 
 section.barcode-scanner {
     display: grid;
+    grid-gap: .36em;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto auto;
     grid-template-areas:
@@ -306,24 +326,42 @@ section.barcode-scanner {
 
     section.barcode-scanner .camera-viewport {
         grid-area: cameraView;
-        min-height: calc(100dvw);
-        border: 2px solid orange;
-    }
-    section.barcode-scanner .scan-result {
-        grid-area: scanResult;
-        min-height: 1em;
-        border: 2px solid green;
-    }
-    section.barcode-scanner .button-panel {
-        grid-area: buttonPanel;
-        border: 2px solid blue;
+        min-height: calc(70dvw);
+        border: 1px dotted red;
+        display: grid;
+        justify-items: center;
+        align-items: center;
     }
 
-div.pager {
-    background-color: gainsboro;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-}
+    section.barcode-scanner .scan-result {
+        grid-area: scanResult;
+        min-height: 2.67em;
+        border: 2px dotted lightgrey;
+        text-align: center;
+        padding: .36em;
+        font-size: larger;
+        align-content: center;
+    }
+
+    section.barcode-scanner .button-panel {
+        grid-area: buttonPanel;
+        /*border: 2px dotted lightgrey;*/
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-items: center;
+    }
+
+        section.barcode-scanner .button-panel > button {
+            width: 4em;
+            height: 4em;
+            font-size: larger;
+        }
+
+        div.pager {
+            background-color: gainsboro;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
 
     div.pager .previous {
         justify-self: start;
@@ -353,9 +391,27 @@ table.inventory {
         text-align: left;
     }
 
+    table.inventory tr {
+        line-height: 1.67em;
+    }
+
+    table.inventory th, table.inventory td {
+        
+    }
+
+
+td > a > span.material-symbols-outlined {
+    vertical-align: text-bottom;
+}
+
 div.search-results-list {
     display: flex;
     flex-direction: column;
+}
+
+
+.input-group > label {
+    margin-right: .2em;
 }
 
 .positive {

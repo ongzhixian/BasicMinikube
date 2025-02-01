@@ -32,21 +32,30 @@
                             *@
                         </th>
                     </tr>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var sku in Model.SkuList.Data)
+                    @if (Model.SkuList.TotalRecords > 0)
                     {
                         <tr>
-                            @* <td><a asp-page="/Inventory/InventorySku" asp-route-id="@sku.SkuId">@sku.SkuId</a></td> *@
-                            <td>@sku.SkuId</td>
-                            <td>@sku.Quantity @sku.Status</td>
+                            <th>Item</th>
+                            <th>Quantity</th>
                         </tr>
                     }
-
+                </thead>
+                <tbody>
+                    @if (Model.SkuList.TotalRecords > 0)
+                    {
+                        foreach (var sku in Model.SkuList.Data)
+                        {
+                            <tr>
+                                @* <td><a asp-page="/Inventory/InventorySku" asp-route-id="@sku.SkuId">@sku.SkuId</a></td> *@
+                                <td>
+                                    @sku.SkuId
+                                    <a asp-page="/Inventory/EditInventoryItem"><span class="material-symbols-outlined">edit</span></a>
+                                    <a asp-page="/Inventory/EditInventoryItem"><span class="material-symbols-outlined">delete</span></a>
+                                </td>
+                                <td>@sku.Quantity @sku.QuanityUnit</td>
+                            </tr>
+                        }
+                    }
                 </tbody>
                 <tfoot>
                     <tr>
@@ -61,8 +70,24 @@
 
         <footer>
             <div class="panel">
+
+                <div class="action-grid-5-column">
+                    <span>Add SKUs by</span>
+                    <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName" title="Add by quantity"><span class="material-symbols-outlined">add</span></a>
+                    <a asp-page="/Inventory/ScanInventorySku" asp-route-id="@Model.ItemName" title="Add by scanning QR code"><span class="material-symbols-outlined">qr_code</span></a>
+                    <a asp-page="/Inventory/InputInventorySku" asp-route-id="@Model.ItemName" title="Add by entering SKU"><span class="material-symbols-outlined">keyboard</span></a>
+
+                    @if (Model.SkuList.TotalRecords == 0)
+                    {
+                    <a asp-page="/Inventory/RemoveInventoryItem" asp-route-id="@Model.ItemName" title="Remove inventory item"><span class="material-symbols-outlined">delete</span></a>
+                    }
+                </div>
+
+                @* 
                 <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Go add SKUs</a>
-                @* | <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Add SKUs by scanning QR code</a> *@
+                | <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Enter SKU</a>
+                | <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Add SKUs by</a>
+                | <a asp-page="/Inventory/AddInventorySku" asp-route-id="@Model.ItemName">Add SKUs by scanning QR code</a> *@
             </div>
         </footer>
     </section>

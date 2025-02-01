@@ -1,18 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using MobileWebApp.Models;
-using MobileWebApp.Repositories;
 using MobileWebApp.Services;
 
 namespace MobileWebApp.Pages;
 
 public class AddInventoryItemPageModel : PageModel
 {
-    private readonly ILogger<AddInventoryItemPageModel> _logger;
+    private readonly ILogger<AddInventoryItemPageModel> logger;
     private readonly InventoryService inventoryService; 
 
     [TempData]
@@ -23,9 +20,14 @@ public class AddInventoryItemPageModel : PageModel
     [Display(Name = "Item Name")]
     public string ItemName { get; set; } = string.Empty;
 
+    [BindProperty, Required]
+    [DataType(DataType.Text)]
+    [Display(Name = "Unit of Measurement")]
+    public string QuantityUnit { get; set; } = "PIECE";
+
     public AddInventoryItemPageModel(ILogger<AddInventoryItemPageModel> logger, InventoryService inventoryService)
     {
-        _logger = logger;
+        this.logger = logger;
         this.inventoryService = inventoryService;
     }
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+using MobileWebApp.MongoDbModels;
 using MobileWebApp.Services;
 
 namespace MobileWebApp.Pages.Authentication;
@@ -18,6 +19,8 @@ public class LoginPageModel : PageModel
 
     private readonly AppUserAuthenticationService appUserAuthenticationService;
     private readonly AppUserAuthorizationService appUserAuthorizationService;
+    private readonly AppUserService appUserService;
+    private readonly SessionService sessionService;
 
 
     [TempData]
@@ -34,11 +37,15 @@ public class LoginPageModel : PageModel
 
     public LoginPageModel(ILogger<LoginPageModel> logger, 
         AppUserAuthenticationService appUserAuthenticationService, 
-        AppUserAuthorizationService appUserAuthorizationService)
+        AppUserAuthorizationService appUserAuthorizationService,
+        AppUserService appUserService,
+        SessionService sessionService)
     {
         this.logger = logger;
         this.appUserAuthenticationService = appUserAuthenticationService;
         this.appUserAuthorizationService = appUserAuthorizationService;
+        this.appUserService = appUserService;
+        this.sessionService = sessionService;
     }
 
     public void OnGet(string? returnUrl = null)
@@ -67,6 +74,9 @@ public class LoginPageModel : PageModel
                 var claims = await appUserAuthorizationService.GetClaimsAsync(Username.ToUpperInvariant());
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await sessionService.LoadUserPreferencesToSessionAsync(Username.ToUpperInvariant());
+                //HttpContext.Session.SetInt32(UserPreferences.PREFERRED_PAGE_SIZE, appUser.UserPreferences.PreferredPageSize);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
                 

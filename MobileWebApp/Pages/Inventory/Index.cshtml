@@ -30,11 +30,18 @@
                     @foreach (var item in Model.InventoryItems.Data)
                     {
                         <tr>
-                            <td><a asp-page="/Inventory/InventorySku" asp-route-id="@item.Name">@item.Name</a></td>
-                            <td>@item.Quantity @item.Status</td>
+                            <td>
+                                <a asp-page="/Inventory/InventorySku" asp-route-id="@item.Name" asp-route-pn="@Model.PageNumber" asp-route-ps="@Model.PageSize">@item.Name</a>
+                                
+                                @*
+                                <a asp-page="/Inventory/EditInventoryItem"><span class="material-symbols-outlined">delete</span></a>
+                                <a asp-page="/Inventory/EditInventoryItem"><span class="material-symbols-outlined">visibility_off</span></a>
+                                <a asp-page="/Inventory/EditInventoryItem"><span class="material-symbols-outlined">edit</span></a>
+                                *@
+                            </td>
+                            <td>@item.Quantity @item.QuanityUnit</td>
                         </tr>
                     }
-
                 </tbody>
             </table>
         </div>

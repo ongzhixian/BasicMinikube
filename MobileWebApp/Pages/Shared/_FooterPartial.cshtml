@@ -1,6 +1,10 @@
 ﻿@inject IConfiguration configuration
 <footer>
+
     <nav>
+
+        @* SPAN 1 *@
+
         @if (configuration["FeatureFlags:GroupsPage"].IsTrue())
         {
             <a asp-page="/groups" title="Groups"><span class="material-symbols-outlined">groups</span></a>
@@ -8,8 +12,10 @@
         else
         {
             @* <a href="#">Timesheets</a> *@
-            <span></span>
+            <a asp-page="/ApplicationList" title="Application List"><span class="material-symbols-outlined">menu</span></a>
         }
+
+        @* SPAN 2 *@
 
         @if (configuration["FeatureFlags:ContactsPage"].IsTrue())
         {
@@ -17,8 +23,10 @@
         }
         else
         {
-            <span></span>
+            <a asp-page="/ApplicationList" title="Application List"><span class="material-symbols-outlined">checkroom</span></a>
         }
+
+        @* SPAN 3 *@
 
         @if (configuration["FeatureFlags:ConversationsPage"].IsTrue())
         {
@@ -36,6 +44,8 @@
             <a asp-page="/QrCode" title="QR Code"><span class="material-symbols-outlined">qr_code</span></a>
             *@
         }
+
+        @* SPAN 4 *@
 
         <a asp-page="/userprofile" title="Profile"><span class="material-symbols-outlined">person_edit</span></a>
     </nav>

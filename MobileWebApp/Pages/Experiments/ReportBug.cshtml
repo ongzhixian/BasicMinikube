@@ -1,0 +1,53 @@
+﻿@page "/experiments/report-bug"
+@model ReportBugPageModel
+@{
+    ViewData["Title"] = "Send Bug Report";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/experiments/index">Back to Experiments</a>
+    </header>
+
+    <form method="post" class="send-test-email">
+
+        <div class="layout">
+
+            <div></div>
+            <header>
+                <h1>@ViewData["Title"]</h1>
+            </header>
+            <div></div>
+
+            <label asp-for="Recipient"></label>
+            <input asp-for="Recipient" autocomplete="off" />
+            <div></div>
+
+
+            <label asp-for="EmailBody"></label>
+            <textarea asp-for="EmailBody" class="email-content"></textarea>
+            <div></div>
+
+            <div></div>
+            <button class="login" type="submit">Send E-mail</button>
+            <div></div>
+
+            @if (ViewData["message"] != null)
+            {
+                <div></div>
+                <p>@ViewData["message"]</p>
+                <div></div>
+            }
+
+        </div>
+
+    </form>
+
+    
+
+</main>
+
+<partial name="_FooterPartial" />

@@ -54,6 +54,17 @@ builder.Services.AddKeyedScoped<IMongoDatabase>("minitools", (sp, key) =>
     return mongoClient.GetDatabase((string)key);
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+});
+builder.Services.AddMemoryCache(options =>
+{
+
+});
+
+
 builder.Services.AddScoped<AppUserRepository>();
 builder.Services.AddScoped<AppRoleRepository>();
 builder.Services.AddScoped<InventoryItemRepository>();
@@ -66,6 +77,9 @@ builder.Services.AddScoped<AppUserService>();
 builder.Services.AddScoped<AppRoleService>();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<BorrowService>();
+
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddSingleton<AppSettingService>();
 
 
 builder.Services.AddHttpClient<EmailService>(client =>
@@ -83,6 +97,9 @@ builder.Services.AddHttpClient<TelegramService>(client =>
     //var mailerSendApiToken = builder.Configuration["mailersend_api_token"] ?? throw new NullConfigurationException("mailersend_api_token");
     //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", mailerSendApiToken);
 });
+
+
+
 
 var app = builder.Build();
 
@@ -112,6 +129,8 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapStaticAssets();
 app.MapRazorPages()

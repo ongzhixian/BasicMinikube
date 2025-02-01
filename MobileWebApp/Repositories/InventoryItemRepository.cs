@@ -5,6 +5,7 @@
 
 
 
+
 using MobileWebApp.MongoDbModels;
 
 using MongoDB.Driver;
@@ -31,6 +32,18 @@ public class InventoryItemRepository
             Status = "Available"
         });
     }
+
+    internal async Task<long> RemoveInventoryItem(string itemName)
+    {
+        var filter = Builders<InventoryItem>.Filter.Eq(r => r.Name, itemName);
+
+        var result = await inventoryItemCollection.DeleteOneAsync(filter);
+
+        if (!result.IsAcknowledged || result.DeletedCount <= 0) return 0;
+
+        return result.DeletedCount;
+    }
+
 
     public async Task CreateUniqueNameIndexAsync()
     {

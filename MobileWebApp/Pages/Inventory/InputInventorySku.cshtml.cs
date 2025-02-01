@@ -1,18 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using MobileWebApp.Models;
-using MobileWebApp.Repositories;
 using MobileWebApp.Services;
 
 namespace MobileWebApp.Pages;
 
-public class AddInventorySkuPageModel : PageModel
+public class InputInventorySkuPageModel : PageModel
 {
-    private readonly ILogger<AddInventorySkuPageModel> _logger;
+    private readonly ILogger<InputInventorySkuPageModel> _logger;
     private readonly InventoryService inventoryService; 
 
     [TempData]
@@ -20,13 +17,13 @@ public class AddInventorySkuPageModel : PageModel
 
     [BindProperty, Required]
     [DataType(DataType.Text)]
-    [Display(Name = "Increase Quantity")]
-    public decimal ItemQuantity { get; set; }
+    [Display(Name = "SKU Id")]
+    public string SkuId { get; set; }
 
     [BindProperty]
     public string ItemName { get; set; } = string.Empty;
 
-    public AddInventorySkuPageModel(ILogger<AddInventorySkuPageModel> logger, InventoryService inventoryService)
+    public InputInventorySkuPageModel(ILogger<InputInventorySkuPageModel> logger, InventoryService inventoryService)
     {
         _logger = logger;
         this.inventoryService = inventoryService;
@@ -53,11 +50,11 @@ public class AddInventorySkuPageModel : PageModel
                 if (inventoryItem != null)
                 {
                     // ItemName
-                    await inventoryService.IncreaseItemQuantityAsync(inventoryItem.Name, ItemQuantity);
-                    ViewData["message"] = "Item added";
+                    var operationResult = await inventoryService.AddInventorySkuAsync(inventoryItem.Name, SkuId);
+                    //await inventoryService.IncreaseItemQuantityAsync(inventoryItem.Name, ItemQuantity);
+                    ViewData["message"] = operationResult.Message;
+                        //"Item added";
                 }
-
-                
             }
             catch (Exception ex)
             {

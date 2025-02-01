@@ -1,4 +1,4 @@
-﻿@page "/inventory/add-item"
+﻿@page "/inventory/add-item/{id?}"
 @model AddInventoryItemPageModel
 @{
     ViewData["Title"] = "Add Inventory Item";
@@ -24,6 +24,10 @@
 
             <label asp-for="ItemName"></label>
             <input asp-for="ItemName" autocomplete="off" />
+            <div></div>
+
+            <label asp-for="QuantityUnit"></label>
+            <input asp-for="QuantityUnit" autocomplete="off" />
             <div></div>
 
             <div></div>

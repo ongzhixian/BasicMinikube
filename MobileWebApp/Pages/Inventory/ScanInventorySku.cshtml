@@ -1,0 +1,182 @@
+﻿@page "/inventory/scan-sku/{id?}"
+@model ScanInventorySkuPageModel
+@{
+    ViewData["Title"] = "Scan Inventory SKU";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <header>
+        <a asp-page="/Inventory/InventorySku" asp-route-id="@Model.ItemName">Back to SKU List</a>
+    </header>
+
+
+
+    <form method="post" class="send-test-email">
+
+        <input type="hidden" id="itemNameHiddenInput" asp-for="ItemName" />
+
+        <div class="layout">
+
+            <div></div>
+            <header>
+                <h1 style="text-align:center;">@ViewData["Title"]<br />(@Model.ItemName)</h1>
+            </header>
+            <div></div>
+
+            <div></div>
+            <div>
+                <section class="barcode-scanner">
+                    <div id="reader" class="camera-viewport"></div>
+                    <div id="result" class="scan-result">N/A</div>
+                    <div class="button-panel">
+                        <button type="button" id="startButton">Start</button>
+                        <button type="button" id="stopButton">Stop</button>
+                    </div>
+                </section>
+
+            </div>
+            <div></div>
+
+            @*
+
+            <label asp-for="ItemQuantity"></label>
+            <input asp-for="ItemQuantity" autocomplete="off" />
+            <div></div>
+
+            <div></div>
+            <button class="" type="submit">Increase quantity</button>
+            <div></div>
+            *@
+
+            @if (ViewData["message"] != null)
+            {
+                <div></div>
+                <p>@ViewData["message"]</p>
+                <div></div>
+            }
+
+        </div>
+
+    </form>
+
+    @*
+    <button type="button" id="testButton">Test</button>
+
+
+    <p>
+        <a asp-page="/Inventory/ScanQrToAddSku">Add items by QR code</a>
+    </p>
+    <p>
+        <a asp-page="/Inventory/NativeScanQr">Native Scan</a>
+    </p>
+    *@
+
+</main>
+
+<partial name="_FooterPartial" />
+
+
+@section Scripts
+{
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script type="text/javascript">
+        'use strict';
+
+
+        //let testButton = document.getElementById('testButton');
+
+        let itemNameHiddenInput = document.getElementById('itemNameHiddenInput');
+        let startButton = document.getElementById('startButton');
+        let stopButton = document.getElementById('stopButton');
+        let resultDisplay = document.getElementById('result');
+
+        let qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
+            let minEdgePercentage = 0.7; // 70%
+            let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+            let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+
+            //             314              236               236          165
+            // console.log(viewfinderWidth, viewfinderHeight, minEdgeSize, qrboxSize);
+
+            return {
+                width: qrboxSize,
+                height: qrboxSize
+            };
+        }
+
+        async function addSkuMessage(itemName, skuId) {
+            const response = await fetch("/api/sku", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    itemName: itemName,
+                    skuId: skuId
+                })
+            });
+
+            let responseJson= await response.json();
+            return responseJson;
+        }
+
+        // testButton.addEventListener('click', async (event) => {
+        //     await addSkuMessage('Test Item 1', 'Sample SKU 1');
+        // });
+
+        const html5QrCode = new Html5Qrcode(/* element id */ "reader");
+
+        function stopQrCodeScanner(stopMessage = 'N/A') {
+            html5QrCode.stop().then((ignore) => {
+                resultDisplay.innerHTML = stopMessage; // QR Code scanning is stopped.
+            }).catch((err) => {
+                console.error("Error stopping camera", err); // Stop failed, handle it.
+            });
+        }
+
+        stopButton.addEventListener('click', (event) => {
+            stopQrCodeScanner();
+        });
+
+        startButton.addEventListener('click', (event) => {
+            html5QrCode.start(
+                //cameraId,
+                { facingMode: 'environment' },
+                {
+                    fps: 15,                // Optional, frame per seconds for qr code scanning
+                    qrbox: qrboxFunction    //qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
+                },
+                async (decodedText, decodedResult) => {
+                    // do something when code is read
+                    //resultDisplay.innerHTML = `${decodedText} | ${decodedResult.decodedText}<br />${decodedResult.result.format.formatName} -- ${decodedResult.result.debugData.decoderName}`
+                    resultDisplay.innerHTML = `Scanned ${decodedResult.decodedText}<br />Adding SKU ...`
+                    
+                    let responseJson = await addSkuMessage(itemNameHiddenInput.value, decodedResult.decodedText);
+                    if (responseJson.isSuccess) {
+                        stopQrCodeScanner(`${decodedText}<br />added`);
+                        //resultDisplay.innerHTML = `${decodedText}<br />added`;
+                    }
+                    else
+                    {
+                        resultDisplay.innerHTML = `${decodedText}<br />skipped`;
+                    }
+                },
+                (errorMessage) => {
+                    // parse error, ignore it.
+                    //console.warn("Scan error", errorMessage);
+                }
+            )
+            .then(_ => {
+                html5QrCode.applyVideoConstraints({ focusMode: 'continuous', advanced: [ { zoom: 2.0 } ] });
+            })
+            .catch((err) => {
+                console.error("Cannot start camera", err); // Start failed, handle it.
+            });
+        });
+
+    </script>
+
+}

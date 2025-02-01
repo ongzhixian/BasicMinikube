@@ -1,0 +1,28 @@
+﻿@page "/application-list"
+@model ApplicationListPageModel
+@{
+    ViewData["Title"] = "Application List";
+}
+
+<partial name="_HeaderPartial" />
+
+<main>
+
+    <h1>@ViewData["Title"]</h1>
+
+    <section class="search">
+        <div class="input-group">
+            <label for="applicationNameTextInput">Search</label>
+            <input type="text" id="applicationNameTextInput" placeholder="application name" />
+        </div>
+        
+    </section>
+
+    <section class="grid-list">
+
+
+    </section>
+
+</main>
+
+<partial name="_FooterPartial" />

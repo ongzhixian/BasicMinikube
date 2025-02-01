@@ -10,9 +10,9 @@ using MobileWebApp.Services;
 
 namespace MobileWebApp.Pages;
 
-public class AddInventorySkuPageModel : PageModel
+public class ScanInventorySkuPageModel : PageModel
 {
-    private readonly ILogger<AddInventorySkuPageModel> _logger;
+    private readonly ILogger<ScanInventorySkuPageModel> _logger;
     private readonly InventoryService inventoryService; 
 
     [TempData]
@@ -23,10 +23,9 @@ public class AddInventorySkuPageModel : PageModel
     [Display(Name = "Increase Quantity")]
     public decimal ItemQuantity { get; set; }
 
-    [BindProperty]
     public string ItemName { get; set; } = string.Empty;
 
-    public AddInventorySkuPageModel(ILogger<AddInventorySkuPageModel> logger, InventoryService inventoryService)
+    public ScanInventorySkuPageModel(ILogger<ScanInventorySkuPageModel> logger, InventoryService inventoryService)
     {
         _logger = logger;
         this.inventoryService = inventoryService;
@@ -42,13 +41,13 @@ public class AddInventorySkuPageModel : PageModel
         }
     }
 
-    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+    public async Task<IActionResult> OnPostAsync(string id, string? returnUrl = null)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                var inventoryItem = await inventoryService.GetInventoryItemAsync(ItemName);
+                var inventoryItem = await inventoryService.GetInventoryItemAsync(id);
 
                 if (inventoryItem != null)
                 {
@@ -56,8 +55,6 @@ public class AddInventorySkuPageModel : PageModel
                     await inventoryService.IncreaseItemQuantityAsync(inventoryItem.Name, ItemQuantity);
                     ViewData["message"] = "Item added";
                 }
-
-                
             }
             catch (Exception ex)
             {

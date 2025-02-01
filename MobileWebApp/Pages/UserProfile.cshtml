@@ -68,6 +68,40 @@
         </div>
 
     </section>
+
+    <section>
+
+        <h2>User Preferences</h2>
+
+        @* <p>
+            Password was last changed at @Model.PasswordLastUpdateDateTime.ToShortDateString()
+            (@(Math.Truncate((DateTime.UtcNow - Model.PasswordLastUpdateDateTime).TotalDays)) days ago)
+        </p> *@
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>k1</td>
+                    <td>v11</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="panel">
+            <a asp-page="UpdateUserPreferences">Go update user preferences</a>
+        </div>
+
+    </section>
+
+
+
+
 @* 
     <section>
 
